@@ -64,26 +64,29 @@
   --text-destination--line-height: 58px;
   --text-destination--letter-spacing: 0.01em;
 
+  /* Line heights are the exact box heights measured on the Figma text nodes,
+     not ratios. Rubik's "Auto" line height sits near 1.18, so anything looser
+     pushes the layouts off the frames. */
   --text-display: 48px;
-  --text-display--line-height: 1;
+  --text-display--line-height: 48px;
   --text-title1: 34px;
-  --text-title1--line-height: 1.05;
+  --text-title1--line-height: 36px;
   --text-title2: 28px;
-  --text-title2--line-height: 1.15;
+  --text-title2--line-height: 32px;
   --text-heading: 22px;
-  --text-heading--line-height: 1.3;
+  --text-heading--line-height: 29px;
   --text-subheading: 20px;
-  --text-subheading--line-height: 1.3;
+  --text-subheading--line-height: 24px;
   --text-headline: 17px;
-  --text-headline--line-height: 1.35;
+  --text-headline--line-height: 20px;
   --text-body: 15px;
-  --text-body--line-height: 1.45;
+  --text-body--line-height: 18px;
   --text-footnote: 13px;
-  --text-footnote--line-height: 1.4;
+  --text-footnote--line-height: 15px;
   --text-caption: 12px;
-  --text-caption--line-height: 1.4;
+  --text-caption--line-height: 14px;
   --text-caption2: 11px;
-  --text-caption2--line-height: 1.4;
+  --text-caption2--line-height: 13px;
 
   /* ---- Radii ------------------------------------------------------------ */
   --radius-tile: 12px;
