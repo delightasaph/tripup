@@ -15,8 +15,8 @@ Read these before writing code:
 - All text in English. Real content only, no lorem ipsum.
 
 ## Source of truth for visuals
-Figma file key: `KhaiFU0rSdVKHHoM5r7ry6` (file "TripUp - Bending Spoons - Delight Asaph").
-URL: https://www.figma.com/design/KhaiFU0rSdVKHHoM5r7ry6/TripUp---Bending-Spoons---Delight-Asaph
+Figma file key: `qITM47IS3nfWVV3KxyH3pv` (file "TripUp - Bending Spoons - Delight Asaph").
+URL: https://www.figma.com/design/qITM47IS3nfWVV3KxyH3pv/TripUp---Bending-Spoons---Delight-Asaph
 - Page **"Hi-Fidelity Screens"**: the high-fidelity screens. Build to these, pixel-close.
 - Page **"Wireflow"**: the flow logic and annotations (sections "1 · Plan & decide" and "2 · Pay & settle").
 - Page **"Low-fi Screens"**: the mid-fidelity screens used in the wireflow. Use for flow logic only, not visuals.
@@ -24,9 +24,34 @@ URL: https://www.figma.com/design/KhaiFU0rSdVKHHoM5r7ry6/TripUp---Bending-Spoons
 - Page **"Design System"**: colour and type styles.
 - Page **"Stamps"**: the "Stamp" component set (node `17:3667`, 15 countries) and its parts.
 
-If the Figma MCP server is connected, use it (`get_design_context`, `get_screenshot`, `get_variable_defs`) on the node IDs listed in `docs/PRODUCT_SPEC.md` before building each screen, and compare your result against the screenshot. If it is not connected, ask the user to export PNGs of the screens into `design/screens/`.
+All 14 screen node IDs in `docs/PRODUCT_SPEC.md` §4 are current and verified. Do not spend calls
+re-checking them.
 
 **02 Trip · Lisbon** and **05 Live poll** are the two key high-fidelity screens required by the brief, and the visual reference for every other screen. When anything is ambiguous, match them.
+
+### Figma calls are rationed — batch them
+The MCP has a hard per-plan call limit, and running out mid-screen stops the work. Treat every call
+as expensive.
+
+1. **Check what you already have first.** `design/screens/*.png` (native 390 × 844 renders),
+   `docs/screens/*.md`, `docs/DESIGN_SYSTEM.md` and `docs/PRODUCT_SPEC.md` answer most questions —
+   exact colours can be sampled from the PNGs, and geometry is recorded in `docs/screens/`. Only
+   call Figma for what is genuinely missing.
+2. **One `get_design_context` per screen**, on the screen's own top-level node. Never one call per
+   component, card or icon — the response covers the whole subtree.
+3. **Pull that screen's icons in the same call.** `get_design_context` returns SVG asset URLs; the
+   URLs stay valid about 7 days, so download them immediately into `public/assets/icons/` with
+   plain names (`arrow-back.svg`, `calendar.svg`, `walk.svg`). Reuse icons across screens. Never
+   redraw an icon by hand and never substitute an icon library — if the export is missing, say so
+   and ask.
+4. **Write down what you learned, immediately after each screen**, in `docs/screens/<screen>.md`:
+   exact offsets, sizes, colours, type styles, icon names, and anything that surprised you. This is
+   what makes the next screen cheap.
+5. **Never re-fetch a screen already recorded in `docs/screens/`.** If you believe you must, ask
+   first.
+
+If the MCP is unreachable or out of calls, say so plainly and ask — do not approximate the design
+from memory.
 
 ## Recommended stack
 - React + TypeScript + Vite.
@@ -40,9 +65,16 @@ If the Figma MCP server is connected, use it (`get_design_context`, `get_screens
 ## How to work
 1. Scaffold the app, the device frame, tokens and fonts first. Verify tokens render correctly on a style-guide route (`/styleguide`).
 2. Build shared components (buttons, pills, avatars, cards, sheet, toast, tab bar, status bar) before screens.
-3. Build screens in flow order (see spec). After each screen: run it, screenshot at 390 × 844, compare with Figma, fix differences.
+3. Build screens in flow order (see spec). After each screen: run it, screenshot at 390 × 844, compare with Figma, fix differences, then record the screen in `docs/screens/<screen>.md`.
 4. Wire the flow and the simulated real-time events last, then the demo controls.
 5. Keep commits small, one screen or component per commit.
+
+### Commits
+Commits are the user's. Use the configured git name and email as they are — do not pass `-c
+user.name`/`-c user.email` overrides. **Never** add `Co-Authored-By: Claude`, `🤖 Generated with
+Claude Code`, or any other attribution trailer to a commit message or a PR description. This is
+also enforced by `attribution: {commit: "", pr: ""}` in the user's settings; the rule stands even if
+that setting is ever missing.
 
 ## Conventions
 - Components in `src/components/`, screens in `src/screens/`, mock data in `src/data/`, domain logic (netting, splitting, poll rules) in `src/domain/` with unit tests (Vitest).

@@ -1,6 +1,6 @@
 # TripUp — Design system for the prototype
 
-Values come from the Figma file's local styles (file `KhaiFU0rSdVKHHoM5r7ry6`, pages "Design System" and "Stamps"). If Figma and this file disagree, Figma wins; re-check with `get_variable_defs` / `get_design_context`.
+Values come from the Figma file's local styles (file `qITM47IS3nfWVV3KxyH3pv`, pages "Design System" and "Stamps"). If Figma and this file disagree, Figma wins; re-check with `get_variable_defs` / `get_design_context`.
 
 ## 1. Canvas
 - Reference device: iPhone 14, **390 × 844 pt**. No scaling.

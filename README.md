@@ -50,7 +50,7 @@ public/assets/  avatars, places, stamps exported from Figma
 
 ## Design source
 
-Figma file `KhaiFU0rSdVKHHoM5r7ry6` — page "Hi-Fidelity Screens" for the visuals, "Wireflow" for
+Figma file `qITM47IS3nfWVV3KxyH3pv` — page "Hi-Fidelity Screens" for the visuals, "Wireflow" for
 the flow logic. Screens **02 Trip · Lisbon** and **05 Live poll** are the visual reference for
 everything else.
 

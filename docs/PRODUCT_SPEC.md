@@ -118,7 +118,7 @@ Settlement times (screen 11): Ren→Nick 22:14 · Phil→You 22:16 · Rebecca→
 18:05 Home → New poll and Live poll · 18:25 poll closes (06) · 22:10 logging the dinner (07/08) · 22:12 balances (09) · 22:14 Ren pays (10) · 22:25 squared up (11).
 
 ## 4. Screens
-Figma file `KhaiFU0rSdVKHHoM5r7ry6`, page "Hi-Fidelity Screens". Build in this order.
+Figma file `qITM47IS3nfWVV3KxyH3pv`, page "Hi-Fidelity Screens". Build in this order.
 
 | # | Screen | Figma node | Whose phone |
 |---|---|---|---|

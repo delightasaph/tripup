@@ -1,0 +1,81 @@
+# 05 · Live poll (Ari's view)
+
+Figma node `84:169`. Reference render: `design/screens/05-live-poll.png` (native 390 × 844).
+Built in `src/screens/LivePoll.tsx`. **Do not re-fetch this screen.**
+
+## Frame skeleton
+| Part | Screen coords |
+|---|---|
+| Status bar | 0, 0 · 390 × 50 |
+| Content column | 20, 64 · 350 × 686 |
+| Nav | 20, 64 · 350 × 40 |
+| Body | 20, 124 · 350 × 626 |
+| — asked-by row | 20, 124 · 209 × 22 |
+| — question | 20, 154 · 330 × 64 |
+| — live ticker | 20, 234 · 255 × 28 |
+| — options group | 20, 278 · 350 × 388 |
+| — waiting on Phil | 20, 686 · 350 × 64 |
+| Bottom fade | 0, 714 · 390 × 130 |
+| Actions | 20, 756 · 350 × 54 |
+| Home indicator | 128, 830 · 134 × 5 |
+
+## Nav
+- Back button 40 × 40, same as screen 02, icon `arrow-left`.
+- **Live pill** at x 187 · 183 × 33, white, pill, `--shadow-card`:
+  pulse dot at 12 (14 box, 8 dot, `Status/Alert`, with a 0.18-opacity ring) · "Live" Footnote/Medium
+  in `Status/Alert` · 1 × 14 `Line/Default` divider · "closes in 18:24" Footnote/Medium ink,
+  tabular numerals.
+
+## Question block
+- Asked-by: Ari avatar 22, then "Ari asked · for dinner at 20:30" Footnote/Medium in
+  `Ink/Secondary`, 8 to the right. In code, show "You asked" when the viewer is the creator.
+- Question: Title 2 (Rubik 600, 28/32), ink, wrapped to 330 wide — two lines, 64 tall.
+
+## Live ticker
+Auto-width pill, 28 tall, background `rgb(31 30 36 / .05)`, avatar 20 at inset 4, text Caption 12
+with the name in Medium. `aria-live="polite"`.
+
+## Option cards
+Group top 278. Cards at offsets **0 / 140 / 268**; the leader is **132** tall, the others **120**.
+Width 350, radius 24. Leader is `Accent/Lime` with `--shadow-winner`; the rest are white with
+`--shadow-card`.
+
+Internals (card-relative):
+- Top row at 14, 14 · 320 × 52.
+  - Photo tile 48 × 48, radius 12, `object-fit: cover`.
+  - Icon badge 22 × 22 at 34, 34 of the 52 box: white circle, `--shadow-card`, icon at 13.
+  - Text block at x 66, width 254: name Headline 17 SemiBold (4 down), line Caption 12
+    `Ink/Secondary` (26 down).
+- Results at 14, 78.
+  - Bar at x +2, 318 × 8, pill, track `Data/Track`. Fill is `Ink/Primary` on the leader,
+    `Data/Bar Muted` otherwise.
+  - Votes row at x +2, **20** down on the leader (23 tall) and **16** on the others (22 tall).
+    - Voter avatars 22, overlapping at 18 pitch (margin −4), ringed in the card's own background.
+    - Count text starts at `22 + 18 × (n − 1) + 8`, 4 down: Caption 12 `Ink/Secondary`.
+    - "Your vote" chip (leader only) at x 228 · 90 × 23: white pill, icon `check` 13 at inset 10,
+      label Caption 2 (11) Medium.
+
+Bar fills are the Figma pixel widths over the 318 track: **159 / 104.9 / 54.1** — i.e. Taberna 3,
+Time Out 2, Ramiro 1.
+
+## Waiting on Phil
+350 × 64, radius 24, `Surface/White 70%`.
+- Pending avatar at 11, 11: 42 ring, `1.5px dashed rgb(31 30 36 / .28)`, Phil's 36 avatar inside at
+  45% opacity.
+- Text at 64, 13: "6 of 7 voted" Body 15 SemiBold; "Waiting on Phil" Caption 12 `Ink/Secondary`,
+  21 down.
+- Nudge button at 241, 13 · 95 × 38: `Accent/Lilac`, pill, ink Body/Medium, icon `bell` 16.
+
+## Actions
+Row at 20, 756, gap 10: "Change vote" 137 × 54 secondary (white, 1.5 px `Line/Default` inset
+border); "Close poll now" 203 × 54 primary (`Ink/Primary`, white, `--shadow-dark-button`).
+"Close poll now" is creator-only.
+
+## Icons on this screen
+`arrow-left` ✅ · `bowl` ❌ · `fork-knife` ❌ · `fish` ❌ · `check` ❌ · `bell` ❌
+
+## Gotchas found while building
+- The leader card is taller than the others (132 vs 120) purely to fit the "Your vote" chip, and its
+  bar-to-votes gap is 12 rather than 8. Don't let the cards auto-size.
+- Photos are WebP and not square (`ramiro` is 860 × 1147), so the 48 tile needs `object-fit: cover`.
+- Ren has no photo by design; he is the "RT" initials avatar in the Time Out voter stack.
