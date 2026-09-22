@@ -9,14 +9,24 @@ type StatusBarProps = {
 export function StatusBar({ time, tone = 'dark' }: StatusBarProps) {
   const color = tone === 'light' ? 'var(--color-surface-white)' : 'var(--color-ink-primary)'
 
+  // Positions measured off the Figma frames: the clock's glyphs start at x 49
+  // and the battery tip lands at x 352, both sitting on a baseline at y 32.
   return (
     <div
-      className="flex shrink-0 items-end justify-between px-[26px] pb-2 select-none"
+      className="relative shrink-0 select-none"
       style={{ height: 'var(--status-bar-height)', color }}
       aria-hidden="true"
     >
-      <span className="text-headline font-semibold tracking-[0.01em] tabular-nums">{time}</span>
-      <span className="flex items-center gap-[6px]">
+      <span
+        className="absolute text-headline font-semibold tracking-[0.01em] tabular-nums"
+        style={{ left: 49, top: 15, lineHeight: '22px' }}
+      >
+        {time}
+      </span>
+      <span
+        className="absolute flex items-end gap-[6px]"
+        style={{ right: 38, top: 19, height: 13 }}
+      >
         <CellularIcon />
         <WifiIcon />
         <BatteryIcon />
