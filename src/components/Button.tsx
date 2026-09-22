@@ -50,10 +50,10 @@ export function Button({
   return (
     <button
       type="button"
-      className={`inline-flex items-center justify-center gap-[6px] rounded-pill px-[16px] text-body font-medium ${
+      className={`inline-flex items-center justify-center gap-[6px] rounded-pill text-body font-medium ${
         fullWidth ? 'w-full' : ''
       } ${className}`}
-      style={{ height, ...look[variant], ...style }}
+      style={{ height, paddingInline: 16, ...look[variant], ...style }}
       {...rest}
     >
       {icon}

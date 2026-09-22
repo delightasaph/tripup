@@ -21,7 +21,7 @@ export function Timeline({ height, children }: { height: number; children: React
           height: height - 32,
           borderRadius: 'var(--radius-pill)',
           background:
-            'linear-gradient(180deg, rgb(31 30 36 / 0.10) 0%, rgb(31 30 36 / 0.10) 58%, rgb(91 79 232 / 0.22) 100%)',
+            'linear-gradient(180deg, rgb(31 30 36 / 0.1) 0%, rgb(31 30 36 / 0.12) 45%, rgb(91 79 232 / 0.5) 50%, rgb(91 79 232 / 0) 100%)',
         }}
       />
       {children}
@@ -43,7 +43,7 @@ function TimelineNode({ kind, top }: { kind: NodeKind; top: number }) {
     done: { background: 'var(--color-line-default)' },
     next: {
       background: 'var(--color-ink-primary)',
-      boxShadow: '0 0 0 5px rgb(31 30 36 / 0.10)',
+      boxShadow: '0 0 0 5px rgb(31 30 36 / 0.12)',
     },
     open: {
       background: 'var(--color-surface-ground)',
@@ -60,6 +60,8 @@ type TimelineRowProps = {
   top: number
   time: string
   timeTone?: 'muted' | 'ink' | 'violet'
+  /** Done rows step the time back to 60%. */
+  timeOpacity?: number
   /** Where the time label and node sit relative to the row top. */
   timeOffset?: number
   nodeOffset?: number
@@ -72,6 +74,7 @@ export function TimelineRow({
   top,
   time,
   timeTone = 'muted',
+  timeOpacity,
   timeOffset = 15,
   nodeOffset = 18,
   node,
@@ -87,7 +90,7 @@ export function TimelineRow({
     <div className="absolute left-0 w-full" style={{ top }}>
       <time
         className="absolute left-0 text-footnote font-medium tabular-nums"
-        style={{ top: timeOffset, color: timeColor }}
+        style={{ top: timeOffset, color: timeColor, opacity: timeOpacity }}
       >
         {time}
       </time>

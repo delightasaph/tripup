@@ -50,7 +50,7 @@ Two families with strict roles:
 | Display/Destination | Anton 400, uppercase, letter-spacing 1% | 56 / 58 | "LISBON" on the ticket |
 | Display | Rubik 600 | 48 / 100% | Amounts (€130, €190, €20) |
 | Title 1 | Rubik 600 | 34 / 105% | Screen titles ("Your trips", "Lisbon", "Lisbon is squared up.") |
-| Title 2 | Rubik 600 | 28 / 115% | Poll question |
+| Title 2 | Rubik 600, letter-spacing −0.5 | 28 / 115% | Poll question |
 | Heading | Rubik 600 | 22 / 130% | Sheet titles, split sentence |
 | Subheading/Medium · SemiBold | Rubik 500 · 600 | 20 | Day numbers, keypad, upcoming trip names |
 | Headline | Rubik 600 | 17 | Card titles, option names, amounts in rows |

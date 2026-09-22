@@ -4,6 +4,7 @@ import { Icon } from '@/components/Icon'
 import { LivePill } from '@/components/LivePill'
 import { PollOptionCard } from '@/components/PollOptionCard'
 import { Ticker } from '@/components/Ticker'
+import { pendingRing } from '@/data/assets'
 import { dinnerPoll } from '@/data/trip'
 
 /**
@@ -33,7 +34,7 @@ export function LivePoll() {
         <div className="flex items-center" style={{ height: 22 }}>
           <Avatar person={askedBy} size={22} />
           <span
-            className="text-footnote font-medium"
+            className="text-footnote"
             style={{ marginLeft: 8, color: 'var(--color-ink-secondary)' }}
           >
             {askedLine}
@@ -62,22 +63,24 @@ export function LivePoll() {
             marginTop: 20,
             width: 350,
             height: 64,
-            borderRadius: 'var(--radius-card-lg)',
+            borderRadius: 'var(--radius-card)',
             background: 'var(--color-surface-white-70)',
+            border: '1px solid var(--color-line-default)',
           }}
         >
           <span
-            className="absolute flex items-center justify-center"
-            style={{
-              left: 11,
-              top: 11,
-              width: 42,
-              height: 42,
-              borderRadius: '50%',
-              border: '1.5px dashed rgb(31 30 36 / 0.28)',
-            }}
+            className="absolute"
+            style={{ left: 10, top: 10, width: 42, height: 42 }}
           >
-            <span style={{ opacity: 0.45 }}>
+            <img
+              src={pendingRing}
+              alt=""
+              aria-hidden="true"
+              width={42}
+              height={42}
+              className="absolute inset-0"
+            />
+            <span className="absolute" style={{ left: 3, top: 3, opacity: 0.55 }}>
               <Avatar person={waitingOn} size={36} />
             </span>
           </span>

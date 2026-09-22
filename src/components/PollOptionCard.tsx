@@ -44,7 +44,8 @@ export function PollOptionCard({ option, fill, leading, yourVote }: PollOptionCa
         height,
         borderRadius: 'var(--radius-card-lg)',
         background: leading ? 'var(--color-accent-lime)' : 'var(--color-surface-white)',
-        boxShadow: leading ? 'var(--shadow-winner)' : 'var(--shadow-card)',
+        // The frame gives these cards no shadow at all — the lime fill is the
+        // only thing marking the leader.
       }}
     >
       {/* Top row */}
@@ -100,7 +101,7 @@ export function PollOptionCard({ option, fill, leading, yourVote }: PollOptionCa
             width: 318,
             height: 8,
             borderRadius: 'var(--radius-pill)',
-            background: 'var(--color-data-track)',
+            background: leading ? 'rgb(31 30 36 / 0.1)' : 'rgb(31 30 36 / 0.07)',
             overflow: 'hidden',
           }}
         >

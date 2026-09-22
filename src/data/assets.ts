@@ -51,6 +51,10 @@ export const stamps = {
  *  stamp that drops on ending 11B. They are not interchangeable. */
 export const ticketStamp = '/assets/stamps/portugal-ticket.png'
 
+/** The dashed "still to vote" ring behind Phil's avatar on 05 (Figma 84:306).
+ *  Exported at 84 x 84 and drawn at 42. */
+export const pendingRing = '/assets/pending-ring.png'
+
 /** Lock screen (04b). A night-out street photo, not a stamp painting.
  *  Cover the frame and lay `--gradient-legibility-shade` over it. */
 export const lockScreenWallpaper = '/assets/lockscreen-wallpaper.jpg'

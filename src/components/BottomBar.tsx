@@ -33,7 +33,7 @@ export function BottomBar({ tabs, activeId, fabLabel = 'Add to trip' }: BottomBa
             height: 60,
             borderRadius: 'var(--radius-pill)',
             background: 'var(--color-surface-white)',
-            boxShadow: 'var(--shadow-card)',
+            filter: 'drop-shadow(0 10px 12px rgb(31 30 36 / 0.1))',
             padding: 6,
           }}
           role="tablist"
@@ -71,10 +71,10 @@ export function BottomBar({ tabs, activeId, fabLabel = 'Add to trip' }: BottomBa
             width: 60,
             height: 60,
             background: 'var(--color-ink-primary)',
-            boxShadow: 'var(--shadow-dark-button)',
+            filter: 'drop-shadow(0 10px 10px rgb(31 30 36 / 0.25))',
           }}
         >
-          <Icon name="plus-small" size={20} color="var(--color-surface-white)" />
+          <Icon name="plus" size={20} />
         </button>
       </div>
     </>

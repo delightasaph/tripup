@@ -58,11 +58,11 @@ export function TripLisbon() {
 
         <div style={{ height: 12 }} />
         <Timeline height={331}>
-          <TimelineRow top={0} time="10:00" node="done">
+          <TimelineRow top={0} time="10:00" node="done" timeOpacity={0.6}>
             <DoneCard title="Pastéis de Belém" line="Breakfast · Belém · €18" />
           </TimelineRow>
 
-          <TimelineRow top={54} time="15:00" node="done">
+          <TimelineRow top={54} time="15:00" node="done" timeOpacity={0.6}>
             <DoneCard title="Tram 28 to Graça" line="Praça Martim Moniz" />
           </TimelineRow>
 
@@ -70,21 +70,26 @@ export function TripLisbon() {
             <div
               style={{
                 height: 95,
-                borderRadius: 'var(--radius-row-lg)',
+                borderRadius: 'var(--radius-card)',
                 background: 'var(--gradient-sunset-card)',
+                padding: '14px 14px 12px 16px',
               }}
             >
-              <div style={{ paddingLeft: 16, paddingTop: 14 }}>
-                <p className="text-headline font-semibold">Sunset at Miradouro</p>
-                <p
-                  className="text-caption"
-                  style={{ marginTop: 1, color: 'var(--color-ink-secondary)' }}
+              <p className="text-headline font-semibold">Sunset at Miradouro</p>
+              <p
+                className="text-caption"
+                style={{ marginTop: 1, color: 'var(--color-ink-secondary)' }}
+              >
+                Viewpoint · free
+              </p>
+              <div style={{ marginTop: 10 }}>
+                <Pill
+                  variant="white70"
+                  height={24}
+                  radius={12}
+                  className="text-caption font-medium"
+                  style={{ width: 106, paddingInline: 10, gap: 5 }}
                 >
-                  Viewpoint · free
-                </p>
-              </div>
-              <div style={{ paddingLeft: 16, paddingTop: 10 }}>
-                <Pill variant="white70" height={24} className="text-caption font-medium">
                   <Icon name="walk" size={14} />
                   12 min walk
                 </Pill>
@@ -104,26 +109,31 @@ export function TripLisbon() {
               style={{
                 marginTop: 4,
                 height: 116,
-                borderRadius: 'var(--radius-row-lg)',
+                borderRadius: 'var(--radius-card)',
                 background: 'var(--color-accent-violet-tint)',
                 border: '1.5px dashed rgb(91 79 232 / 0.55)',
+                padding: '14px 16px 16px',
               }}
             >
-              <div style={{ paddingLeft: 16, paddingTop: 14 }}>
-                <p className="text-headline font-semibold">Dinner</p>
-                <p
-                  className="text-caption"
-                  style={{ marginTop: 2, color: 'var(--color-ink-secondary)' }}
-                >
-                  Nothing booked yet · all 6 of you are free
-                </p>
-              </div>
-              <div style={{ paddingLeft: 16, paddingTop: 12 }}>
+              <p className="text-headline font-semibold">Dinner</p>
+              <p
+                className="text-caption"
+                style={{ marginTop: 2, color: 'var(--color-ink-secondary)' }}
+              >
+                Nothing booked yet · all 6 of you are free
+              </p>
+              <div style={{ marginTop: 12 }}>
                 <Button
                   variant="violet"
                   height={38}
-                  icon={<Icon name="list" size={16} color="var(--color-surface-white)" />}
-                  style={{ paddingInline: 14 }}
+                  icon={<Icon name="list" size={16} />}
+                  style={{
+                    width: 151,
+                    paddingInline: 14,
+                    justifyContent: 'flex-start',
+                    gap: 6,
+                    filter: 'drop-shadow(0 6px 7px rgb(91 79 232 / 0.35))',
+                  }}
                 >
                   Ask the group
                 </Button>
@@ -148,20 +158,20 @@ export function TripLisbon() {
 function DoneCard({ title, line }: { title: string; line: string }) {
   return (
     <div
+      className="flex items-center"
       style={{
         height: 46,
         borderRadius: 'var(--radius-row)',
         background: 'var(--color-surface-white-70)',
-        paddingLeft: 14,
-        paddingTop: 6.5,
+        paddingInline: 14,
       }}
     >
-      <p className="text-body font-semibold" style={{ color: 'var(--color-ink-secondary)' }}>
-        {title}
-      </p>
-      <p className="text-caption" style={{ marginTop: 1, color: 'rgb(94 91 102 / 0.75)' }}>
-        {line}
-      </p>
+      <div style={{ color: 'var(--color-ink-secondary)' }}>
+        <p className="text-body font-medium">{title}</p>
+        <p className="text-caption" style={{ marginTop: 1, opacity: 0.8 }}>
+          {line}
+        </p>
+      </div>
     </div>
   )
 }

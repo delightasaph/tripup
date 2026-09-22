@@ -54,9 +54,10 @@ export function Avatar({ person, size, ring, className }: AvatarProps) {
         borderRadius: '50%',
         background: `var(${person.fill})`,
         fontWeight: 600,
-        // Avatar/7–18: the initials scale with the circle.
-        fontSize: Math.round(size * 0.37),
-        letterSpacing: '0.2px',
+        // Avatar/7–18 are discrete styles, not a ratio: Figma uses 7 inside a
+        // 22 circle and 11 inside a 30.
+        fontSize: size <= 24 ? 7 : size <= 34 ? 11 : Math.round(size * 0.34),
+        letterSpacing: size <= 24 ? '0.1px' : '0.2px',
         color: 'var(--color-ink-primary)',
         ...ringStyle,
       }}

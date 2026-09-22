@@ -1,14 +1,12 @@
 /**
  * Line icons exported from Figma into public/assets/icons/.
- *
- * Icons are never hand-drawn: each one is the exact vector from the file. An
- * icon we have not been able to export yet renders as a visible dashed box so
- * the gap shows up in review instead of hiding behind a lookalike glyph.
+ * Never hand-drawn and never from an icon library: each one is the exact
+ * vector from the file, pulled with the screen it appears on.
  */
 export type IconName =
   | 'arrow-left'
+  | 'plus'
   | 'plus-small'
-  // Not yet exported — the Figma MCP hit its plan call limit mid-screen.
   | 'walk'
   | 'list'
   | 'calendar'
@@ -19,9 +17,25 @@ export type IconName =
   | 'check'
   | 'bell'
 
-const exported: Record<string, string> = {
+/**
+ * Each file is the exact vector from Figma. Some carry a baked stroke colour
+ * because of where they are used (`list` and `plus` are white, `wallet` is
+ * Ink/Secondary); pass `color` to re-tint via a mask when a surface needs a
+ * different one.
+ */
+const exported: Record<IconName, string> = {
   'arrow-left': '/assets/icons/arrow-left.svg',
+  plus: '/assets/icons/plus.svg',
   'plus-small': '/assets/icons/plus-small.svg',
+  walk: '/assets/icons/walk.svg',
+  list: '/assets/icons/list.svg',
+  calendar: '/assets/icons/calendar.svg',
+  wallet: '/assets/icons/wallet.svg',
+  bowl: '/assets/icons/bowl.svg',
+  'fork-knife': '/assets/icons/fork-knife.svg',
+  fish: '/assets/icons/fish.svg',
+  check: '/assets/icons/check.svg',
+  bell: '/assets/icons/bell.svg',
 }
 
 type IconProps = {
@@ -35,25 +49,6 @@ type IconProps = {
 
 export function Icon({ name, size, color, className }: IconProps) {
   const src = exported[name]
-
-  if (!src) {
-    return (
-      <span
-        role="img"
-        aria-label={`${name} icon (not yet exported)`}
-        title={`${name} — not yet exported from Figma`}
-        className={className}
-        style={{
-          display: 'inline-block',
-          width: size,
-          height: size,
-          borderRadius: 3,
-          border: `1px dashed ${color ?? 'currentColor'}`,
-          opacity: 0.45,
-        }}
-      />
-    )
-  }
 
   // Tinting needs a mask: an <img> cannot be recoloured.
   if (color) {

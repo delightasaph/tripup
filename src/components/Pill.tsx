@@ -26,8 +26,10 @@ const variants: Record<PillVariant, { background: string; color: string }> = {
 type PillProps = {
   children: ReactNode
   variant?: PillVariant
-  /** Height in px; the radius is always a full pill. */
+  /** Height in px. */
   height?: number
+  /** Corner radius; a full pill unless the frame says otherwise. */
+  radius?: number
   className?: string
   style?: React.CSSProperties
 }
@@ -36,14 +38,21 @@ export function Pill({
   children,
   variant = 'white',
   height = 24,
+  radius,
   className = '',
   style,
 }: PillProps) {
   const v = variants[variant]
   return (
     <span
-      className={`inline-flex shrink-0 items-center gap-[6px] rounded-pill px-[10px] ${className}`}
-      style={{ height, background: v.background, color: v.color, ...style }}
+      className={`inline-flex shrink-0 items-center gap-[6px] px-[10px] ${className}`}
+      style={{
+        height,
+        borderRadius: radius ?? 'var(--radius-pill)',
+        background: v.background,
+        color: v.color,
+        ...style,
+      }}
     >
       {children}
     </span>

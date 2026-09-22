@@ -16,8 +16,14 @@ export function Ticker({ person, event, when }: { person: Person; event: string;
       <span style={{ marginLeft: 4 }}>
         <Avatar person={person} size={20} />
       </span>
-      <span className="text-caption" style={{ marginLeft: 8 }}>
-        <strong className="font-medium">{person.label}</strong> {event} · {when}
+      <span
+        className="text-caption"
+        style={{ marginLeft: 8, color: 'var(--color-ink-secondary)' }}
+      >
+        <strong className="font-medium" style={{ color: 'var(--color-ink-primary)' }}>
+          {person.label}
+        </strong>{' '}
+        {event} · {when}
       </span>
     </div>
   )
