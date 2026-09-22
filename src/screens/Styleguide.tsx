@@ -6,6 +6,7 @@ import {
   lockScreenWallpaper,
   lockScreenWallpaperPosition,
   placePhotos,
+  stampShadow,
   stamps,
   ticketShape,
   ticketStamp,
@@ -222,13 +223,25 @@ export function Styleguide() {
           </h3>
           <div className="mb-3 flex flex-wrap items-center gap-5">
             <figure className="m-0 text-center">
-              <img src={ticketStamp} alt="Portugal, untitled" width={84} className="block" />
+              <img
+                src={ticketStamp}
+                alt="Portugal, untitled"
+                width={84}
+                className="block"
+                style={{ filter: stampShadow(84) }}
+              />
               <figcaption className="mt-1 text-caption2 text-ink-secondary">
                 portugal-ticket · no title · the ticket
               </figcaption>
             </figure>
             <figure className="m-0 text-center">
-              <img src={stamps.portugal} alt="Portugal" width={84} className="block" />
+              <img
+                src={stamps.portugal}
+                alt="Portugal"
+                width={84}
+                className="block"
+                style={{ filter: stampShadow(84) }}
+              />
               <figcaption className="mt-1 text-caption2 text-ink-secondary">
                 portugal · titled · ending 11B
               </figcaption>
@@ -245,7 +258,7 @@ export function Styleguide() {
                   alt={s.country}
                   width={72}
                   className="block"
-                  style={{ rotate: `${s.rotate}deg` }}
+                  style={{ rotate: `${s.rotate}deg`, filter: stampShadow(72) }}
                 />
                 <figcaption className="mt-2 text-caption2 text-ink-secondary">
                   {s.country} · {s.rotate}°
@@ -254,8 +267,10 @@ export function Styleguide() {
             ))}
           </div>
           <p className="mb-8 text-caption text-ink-secondary">
-            The titled exports carry a dark halo around the perforation and a “VISITED” cancel
-            clipped to “ISITED”. Worth a re-export from Figma with padded bounds.
+            Every stamp is flat and shadowless; the shadow above is CSS. England, Spain, Italy and
+            France are the re-exports (428 × 442, no “x1” count badge). The other eleven are the
+            first exports — 1000 × 1032, four times the bytes, and carrying the “x1” badge.
+            Portugal is the one that still matters there: it carries ending 11B.
           </p>
 
           <h3 className="mb-3 text-footnote font-medium uppercase tracking-[0.08em] text-ink-secondary">
@@ -267,7 +282,7 @@ export function Styleguide() {
               src={ticketStamp}
               alt=""
               className="absolute top-[6px] right-[8px] w-[92px]"
-              style={{ rotate: '20deg' }}
+              style={{ rotate: '20deg', filter: stampShadow(92) }}
             />
             <p
               className="absolute bottom-[14px] left-[18px] font-display text-destination uppercase"

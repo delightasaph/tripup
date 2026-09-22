@@ -107,7 +107,6 @@ export const shadows = [
   { name: 'toast', varName: '--shadow-toast', use: 'Toast' },
   { name: 'sheet', varName: '--shadow-sheet', use: 'Sheet' },
   { name: 'winner', varName: '--shadow-winner', use: 'Lime winner card' },
-  { name: 'stamp', varName: '--shadow-stamp', use: 'Stamps' },
 ]
 
 export const spacing = [2, 4, 6, 8, 10, 12, 14, 16, 20]

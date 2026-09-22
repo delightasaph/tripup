@@ -111,7 +111,13 @@
   --shadow-toast: 0 10px 24px -4px rgb(31 30 36 / 0.25);
   --shadow-sheet: 0 -8px 30px rgb(31 30 36 / 0.12);
   --shadow-winner: 0 12px 24px -8px rgb(115 140 25 / 0.25);
-  --shadow-stamp: 0 8px 18px rgb(31 30 36 / 0.14);
+  /* Stamps cast their shadow with filter: drop-shadow(), not box-shadow, so it
+     follows the perforated edge instead of the transparent PNG box. Figma sets
+     it to 17.143px offset and blur on the 300px-wide component — 0.05714 of the
+     rendered width — so it has to scale with the stamp. Compose it with
+     stampShadow() in src/data/assets.ts rather than hard-coding a size. */
+  --stamp-shadow-color: rgb(31 30 36 / 0.12);
+  --stamp-shadow-ratio: 0.05714;
   --shadow-device: 0 24px 70px -10px rgb(31 30 36 / 0.28);
 
   /* ---- Device canvas ---------------------------------------------------- */

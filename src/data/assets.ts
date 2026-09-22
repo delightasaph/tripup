@@ -18,7 +18,16 @@ export const placePhotos = {
   ramiro: '/assets/places/ramiro.webp',
 } as const
 
-/** Every stamp is exported flat at 0°. Tilts are CSS, never baked in. */
+/**
+ * Every stamp is exported flat at 0°, with transparent padding and **no
+ * shadow** — tilt them with CSS `rotate` and give them `stampShadow()`.
+ *
+ * `england`, `spain`, `italy` and `france` are the re-exports: 428 x 442, and
+ * without the "x1" count badge. The other eleven are the first exports at
+ * 1000 x 1032 (four times the bytes) and do carry the "x1" badge. Of those,
+ * only `portugal` is actually used — on ending 11B, where "x1" is arguably
+ * right, since it is Ari's first visit.
+ */
 export const stamps = {
   albania: '/assets/stamps/albania.png',
   belgium: '/assets/stamps/belgium.png',
@@ -70,6 +79,22 @@ export const homeStamps = [
   { country: 'italy', rotate: -28.5, x: 155, y: 66 },
   { country: 'france', rotate: -33.6, x: 295, y: 0 },
 ] as const satisfies readonly { country: StampCountry; rotate: number; x: number; y: number }[]
+
+/**
+ * The stamp's drop shadow, scaled to the width you are drawing it at.
+ *
+ * It has to be a `filter`, not a `box-shadow`: the PNGs carry transparent
+ * padding, so a box-shadow would trace a rectangle around the padding instead
+ * of the perforated edge. The exports are flat and shadowless by design —
+ * every stamp shadow in the UI comes from here.
+ *
+ * Figma uses a 17.143px offset and blur on the 300px-wide component, which is
+ * `--stamp-shadow-ratio` (0.05714) of the rendered width.
+ */
+export function stampShadow(renderedWidth: number): string {
+  const d = Math.round(renderedWidth * 0.05714 * 10) / 10
+  return `drop-shadow(0 ${d}px ${d}px var(--stamp-shadow-color))`
+}
 
 /** Natural size of the Stamp component in Figma, before any scaling. */
 export const stampNaturalSize = { width: 300, height: 316 } as const

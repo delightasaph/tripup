@@ -72,7 +72,11 @@ Uppercase section labels ("TODAY'S PLAN", "HAPPENING NOW") use Footnote/Medium i
   - Toast: `0 10 24 -4 rgba(31,30,36,.25)`.
   - Sheet: `0 -8 30 rgba(31,30,36,.12)`.
   - Lime winner card: `0 12 24 -8 rgba(115,140,25,.25)`.
-  - Stamps: `0 4–14 8–26 rgba(31,30,36,.12–.16)`.
+  - Stamps: a **`filter: drop-shadow()`**, never a `box-shadow` — the PNGs carry transparent
+    padding, so a box-shadow would trace a rectangle around the padding instead of the
+    perforated edge. Figma uses `0 17.143px 17.143px rgba(31,30,36,.12)` on the 300 px-wide
+    component, i.e. `0.05714 × rendered width`; compose it with `stampShadow()` in
+    `src/data/assets.ts` so it scales with the stamp.
 
 ## 5. Components
 - **Ticket (trip hero)**: 350 × 150, sky gradient, rounded 16 with two notches (top and bottom, centred at x ≈ 175) like a ticket — use `assets/ticket.svg`, which carries the exact path and the gradient; left: Anton destination + dates (Footnote/Medium, navy); right: `stamps/portugal-ticket.png` (the untitled stamp) rotated ~20° in CSS and clipped by the ticket edge. Export the ticket shape from Figma as SVG, don't approximate.
@@ -109,8 +113,13 @@ In `public/assets/`. Everything below is already exported and committed unless m
 - `places/`: `taberna`, `timeout`, `ramiro` (WebP restaurant photos).
 - `stamps/`: 15 countries as `<country>.png` — `albania`, `belgium`, `brazil`, `england`, `france`,
   `germany`, `greece`, `italy`, `kenya`, `netherlands`, `nigeria`, `portugal`, `spain`, `tanzania`,
-  `usa` — plus `portugal-ticket.png`. All are exported **flat, at 0°**; every tilt in the UI is a
-  CSS `rotate`, never baked into the file.
+  `usa` — plus `portugal-ticket.png`. All are exported **flat at 0°, uncropped, and with no
+  shadow**, on transparent padding. Every tilt is a CSS `rotate` and every shadow is a CSS
+  `filter: drop-shadow()` (see §4) — neither is ever baked into the file.
+  - `england`, `spain`, `italy` and `france` — the four Home uses — are the re-exports:
+    428 × 442, no "x1" count badge. The other eleven are the first exports at 1000 × 1032,
+    about four times the bytes, and do carry the "x1" badge. Of those only `portugal` is used
+    (ending 11B), where "x1" reads correctly as Ari's first visit.
   - `portugal-ticket.png` has **no country name**. This is the one on the Lisbon ticket, rotated
     ~20° and clipped by the ticket edge.
   - `portugal.png` has the Anton "PORTUGAL" title. This is the one that stamps down on ending 11B.
