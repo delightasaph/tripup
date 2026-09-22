@@ -63,7 +63,7 @@ Avatars come from the Material 3 3D avatar kit (placeholder, credit in the prese
 - **Lisbon**, 12–16 Sep, you + 5 buddies (+ Ren tonight). Happening now.
 - **Porto**, 3–5 Oct, 4 buddies, in 17 days.
 - **Berlin**, 27–30 Nov, 5 buddies, in 2 months.
-- Stamps collected (past trips): Spain, France, Italy, Greece — `stamps/spain.png`, `france.png`, `italy.png`, `greece.png`, tilted in code.
+- Stamps collected (past trips): **England, Spain, Italy, France** (checked against Figma frame `165:24924`; Greece and Portugal are not on Home). Files `stamps/england.png`, `spain.png`, `italy.png`, `france.png`, tilted in code.
 
 ### Lisbon itinerary, Wed 16 Sep (Today)
 | Time | Item | Detail | State |
@@ -144,7 +144,11 @@ Screens 02 and 05 are the two key high-fidelity screens from the brief and the v
 - "Your trips" title. "HAPPENING NOW" label with green dot.
 - **Ticket card** (the trip hero, same component as screen 02): LISBON, 12–16 Sep, `stamps/portugal-ticket.png` (no country name) tilted ~20° in code. Below it a white stub: "Tonight · 20:30 / Dinner · not decided yet", dark arrow button, avatars "You + 5 buddies".
 - "Coming up": Porto (Sky) and Berlin (Blush) cards with "In 17 days"/"In 2 months" pill and an empty dashed **stamp slot** (stamps are earned after a trip).
-- "Your stamps · 4 countries": row of stamp thumbnails — spain, france, italy, greece — each given a small tilt in code (the PNGs are flat).
+- "Your stamps · 4 countries": row of stamp thumbnails — England, Spain, Italy, France, in that
+  order — overlapping and tilted counter-clockwise in code (the PNGs are flat). Figma has them all
+  at scale 0.4275 of the 300 × 316 component, rotated −11.6° / −5.1° / −28.5° / −33.6°, in a row
+  that starts 26 px left of the content column so England bleeds off the edge. The exact offsets
+  live in `src/data/assets.ts` as `homeStamps`.
 - Tap ticket, stub or arrow → 02.
 
 ### 02 Trip · Lisbon (Itinerary)
@@ -225,7 +229,7 @@ Screens 02 and 05 are the two key high-fidelity screens from the brief and the v
 
 ### 11B Squared up + stamp collected (alternative ending)
 - "All squared up" lime badge; `stamps/portugal.png` (the titled "PORTUGAL" stamp) **stamps down** (scale 1.3 → 1, slight rotation, soft shadow settles); "Lisbon is squared up." "All 5 transfers are done. Your Portugal stamp is now in your collection."; stat pills; "5 transfers · 22:14 – 22:22" row; same actions.
-- Ship both endings behind a demo toggle so the team can compare. Home's "Your stamps" updates to 5 countries after 11B.
+- Ship both endings behind a demo toggle so the team can compare. Home's "Your stamps" updates to 5 countries after 11B — Portugal joins England, Spain, Italy and France.
 
 ## 5. Real-time simulation and demo controls
 - A small **demo panel** (collapsible, outside the phone frame on desktop; long-press the status bar on mobile) with: "View as: Ari / Nick / Ren", "Jump to screen", "Reset demo", "Ending: A / B", speed.

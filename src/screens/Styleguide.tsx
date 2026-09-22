@@ -2,11 +2,12 @@ import type { ReactNode } from 'react'
 import { PhoneShell } from '@/components/DeviceFrame'
 import {
   avatarPhotos,
-  collectedStamps,
+  homeStamps,
   lockScreenWallpaper,
   lockScreenWallpaperPosition,
   placePhotos,
   stamps,
+  ticketShape,
   ticketStamp,
 } from '@/data/assets'
 import {
@@ -232,22 +233,49 @@ export function Styleguide() {
                 portugal · titled · ending 11B
               </figcaption>
             </figure>
-            <span className="text-caption2 text-ink-secondary">Home’s four, tilted in code →</span>
-            {collectedStamps.map((c, i) => (
-              <img
-                key={c}
-                src={stamps[c]}
-                alt={c}
-                width={62}
-                className="block"
-                style={{ rotate: `${[-6, 4, -3, 7][i]}deg` }}
-              />
+          </div>
+          <h3 className="mb-3 text-footnote font-medium uppercase tracking-[0.08em] text-ink-secondary">
+            Home’s four · England, Spain, Italy, France · tilts applied in CSS
+          </h3>
+          <div className="mb-3 flex flex-wrap items-center gap-6 pl-6">
+            {homeStamps.map((s) => (
+              <figure key={s.country} className="m-0 text-center">
+                <img
+                  src={stamps[s.country]}
+                  alt={s.country}
+                  width={72}
+                  className="block"
+                  style={{ rotate: `${s.rotate}deg` }}
+                />
+                <figcaption className="mt-2 text-caption2 text-ink-secondary">
+                  {s.country} · {s.rotate}°
+                </figcaption>
+              </figure>
             ))}
           </div>
           <p className="mb-8 text-caption text-ink-secondary">
             The titled exports carry a dark halo around the perforation and a “VISITED” cancel
             clipped to “ISITED”. Worth a re-export from Figma with padded bounds.
           </p>
+
+          <h3 className="mb-3 text-footnote font-medium uppercase tracking-[0.08em] text-ink-secondary">
+            Ticket shape · Figma node 141:12831 · notches centred, not at the right third
+          </h3>
+          <div className="relative mb-8 h-[150px] w-[350px]">
+            <img src={ticketShape} alt="Ticket shape" className="block h-[150px] w-[350px]" />
+            <img
+              src={ticketStamp}
+              alt=""
+              className="absolute top-[6px] right-[8px] w-[92px]"
+              style={{ rotate: '20deg' }}
+            />
+            <p
+              className="absolute bottom-[14px] left-[18px] font-display text-destination uppercase"
+              style={{ color: 'var(--color-stamp-title-navy)' }}
+            >
+              Lisbon
+            </p>
+          </div>
 
           <h3 className="mb-3 text-footnote font-medium uppercase tracking-[0.08em] text-ink-secondary">
             Places

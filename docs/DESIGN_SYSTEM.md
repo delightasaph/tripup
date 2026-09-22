@@ -75,7 +75,7 @@ Uppercase section labels ("TODAY'S PLAN", "HAPPENING NOW") use Footnote/Medium i
   - Stamps: `0 4–14 8–26 rgba(31,30,36,.12–.16)`.
 
 ## 5. Components
-- **Ticket (trip hero)**: 350 × 150, sky gradient, rounded 24 with two semicircle notches (top and bottom, right third) like a ticket; left: Anton destination + dates (Footnote/Medium, navy); right: `stamps/portugal-ticket.png` (the untitled stamp) rotated ~20° in CSS and clipped by the ticket edge. Export the ticket shape from Figma as SVG, don't approximate.
+- **Ticket (trip hero)**: 350 × 150, sky gradient, rounded 16 with two notches (top and bottom, centred at x ≈ 175) like a ticket — use `assets/ticket.svg`, which carries the exact path and the gradient; left: Anton destination + dates (Footnote/Medium, navy); right: `stamps/portugal-ticket.png` (the untitled stamp) rotated ~20° in CSS and clipped by the ticket edge. Export the ticket shape from Figma as SVG, don't approximate.
 - **Stamp**: Figma component set "Stamp" (page "Stamps", node `17:3667`) with 15 countries. Parts: perforated paper, painted illustration, Anton country title, "VISITED" cancel, wavy cancel lines, round "TRIPUP 2026" postmark, optional "x1" count. Exported as flat PNGs in `public/assets/stamps/` (see §7); apply any tilt in CSS.
 - **Avatar**: circle, sizes 20–52. Photo avatars arrive pre-cropped to the face and pre-circular — draw them at size, unaltered. Overlapping stacks use −6 spacing and a 2 px ring in the background colour. "+N" chip is white with Avatar/11.
 - **Pill / chip**: 999 radius, 4–6 vertical × 9–12 horizontal padding, Caption/Medium or Footnote/Medium. Variants: white, lime, lilac, violet tint, ink (dark with lime text: "Next", "Won 4 · 2 · 1").
@@ -114,13 +114,19 @@ In `public/assets/`. Everything below is already exported and committed unless m
   - `portugal-ticket.png` has **no country name**. This is the one on the Lisbon ticket, rotated
     ~20° and clipped by the ticket edge.
   - `portugal.png` has the Anton "PORTUGAL" title. This is the one that stamps down on ending 11B.
-  - Home's "Your stamps" row uses `spain`, `france`, `italy` and `greece`, tilted in code.
+  - Home's "Your stamps" row uses `england`, `spain`, `italy` and `france` — in that order, and
+    **not** Greece or Portugal. Verified against Figma `165:24924`. Arrangement in
+    `src/data/assets.ts` (`homeStamps`).
+  - The Stamp component is **300 × 316** natural; Home draws every instance at scale 0.4275.
 - `lockscreen-wallpaper.jpg`: the lock-screen photo for 04b (1200 × 1774). A night-out street photo,
   **not** a stamp painting. Fill the frame with `object-fit: cover` at roughly `52% center`, and lay
   the **Legibility shade** over it — the gradient from Figma node `166:2579`, in tokens as
   `--gradient-legibility-shade`:
   `linear-gradient(180deg, rgb(20 36 71 / .45) 0%, rgb(20 36 71 / .05) 35%, rgb(13 26 51 / .15) 60%, rgb(8 15 31 / .6) 100%)`.
-- **Missing:** `ticket.svg` (the ticket shape with its two notches) and the line icons as SVG.
+- `ticket.svg`: the ticket shape, pulled from Figma node `141:12831` ("Rectangle 2" inside the
+  ticket on screen 02). 350 × 150, with the sky gradient baked into the file. Its two notches are
+  **centred at x ≈ 175**, one on the top edge and one on the bottom — not at the right third.
+- `icons/`: line icons, pulled per screen from `get_design_context` as each screen is built.
 - Fonts: Rubik and Anton from Google Fonts.
 
 Licensing: avatars are from the Material 3 3D avatar kit and restaurant photos are placeholders; credit them in the presentation.

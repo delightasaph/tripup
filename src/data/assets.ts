@@ -47,9 +47,31 @@ export const ticketStamp = '/assets/stamps/portugal-ticket.png'
 export const lockScreenWallpaper = '/assets/lockscreen-wallpaper.jpg'
 export const lockScreenWallpaperPosition = '52% center'
 
-/** The four countries already in Ari's collection on Home; Portugal joins them
- *  after ending 11B. */
-export const collectedStamps = ['spain', 'france', 'italy', 'greece'] as const
-
 export type StampCountry = keyof typeof stamps
 export type AvatarPhotoId = keyof typeof avatarPhotos
+
+/** The ticket shape with its two notches, exported from Figma node 141:12831.
+ *  350 x 150, with the sky gradient baked into the SVG. */
+export const ticketShape = '/assets/ticket.svg'
+
+/**
+ * Home's "Your stamps · 4 countries" row, read off the Figma frame
+ * (162:429 > 165:24924). The countries are England, Spain, Italy and France —
+ * Portugal is NOT among them; it is the stamp Ari earns at the end of this trip.
+ *
+ * The stamp component is 300 x 316 natural; every instance on Home sits at
+ * scale 0.4275 (128 x 135) and is rotated counter-clockwise. `x`/`y` are
+ * offsets inside the row, which itself starts 26 px left of the content column
+ * so England bleeds off the edge.
+ */
+export const homeStamps = [
+  { country: 'england', rotate: -11.6, x: 0, y: 28 },
+  { country: 'spain', rotate: -5.1, x: 116, y: 15 },
+  { country: 'italy', rotate: -28.5, x: 155, y: 66 },
+  { country: 'france', rotate: -33.6, x: 295, y: 0 },
+] as const satisfies readonly { country: StampCountry; rotate: number; x: number; y: number }[]
+
+/** Natural size of the Stamp component in Figma, before any scaling. */
+export const stampNaturalSize = { width: 300, height: 316 } as const
+export const homeStampScale = 0.4275
+
