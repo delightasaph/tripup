@@ -91,3 +91,6 @@ All exported into `public/assets/icons/`: `arrow-left`, `bowl` (13), `fork-knife
   Figma uses 7 inside a 22 circle and 11 inside a 30.
 - The icon badge on each photo tile has its own small shadow, `0 2px 4px rgb(0 0 0 / .12)`, even
   though the card it sits on has none.
+- The "waiting on Phil" card's 1 px stroke must be an **`outline` with `outline-offset: -1px`**,
+  not a `border` — a border moves its contents 1 px in. Figma draws a stroke on the frame without
+  displacing children; CSS border-box does not.

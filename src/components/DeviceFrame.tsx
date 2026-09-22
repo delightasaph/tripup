@@ -1,7 +1,6 @@
 import type { ReactNode } from 'react'
 import { useFitsDeviceFrame } from '@/lib/useFitsDeviceFrame'
 import { StatusBar } from './StatusBar'
-import { HomeIndicator } from './HomeIndicator'
 
 type ScreenProps = {
   children: ReactNode
@@ -11,11 +10,17 @@ type ScreenProps = {
   tone?: 'dark' | 'light'
   /** Background behind the screen content. Defaults to Surface/Ground. */
   background?: string
-  /** Hide the status bar and home indicator when a screen draws its own. */
+  /** Hide the status bar when a screen draws its own. */
   chrome?: boolean
 }
 
-/** The screen surface itself: status bar, content, home indicator. */
+/**
+ * The screen surface: status bar, then content.
+ *
+ * No home indicator. The Figma frames draw one at 128, 830, but it is inert
+ * chrome that adds weight without telling anyone anything, so the build leaves
+ * it out — on /compare it is the one difference you should expect to see.
+ */
 function Screen({
   children,
   time = '18:05',
@@ -27,7 +32,6 @@ function Screen({
     <div className="relative flex h-full w-full flex-col overflow-hidden" style={{ background }}>
       {chrome && <StatusBar time={time} tone={tone} />}
       <div className="relative min-h-0 flex-1">{children}</div>
-      {chrome && <HomeIndicator tone={tone} />}
     </div>
   )
 }

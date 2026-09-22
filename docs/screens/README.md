@@ -7,6 +7,10 @@ single `get_design_context` call, plus anything that surprised us. Before touchi
 read the record — and `design/screens/<screen>.png`, which is the native 390 × 844 render and can
 be pixel-sampled for any colour.
 
+**No home indicator.** The frames draw one at 128, 830; the build leaves it out — it is inert
+chrome and it weighed the screens down. On /compare it is the one difference you should expect to
+see, and it applies to every screen from here on.
+
 Conventions in these files:
 - Coordinates are **screen coordinates** (0,0 = top-left of the 390 × 844 frame) unless a heading
   says otherwise. Figma's own frames nest, so the record converts once and states the result.

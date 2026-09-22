@@ -111,7 +111,10 @@ export function TripLisbon() {
                 height: 116,
                 borderRadius: 'var(--radius-card)',
                 background: 'var(--color-accent-violet-tint)',
-                border: '1.5px dashed rgb(91 79 232 / 0.55)',
+                // outline, not border: a border would eat 1.5 px out of the
+                // padding box and shift every child.
+                outline: '1.5px dashed rgb(91 79 232 / 0.55)',
+                outlineOffset: '-1.5px',
                 padding: '14px 16px 16px',
               }}
             >

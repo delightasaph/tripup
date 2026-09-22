@@ -72,3 +72,9 @@ rotation-invariant.
 - The greeting sub-line is Headline 17, not a title style — "Your trips" below it is the Title 1.
 - The stub's avatar rings are white, while screen 02's nav rings are `Surface/Ground`. The ring
   always matches whatever is behind the stack.
+- "Your trips" is Title 1, which carries **letter-spacing −0.7**. Tracking is 0 on every style up
+  to Headline; only the display sizes have it. Leaving it off ran the title 5.6 px long.
+- "HAPPENING NOW" is Footnote/Medium with **tracking 0** — the uppercase comes from the content,
+  not from added letter-spacing.
+- The stub's avatar stack shows all six faces with no "+N" chip, so the **last face must sit
+  flush**; a trailing −6 overlap shrinks the stack and pulls "You + 5 buddies" 6 px left.

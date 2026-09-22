@@ -65,7 +65,8 @@ export function LivePoll() {
             height: 64,
             borderRadius: 'var(--radius-card)',
             background: 'var(--color-surface-white-70)',
-            border: '1px solid var(--color-line-default)',
+            outline: '1px solid var(--color-line-default)',
+            outlineOffset: '-1px',
           }}
         >
           <span

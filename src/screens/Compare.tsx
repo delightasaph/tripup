@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { StatusBar } from '@/components/StatusBar'
-import { HomeIndicator } from '@/components/HomeIndicator'
 import { Home } from './Home'
 import { LivePoll } from './LivePoll'
 import { TripLisbon } from './TripLisbon'
@@ -181,7 +180,8 @@ function Labelled({ label, children }: { label: string; children: React.ReactNod
   )
 }
 
-/** The screen surface at 390 × 844 with its chrome, but without the bezel. */
+/** The screen surface at 390 × 844 with its chrome, but without the bezel.
+ *  No home indicator — see DeviceFrame. */
 function Screen({ time, children }: { time: string; children: React.ReactNode }) {
   return (
     <div
@@ -190,7 +190,6 @@ function Screen({ time, children }: { time: string; children: React.ReactNode })
     >
       <StatusBar time={time} />
       <div className="relative min-h-0 flex-1">{children}</div>
-      <HomeIndicator />
     </div>
   )
 }

@@ -3,7 +3,7 @@ export function SectionHeader({ label, meta }: { label: string; meta?: string })
   return (
     <div className="flex items-baseline justify-between" style={{ height: 15 }}>
       <h2
-        className="text-footnote font-medium uppercase tracking-[0.04em]"
+        className="text-footnote font-medium uppercase"
         style={{ color: 'var(--color-ink-secondary)' }}
       >
         {label}

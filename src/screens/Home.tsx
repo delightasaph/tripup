@@ -93,7 +93,7 @@ export function Home() {
               }}
             />
             <span
-              className="text-footnote font-medium uppercase tracking-[0.04em]"
+              className="text-footnote font-medium uppercase"
               style={{ marginLeft: 6, color: 'var(--color-ink-secondary)' }}
             >
               Happening now

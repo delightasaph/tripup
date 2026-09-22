@@ -101,3 +101,6 @@ drawn in both ink-on-white and white-on-ink.
 - Several cards are radius **20**, not the 18 the design-system doc implies, and the "12 min walk"
   chip is radius 12 rather than a pill. Measure, don't assume the scale.
 - Done rows are stepped back with **opacity**, not different colours: time at 60%, sub-line at 80%.
+- "TODAY'S PLAN" is Footnote/Medium with **tracking 0**. Added letter-spacing ran it 5 px long.
+- The open slot's dashed stroke must be an **`outline` with a negative offset**, never a `border`:
+  a border eats 1.5 px out of the padding box and shifts every child inside the card.

@@ -87,8 +87,11 @@ export function AvatarStack({
 
   return (
     <div className="flex items-center">
-      {shown.map((p) => (
-        <span key={p.id} style={{ marginRight: -6 }}>
+      {shown.map((p, i) => (
+        // The last element in the stack sits flush — whether that is the final
+        // face or the "+N" chip. Trailing overlap would shrink the stack and
+        // pull whatever follows it 6 px left.
+        <span key={p.id} style={{ marginRight: i === shown.length - 1 && rest === 0 ? 0 : -6 }}>
           <Avatar person={p} size={size} ring={ring} />
         </span>
       ))}

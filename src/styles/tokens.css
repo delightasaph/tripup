@@ -74,11 +74,15 @@
 
   /* Line heights are the exact box heights measured on the Figma text nodes,
      not ratios. Rubik's "Auto" line height sits near 1.18, so anything looser
-     pushes the layouts off the frames. */
+     pushes the layouts off the frames.
+     Tracking is zero on every style up to Headline; only the display sizes
+     carry it (Title 1 -0.7, Title 2 -0.5, Destination +1%). Check a new large
+     style for tracking before using it — leaving it off runs the line long. */
   --text-display: 48px;
   --text-display--line-height: 48px;
   --text-title1: 34px;
   --text-title1--line-height: 36px;
+  --text-title1--letter-spacing: -0.7px;
   --text-title2: 28px;
   --text-title2--line-height: 32px;
   --text-title2--letter-spacing: -0.5px;
