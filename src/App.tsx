@@ -3,6 +3,7 @@ import { DeviceFrame } from '@/components/DeviceFrame'
 import { Placeholder } from '@/screens/Placeholder'
 import { TripLisbon } from '@/screens/TripLisbon'
 import { LivePoll } from '@/screens/LivePoll'
+import { Home } from '@/screens/Home'
 import { Styleguide } from '@/screens/Styleguide'
 import { Compare } from '@/screens/Compare'
 import { screenById } from '@/screens/registry'
@@ -14,7 +15,9 @@ function Prototype() {
 
   return (
     <DeviceFrame time={active?.time ?? '18:05'}>
-      {active?.id === 'trip' ? (
+      {active?.id === 'home' ? (
+        <Home />
+      ) : active?.id === 'trip' ? (
         <TripLisbon />
       ) : active?.id === 'live-poll' ? (
         <LivePoll />

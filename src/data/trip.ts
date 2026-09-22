@@ -83,3 +83,22 @@ export const dinnerPoll = {
   ticker: { person: people.nick, event: 'voted Time Out Market', when: 'just now' },
   waitingOn: people.phil,
 }
+
+export const upcomingTrips = [
+  {
+    id: 'porto',
+    name: 'Porto',
+    line: '3 – 5 Oct · 4 buddies',
+    when: 'In 17 days',
+    // The frame uses lime here, not Sky as PRODUCT_SPEC.md §4 says.
+    fill: 'var(--color-accent-lime)',
+  },
+  {
+    id: 'berlin',
+    name: 'Berlin',
+    line: '27 – 30 Nov · 5 buddies',
+    when: 'In 2 months',
+    fill: 'var(--color-accent-blush)',
+    stampSlot: true,
+  },
+]

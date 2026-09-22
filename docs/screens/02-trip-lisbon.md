@@ -39,9 +39,12 @@ Vertical rhythm: nav → 10 → ticket → 16 → day strip → 16 → Today's p
   width **140.897**, rotated **−20.42°**, clipped by the ticket's overflow.
 
 ## Day strip
-Five cells, 63.6 wide, 58 tall, gap 8, radius 18. Unselected white; "Today" is `Ink/Primary` with
-white text. Label Caption 12 in `Ink/Secondary` (white when selected), number Subheading 20
-SemiBold.
+Five cells, 63.6 wide, 58 tall, gap 8, radius 18, padding-block 10, gap 2, contents centred.
+Unselected white; "Today" is `Ink/Primary` and sets white on the cell so both lines inherit it.
+- Label — **Caption/Regular 12 at 70% opacity**, `Ink/Secondary` when unselected. The 70% applies
+  in both states; it is the only thing separating label from number.
+- Number — **Subheading/SemiBold 20**, `Ink/Primary`. (`DESIGN_SYSTEM.md` lists Subheading as
+  Medium *or* SemiBold; day numbers are SemiBold.)
 
 ## Timeline
 Columns: time 49 · node 21 · card 280 (card starts at x 70 within the column, i.e. screen x 90).

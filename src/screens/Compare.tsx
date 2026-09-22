@@ -1,12 +1,23 @@
 import { useState } from 'react'
 import { StatusBar } from '@/components/StatusBar'
 import { HomeIndicator } from '@/components/HomeIndicator'
+import { Home } from './Home'
 import { LivePoll } from './LivePoll'
 import { TripLisbon } from './TripLisbon'
 
 type Mode = 'side' | 'overlay' | 'difference'
 
 const builds = [
+  {
+    id: 'home',
+    no: '01',
+    title: 'Home',
+    node: '162:429',
+    time: '18:05',
+    reference: '/reference/01-home.png',
+    render: <Home />,
+    gaps: [],
+  },
   {
     id: 'trip',
     no: '02',
@@ -15,7 +26,7 @@ const builds = [
     time: '18:05',
     reference: '/reference/02-trip-lisbon.png',
     render: <TripLisbon />,
-    gaps: ['walk', 'list', 'calendar', 'wallet'],
+    gaps: [],
   },
   {
     id: 'live-poll',
@@ -25,7 +36,7 @@ const builds = [
     time: '18:05',
     reference: '/reference/05-live-poll.png',
     render: <LivePoll />,
-    gaps: ['bowl', 'fork-knife', 'fish', 'check', 'bell'],
+    gaps: [],
   },
 ]
 
@@ -138,11 +149,11 @@ export function Compare() {
               </Labelled>
             )}
 
-            <p className="mt-3 max-w-[62ch] text-caption text-ink-secondary">
-              Not yet matched: {b.gaps.join(', ')} —{' '}
-              {b.gaps.length === 1 ? 'this icon is' : 'these icons are'} still dashed placeholders,
-              waiting on an export from Figma.
-            </p>
+            {b.gaps.length > 0 && (
+              <p className="mt-3 max-w-[62ch] text-caption text-ink-secondary">
+                Not yet matched: {b.gaps.join(', ')}.
+              </p>
+            )}
           </section>
         ))}
       </div>

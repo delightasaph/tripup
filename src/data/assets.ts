@@ -72,17 +72,22 @@ export const ticketShape = '/assets/ticket.svg'
  * (162:429 > 165:24924). The countries are England, Spain, Italy and France —
  * Portugal is NOT among them; it is the stamp Ari earns at the end of this trip.
  *
- * The stamp component is 300 x 316 natural; every instance on Home sits at
- * scale 0.4275 (128 x 135) and is rotated counter-clockwise. `x`/`y` are
- * offsets inside the row, which itself starts 26 px left of the content column
- * so England bleeds off the edge.
+ * `cx`/`cy` are each stamp's **centre**, relative to the row's own origin
+ * (which starts 26 px left of the content column so England bleeds off the
+ * edge). Centres rather than corners because Figma reports a rotated node's
+ * x/y as its *bounding box* top-left, which moves as the angle changes —
+ * placing an unrotated box at those coordinates lands it about 12 px out.
+ * A centre is rotation-invariant.
  */
 export const homeStamps = [
-  { country: 'england', rotate: -11.6, x: 0, y: 28 },
-  { country: 'spain', rotate: -5.1, x: 116, y: 15 },
-  { country: 'italy', rotate: -28.5, x: 155, y: 66 },
-  { country: 'france', rotate: -33.6, x: 295, y: 0 },
-] as const satisfies readonly { country: StampCountry; rotate: number; x: number; y: number }[]
+  { country: 'england', rotate: -11.6, cx: 76.3, cy: 107 },
+  { country: 'spain', rotate: -5.1, cx: 185.9, cy: 87.7 },
+  { country: 'italy', rotate: -28.5, cx: 243.8, cy: 155.8 },
+  { country: 'france', rotate: -33.6, cx: 385.6, cy: 91.7 },
+] as const satisfies readonly { country: StampCountry; rotate: number; cx: number; cy: number }[]
+
+/** The row starts this far left of the content column. */
+export const homeStampsRowOffset = -26
 
 /**
  * The stamp's drop shadow, scaled to the width you are drawing it at.

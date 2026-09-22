@@ -74,7 +74,7 @@ export function BottomBar({ tabs, activeId, fabLabel = 'Add to trip' }: BottomBa
             filter: 'drop-shadow(0 10px 10px rgb(31 30 36 / 0.25))',
           }}
         >
-          <Icon name="plus" size={20} />
+          <Icon name="plus-white" size={20} />
         </button>
       </div>
     </>

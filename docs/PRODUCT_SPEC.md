@@ -143,7 +143,7 @@ Screens 02 and 05 are the two key high-fidelity screens from the brief and the v
 - Header: Ari avatar, "Hi Ari", "3 trips with your crew"; notifications button (red unread dot) and "+" new trip.
 - "Your trips" title. "HAPPENING NOW" label with green dot.
 - **Ticket card** (the trip hero, same component as screen 02): LISBON, 12–16 Sep, `stamps/portugal-ticket.png` (no country name) tilted ~20° in code. Below it a white stub: "Tonight · 20:30 / Dinner · not decided yet", dark arrow button, avatars "You + 5 buddies".
-- "Coming up": Porto (Sky) and Berlin (Blush) cards with "In 17 days"/"In 2 months" pill and an empty dashed **stamp slot** (stamps are earned after a trip).
+- "Coming up": Porto (**Lime** — the frame uses lime, not Sky) and Berlin (Blush) cards with "In 17 days"/"In 2 months" pill and an empty dashed **stamp slot** (stamps are earned after a trip).
 - "Your stamps · 4 countries": row of stamp thumbnails — England, Spain, Italy, France, in that
   order — overlapping and tilted counter-clockwise in code (the PNGs are flat). Figma has them all
   at scale 0.4275 of the 300 × 316 component, rotated −11.6° / −5.1° / −28.5° / −33.6°, in a row

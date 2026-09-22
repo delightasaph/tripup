@@ -5,8 +5,12 @@
  */
 export type IconName =
   | 'arrow-left'
-  | 'plus'
+  | 'plus-ink'
+  | 'plus-white'
   | 'plus-small'
+  | 'arrow-right'
+  | 'notifications'
+  | 'fork-knife-lg'
   | 'walk'
   | 'list'
   | 'calendar'
@@ -25,8 +29,13 @@ export type IconName =
  */
 const exported: Record<IconName, string> = {
   'arrow-left': '/assets/icons/arrow-left.svg',
-  plus: '/assets/icons/plus.svg',
+  'plus-ink': '/assets/icons/plus-ink.svg',
+  'plus-white': '/assets/icons/plus-white.svg',
   'plus-small': '/assets/icons/plus-small.svg',
+  'arrow-right': '/assets/icons/arrow-right.svg',
+  // The whole 44 button, shadow and unread dot included, on an 80 canvas.
+  notifications: '/assets/icons/notifications.svg',
+  'fork-knife-lg': '/assets/icons/fork-knife-lg.svg',
   walk: '/assets/icons/walk.svg',
   list: '/assets/icons/list.svg',
   calendar: '/assets/icons/calendar.svg',

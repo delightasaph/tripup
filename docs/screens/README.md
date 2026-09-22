@@ -15,5 +15,6 @@ Conventions in these files:
 
 | Screen | Record | Figma node | Built |
 |---|---|---|---|
+| 01 Home | [01-home.md](01-home.md) | `162:429` | yes |
 | 02 Trip · Lisbon | [02-trip-lisbon.md](02-trip-lisbon.md) | `122:7866` | yes |
 | 05 Live poll | [05-live-poll.md](05-live-poll.md) | `84:169` | yes |
