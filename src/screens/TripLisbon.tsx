@@ -10,19 +10,23 @@ import { Ticket } from '@/components/Ticket'
 import { lisbon, tripBuddies } from '@/data/trip'
 
 /**
- * 02 · Trip · Lisbon (Itinerary) — Figma 122:7866.
+ * 02 · Trip · Lisbon (Itinerary) — Figma 122:7866, and the same screen with
+ * the dinner slot resolved for 06 Plan updated (167:2903).
  * Static layout; the flow and motion come later.
  *
  * Offsets are the Figma frame's own: content column at x 20 / y 64, 350 wide;
  * day strip at y 217; today's plan at y 291; the timeline rows at 0 / 54 /
  * 108 / 211 inside it.
  */
-export function TripLisbon() {
+export function TripLisbon({ dinner = 'open' }: { dinner?: 'open' | 'decided' } = {}) {
+  const decided = dinner === 'decided'
   return (
     <div className="relative h-full overflow-hidden">
       <div
         className="absolute"
-        style={{ left: 'var(--screen-padding)', top: 15, width: 350 }}
+        // 06 nudges the whole column up 4 (its Top sits at y -3, not +1)
+        // because the resolved dinner card is 8 taller than the open slot.
+        style={{ left: 'var(--screen-padding)', top: decided ? 11 : 15, width: 350 }}
       >
         {/* Nav */}
         <div className="flex h-[40px] items-center justify-between">
@@ -57,7 +61,7 @@ export function TripLisbon() {
         </div>
 
         <div style={{ height: 12 }} />
-        <Timeline height={331}>
+        <Timeline height={decided ? 339 : 331}>
           <TimelineRow top={0} time="10:00" node="done" timeOpacity={0.6}>
             <DoneCard title="Pastéis de Belém" line="Breakfast · Belém · €18" />
           </TimelineRow>
@@ -103,8 +107,11 @@ export function TripLisbon() {
             timeTone="violet"
             timeOffset={20}
             nodeOffset={23}
-            node="open"
+            node={decided ? 'filled' : 'open'}
           >
+            {decided ? (
+              <DinnerDecided />
+            ) : (
             <div
               style={{
                 marginTop: 4,
@@ -142,6 +149,7 @@ export function TripLisbon() {
                 </Button>
               </div>
             </div>
+            )}
           </TimelineRow>
         </Timeline>
       </div>
@@ -153,6 +161,76 @@ export function TripLisbon() {
         ]}
         activeId="itinerary"
       />
+    </div>
+  )
+}
+
+/**
+ * The dinner slot once the poll has resolved (06): lime with an ink stroke and
+ * the winner's own shadow, 280 x 124.
+ */
+function DinnerDecided() {
+  return (
+    <div
+      style={{
+        marginTop: 4,
+        width: 280,
+        height: 124,
+        borderRadius: 'var(--radius-card)',
+        background: 'var(--color-accent-lime)',
+        outline: '1.5px solid var(--color-ink-primary)',
+        outlineOffset: '-1.5px',
+        padding: 14,
+        filter: 'drop-shadow(0 12px 12px rgb(115 140 26 / 0.25))',
+      }}
+    >
+      <p className="text-headline font-semibold">Taberna da Rua das Flores</p>
+      <div className="flex items-center" style={{ marginTop: 5, gap: 6 }}>
+        <span
+          className="inline-flex items-center rounded-pill text-caption2 font-medium"
+          style={{
+            gap: 4,
+            padding: '3px 8px',
+            background: 'var(--color-ink-primary)',
+            color: 'var(--color-accent-lime)',
+          }}
+        >
+          <Icon name="won" size={11} />
+          Won 4 · 2 · 1
+        </span>
+        <span className="text-caption" style={{ color: 'var(--color-ink-secondary)' }}>
+          6 min walk
+        </span>
+      </div>
+      <div className="flex items-start" style={{ marginTop: 12, gap: 8 }}>
+        <button
+          type="button"
+          className="flex shrink-0 items-center justify-center rounded-pill text-footnote font-medium"
+          style={{
+            height: 40,
+            gap: 6,
+            paddingInline: 14,
+            background: 'var(--color-surface-white)',
+          }}
+        >
+          <Icon name="map" size={16} />
+          Map
+        </button>
+        <button
+          type="button"
+          className="flex min-w-0 flex-1 items-center justify-center rounded-pill text-footnote font-medium"
+          style={{
+            height: 40,
+            gap: 6,
+            paddingInline: 14,
+            background: 'var(--color-ink-primary)',
+            color: 'var(--color-surface-white)',
+          }}
+        >
+          <Icon name="receipt" size={16} />
+          Log expense
+        </button>
+      </div>
     </div>
   )
 }

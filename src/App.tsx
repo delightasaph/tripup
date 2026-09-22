@@ -4,6 +4,9 @@ import { Placeholder } from '@/screens/Placeholder'
 import { TripLisbon } from '@/screens/TripLisbon'
 import { LivePoll } from '@/screens/LivePoll'
 import { Home } from '@/screens/Home'
+import { AddRen } from '@/screens/AddRen'
+import { NewPoll } from '@/screens/NewPoll'
+import { PlanUpdated } from '@/screens/PlanUpdated'
 import { Styleguide } from '@/screens/Styleguide'
 import { Compare } from '@/screens/Compare'
 import { screenById } from '@/screens/registry'
@@ -19,6 +22,12 @@ function Prototype() {
         <Home />
       ) : active?.id === 'trip' ? (
         <TripLisbon />
+      ) : active?.id === 'add-buddy' ? (
+        <AddRen />
+      ) : active?.id === 'new-poll' ? (
+        <NewPoll />
+      ) : active?.id === 'plan-updated' ? (
+        <PlanUpdated />
       ) : active?.id === 'live-poll' ? (
         <LivePoll />
       ) : (

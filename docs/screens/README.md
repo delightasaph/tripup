@@ -21,4 +21,7 @@ Conventions in these files:
 |---|---|---|---|
 | 01 Home | [01-home.md](01-home.md) | `162:429` | yes |
 | 02 Trip · Lisbon | [02-trip-lisbon.md](02-trip-lisbon.md) | `122:7866` | yes |
+| 03 Add Ren | [03-add-ren.md](03-add-ren.md) | `163:2180` | yes |
+| 04 New poll | [04-new-poll.md](04-new-poll.md) | `164:2379` | yes |
 | 05 Live poll | [05-live-poll.md](05-live-poll.md) | `84:169` | yes |
+| 06 Plan updated | [06-plan-updated.md](06-plan-updated.md) | `167:2903` | yes |

@@ -1,6 +1,9 @@
 import { useState } from 'react'
 import { StatusBar } from '@/components/StatusBar'
+import { AddRen } from './AddRen'
 import { Home } from './Home'
+import { NewPoll } from './NewPoll'
+import { PlanUpdated } from './PlanUpdated'
 import { LivePoll } from './LivePoll'
 import { TripLisbon } from './TripLisbon'
 
@@ -28,6 +31,26 @@ const builds = [
     gaps: [],
   },
   {
+    id: 'add-buddy',
+    no: '03',
+    title: 'Add Ren',
+    node: '163:2180',
+    time: '18:05',
+    reference: '/reference/03-add-ren.png',
+    render: <AddRen />,
+    gaps: [],
+  },
+  {
+    id: 'new-poll',
+    no: '04',
+    title: 'New poll',
+    node: '164:2379',
+    time: '18:05',
+    reference: '/reference/04-new-poll.png',
+    render: <NewPoll />,
+    gaps: [],
+  },
+  {
     id: 'live-poll',
     no: '05',
     title: 'Live poll',
@@ -35,6 +58,16 @@ const builds = [
     time: '18:05',
     reference: '/reference/05-live-poll.png',
     render: <LivePoll />,
+    gaps: [],
+  },
+  {
+    id: 'plan-updated',
+    no: '06',
+    title: 'Plan updated',
+    node: '167:2903',
+    time: '18:25',
+    reference: '/reference/06-plan-updated.png',
+    render: <PlanUpdated />,
     gaps: [],
   },
 ]

@@ -20,6 +20,20 @@ export type IconName =
   | 'fish'
   | 'check'
   | 'bell'
+  | 'search'
+  | 'check-white'
+  | 'calendar-plus'
+  | 'chevron-right'
+  | 'link'
+  | 'clock-violet'
+  | 'remove'
+  | 'clock'
+  | 'send'
+  | 'chevron-right-16'
+  | 'won'
+  | 'map'
+  | 'receipt'
+  | 'calendar-check'
 
 /**
  * Each file is the exact vector from Figma. Some carry a baked stroke colour
@@ -45,6 +59,20 @@ const exported: Record<IconName, string> = {
   fish: '/assets/icons/fish.svg',
   check: '/assets/icons/check.svg',
   bell: '/assets/icons/bell.svg',
+  search: '/assets/icons/search.svg',
+  'check-white': '/assets/icons/check-white.svg',
+  'calendar-plus': '/assets/icons/calendar-plus.svg',
+  'chevron-right': '/assets/icons/chevron-right.svg',
+  link: '/assets/icons/link.svg',
+  'clock-violet': '/assets/icons/clock-violet.svg',
+  remove: '/assets/icons/remove.svg',
+  clock: '/assets/icons/clock.svg',
+  send: '/assets/icons/send.svg',
+  'chevron-right-16': '/assets/icons/chevron-right-16.svg',
+  won: '/assets/icons/won.svg',
+  map: '/assets/icons/map.svg',
+  receipt: '/assets/icons/receipt.svg',
+  'calendar-check': '/assets/icons/calendar-check.svg',
 }
 
 type IconProps = {

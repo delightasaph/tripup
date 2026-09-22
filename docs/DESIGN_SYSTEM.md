@@ -42,7 +42,7 @@ Initials avatar fills: Ari `#DCC0F6` · Nick `#C4D6FF` · Rebecca `#F5CDBF` · W
 
 ## 3. Typography
 Tracking is **0 on every style up to Headline**. Only the display sizes carry it: Title 1 −0.7,
-Title 2 −0.5, Display/Destination +1%. Display 48 and Heading 22 are unconfirmed — check them
+Title 2 −0.5, Heading −0.2, Display/Destination +1%. **Display 48 is still unconfirmed** — check it
 against the file before first use rather than assuming 0.
 
 Two families with strict roles:
@@ -55,7 +55,7 @@ Two families with strict roles:
 | Display | Rubik 600 | 48 / 100% | Amounts (€130, €190, €20) |
 | Title 1 | Rubik 600, letter-spacing −0.7 | 34 / 105% | Screen titles ("Your trips", "Lisbon", "Lisbon is squared up.") |
 | Title 2 | Rubik 600, letter-spacing −0.5 | 28 / 115% | Poll question |
-| Heading | Rubik 600 | 22 / 130% | Sheet titles, split sentence |
+| Heading | Rubik 600, letter-spacing −0.2 | 22 / 130% | Sheet titles, split sentence |
 | Subheading/Medium · SemiBold | Rubik 500 · 600 | 20 | Day numbers, keypad, upcoming trip names |
 | Headline | Rubik 600 | 17 | Card titles, option names, amounts in rows |
 | Body/Regular · Medium · SemiBold | Rubik 400 · 500 · 600 | 15 | Body, buttons (Medium), row titles (SemiBold) |

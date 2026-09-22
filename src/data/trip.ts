@@ -22,6 +22,18 @@ export const people: Record<string, Person> = {
   jess: { id: 'jess', label: 'Jess', initials: 'JM', fill: '--color-avatar-jess', photo: 'jess' },
   // New tonight, and deliberately without a photo.
   ren: { id: 'ren', label: 'Ren', initials: 'RT', fill: '--color-avatar-ren' },
+  marta: { id: 'marta', label: 'Marta', initials: 'ML', fill: '--color-avatar-marta' },
+  hugo: { id: 'hugo', label: 'Hugo', initials: 'HS', fill: '--color-avatar-hugo' },
+}
+
+/** Results for the "Ren" search in the Add-buddy sheet (03). */
+export const buddySearch = {
+  query: 'Ren',
+  results: [
+    { person: people.ren, name: 'Ren Takahashi', line: 'In your contacts · on TripUp', selected: true },
+    { person: people.marta, name: 'Marta Lopes', line: 'In your contacts', selected: false },
+    { person: people.hugo, name: 'Hugo Silva', line: 'In your contacts', selected: false },
+  ],
 }
 
 export const tripBuddies = [
@@ -79,6 +91,12 @@ export const dinnerPoll = {
       voters: [people.jess],
       fill: 54.1 / 318,
     },
+  ],
+  /** The three places as they appear while composing the poll (04). */
+  places: [
+    { id: 'taberna', name: 'Taberna da Rua das Flores', line: 'Cosy tasca · €€ · 6 min walk', photo: 'taberna' as const, icon: 'bowl' as const },
+    { id: 'timeout', name: 'Time Out Market', line: 'Buzzy food hall · € · 11 min walk', photo: 'timeout' as const, icon: 'fork-knife' as const },
+    { id: 'ramiro', name: 'Cervejaria Ramiro', line: 'Seafood feast · €€€ · 9 min by tram', photo: 'ramiro' as const, icon: 'fish' as const },
   ],
   ticker: { person: people.nick, event: 'voted Time Out Market', when: 'just now' },
   waitingOn: people.phil,
