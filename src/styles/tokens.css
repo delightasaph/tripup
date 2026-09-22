@@ -48,6 +48,14 @@
   /* ---- Gradients (not utilities — use via var()) ------------------------ */
   --gradient-ticket-sky: linear-gradient(180deg, #adcce8 0%, #80a8d4 100%);
   --gradient-sunset-card: linear-gradient(135deg, #f7ddd3 0%, #f5e7c4 100%);
+  /* Lock screen (04b) — the "Legibility shade" layer over the wallpaper photo. */
+  --gradient-legibility-shade: linear-gradient(
+    180deg,
+    rgb(20 36 71 / 0.45) 0%,
+    rgb(20 36 71 / 0.05) 35%,
+    rgb(13 26 51 / 0.15) 60%,
+    rgb(8 15 31 / 0.6) 100%
+  );
   --gradient-bottom-fade: linear-gradient(
     180deg,
     rgb(247 244 239 / 0) 0%,

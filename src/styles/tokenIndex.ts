@@ -65,6 +65,7 @@ export const gradients = [
   { name: 'Ticket sky', varName: '--gradient-ticket-sky', note: 'Trip ticket background' },
   { name: 'Sunset card', varName: '--gradient-sunset-card', note: '"Next" itinerary item' },
   { name: 'Bottom fade', varName: '--gradient-bottom-fade', note: '150pt fade behind the tab bar' },
+  { name: 'Legibility shade', varName: '--gradient-legibility-shade', note: 'Over the lock-screen photo' },
 ]
 
 export type TypeSpec = {

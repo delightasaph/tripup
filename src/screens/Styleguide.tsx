@@ -1,6 +1,15 @@
 import type { ReactNode } from 'react'
 import { PhoneShell } from '@/components/DeviceFrame'
 import {
+  avatarPhotos,
+  collectedStamps,
+  lockScreenWallpaper,
+  lockScreenWallpaperPosition,
+  placePhotos,
+  stamps,
+  ticketStamp,
+} from '@/data/assets'
+import {
   avatarFills,
   colours,
   gradients,
@@ -179,6 +188,121 @@ export function Styleguide() {
                 <p className="mt-2 text-caption2 text-ink-secondary">{s}</p>
               </div>
             ))}
+          </div>
+        </Section>
+
+        <Section
+          title="Assets"
+          subtitle="Rendered exactly as the screens must render them — see docs/DESIGN_SYSTEM.md §7."
+        >
+          <h3 className="mb-3 text-footnote font-medium uppercase tracking-[0.08em] text-ink-secondary">
+            Avatars · pre-cropped and pre-circular, drawn untouched
+          </h3>
+          <div className="mb-8 flex flex-wrap items-end gap-4">
+            {Object.entries(avatarPhotos).map(([id, src]) => (
+              <div key={id} className="text-center">
+                <img src={src} alt={id} width={52} height={52} className="block" />
+                <p className="mt-2 text-caption2 font-medium capitalize">{id}</p>
+              </div>
+            ))}
+            <div className="text-center">
+              <div
+                className="flex h-[52px] w-[52px] items-center justify-center rounded-pill"
+                style={{ background: 'var(--color-avatar-ren)' }}
+              >
+                <span className="text-headline font-semibold">RT</span>
+              </div>
+              <p className="mt-2 text-caption2 font-medium">Ren</p>
+            </div>
+          </div>
+
+          <h3 className="mb-3 text-footnote font-medium uppercase tracking-[0.08em] text-ink-secondary">
+            Stamps · exported flat, tilted only in CSS
+          </h3>
+          <div className="mb-3 flex flex-wrap items-center gap-5">
+            <figure className="m-0 text-center">
+              <img src={ticketStamp} alt="Portugal, untitled" width={84} className="block" />
+              <figcaption className="mt-1 text-caption2 text-ink-secondary">
+                portugal-ticket · no title · the ticket
+              </figcaption>
+            </figure>
+            <figure className="m-0 text-center">
+              <img src={stamps.portugal} alt="Portugal" width={84} className="block" />
+              <figcaption className="mt-1 text-caption2 text-ink-secondary">
+                portugal · titled · ending 11B
+              </figcaption>
+            </figure>
+            <span className="text-caption2 text-ink-secondary">Home’s four, tilted in code →</span>
+            {collectedStamps.map((c, i) => (
+              <img
+                key={c}
+                src={stamps[c]}
+                alt={c}
+                width={62}
+                className="block"
+                style={{ rotate: `${[-6, 4, -3, 7][i]}deg` }}
+              />
+            ))}
+          </div>
+          <p className="mb-8 text-caption text-ink-secondary">
+            The titled exports carry a dark halo around the perforation and a “VISITED” cancel
+            clipped to “ISITED”. Worth a re-export from Figma with padded bounds.
+          </p>
+
+          <h3 className="mb-3 text-footnote font-medium uppercase tracking-[0.08em] text-ink-secondary">
+            Places
+          </h3>
+          <div className="mb-8 flex flex-wrap gap-3">
+            {Object.entries(placePhotos).map(([id, src]) => (
+              <figure key={id} className="m-0">
+                <img
+                  src={src}
+                  alt={id}
+                  className="block h-[48px] w-[48px] rounded-tile object-cover"
+                />
+                <figcaption className="mt-1 text-caption2 text-ink-secondary">{id}</figcaption>
+              </figure>
+            ))}
+          </div>
+
+          <h3 className="mb-3 text-footnote font-medium uppercase tracking-[0.08em] text-ink-secondary">
+            Lock-screen wallpaper + legibility shade
+          </h3>
+          <div className="flex flex-wrap gap-4">
+            <figure className="m-0">
+              <div className="relative h-[280px] w-[130px] overflow-hidden rounded-row">
+                <img
+                  src={lockScreenWallpaper}
+                  alt="Lock-screen wallpaper"
+                  className="absolute inset-0 h-full w-full object-cover"
+                  style={{ objectPosition: lockScreenWallpaperPosition }}
+                />
+              </div>
+              <figcaption className="mt-1 text-caption2 text-ink-secondary">photo only</figcaption>
+            </figure>
+            <figure className="m-0">
+              <div className="relative h-[280px] w-[130px] overflow-hidden rounded-row">
+                <img
+                  src={lockScreenWallpaper}
+                  alt="Lock-screen wallpaper under the legibility shade"
+                  className="absolute inset-0 h-full w-full object-cover"
+                  style={{ objectPosition: lockScreenWallpaperPosition }}
+                />
+                <div
+                  className="absolute inset-0"
+                  style={{ background: 'var(--gradient-legibility-shade)' }}
+                />
+                <p
+                  className="absolute inset-x-0 top-4 text-center text-caption font-medium"
+                  style={{ color: 'var(--color-surface-white)' }}
+                >
+                  Wednesday 16 September
+                </p>
+              </div>
+              <figcaption className="mt-1 text-caption2 text-ink-secondary">
+                with the shade
+              </figcaption>
+            </figure>
           </div>
         </Section>
 

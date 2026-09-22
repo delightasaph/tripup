@@ -57,13 +57,13 @@ Last evening of a group trip to Lisbon (Wed 16 Sep, day 5 of 5). The group is ba
 
 Contacts shown in the Add-buddy search: Marta Lopes (ML), Hugo Silva (HS), initials avatars.
 
-Avatars come from the Material 3 3D avatar kit (placeholder, credit in the presentation). Crop to the face: zoom ~160% centred on the head.
+Avatars come from the Material 3 3D avatar kit (placeholder, credit in the presentation). The PNGs in `public/assets/avatars/` are **already cropped to the face and already circular** — render them as they are, with no extra zoom or cropping.
 
 ### Trips (Home)
 - **Lisbon**, 12–16 Sep, you + 5 buddies (+ Ren tonight). Happening now.
 - **Porto**, 3–5 Oct, 4 buddies, in 17 days.
 - **Berlin**, 27–30 Nov, 5 buddies, in 2 months.
-- Stamps collected (past trips): Spain, France, Italy, Greece.
+- Stamps collected (past trips): Spain, France, Italy, Greece — `stamps/spain.png`, `france.png`, `italy.png`, `greece.png`, tilted in code.
 
 ### Lisbon itinerary, Wed 16 Sep (Today)
 | Time | Item | Detail | State |
@@ -142,14 +142,14 @@ Screens 02 and 05 are the two key high-fidelity screens from the brief and the v
 ### 01 Home
 - Header: Ari avatar, "Hi Ari", "3 trips with your crew"; notifications button (red unread dot) and "+" new trip.
 - "Your trips" title. "HAPPENING NOW" label with green dot.
-- **Ticket card** (the trip hero, same component as screen 02): LISBON, 12–16 Sep, tilted Portugal stamp. Below it a white stub: "Tonight · 20:30 / Dinner · not decided yet", dark arrow button, avatars "You + 5 buddies".
+- **Ticket card** (the trip hero, same component as screen 02): LISBON, 12–16 Sep, `stamps/portugal-ticket.png` (no country name) tilted ~20° in code. Below it a white stub: "Tonight · 20:30 / Dinner · not decided yet", dark arrow button, avatars "You + 5 buddies".
 - "Coming up": Porto (Sky) and Berlin (Blush) cards with "In 17 days"/"In 2 months" pill and an empty dashed **stamp slot** (stamps are earned after a trip).
-- "Your stamps · 4 countries": row of tilted stamp thumbnails.
+- "Your stamps · 4 countries": row of stamp thumbnails — spain, france, italy, greece — each given a small tilt in code (the PNGs are flat).
 - Tap ticket, stub or arrow → 02.
 
 ### 02 Trip · Lisbon (Itinerary)
 - Nav: back, buddy stack (3 avatars + "+3") and lime "+" to add a buddy.
-- Ticket hero (Anton "LISBON", dates, stamp). No "last night"/"day x of y" chips: the date lives in one place.
+- Ticket hero (Anton "LISBON", dates, `stamps/portugal-ticket.png` tilted ~20° in code). No "last night"/"day x of y" chips: the date lives in one place.
 - Day strip Sat 12 → Today 16 (Today selected, dark).
 - "TODAY'S PLAN · 2 of 4 done". Vertical timeline: time column, node, card. Done items faded. Sunset card is "Next" (warm gradient, "12 min walk"). Dinner is the **dashed violet open slot** with "Ask the group" (violet primary).
 - Floating tab bar (Itinerary / Expenses) + dark "+" FAB, with a fade behind.
@@ -169,7 +169,7 @@ Screens 02 and 05 are the two key high-fidelity screens from the brief and the v
 - "Send to 6 buddies" → 05 (Ari's view) and triggers 04b on the demo's "other phones".
 
 ### 04b Poll notification (Nick's lock screen)
-- Painted Belém wallpaper, date and time, "On Nick's phone" lime pill.
+- Wallpaper: the photo `assets/lockscreen-wallpaper.jpg` (`object-fit: cover`, ~`52% center`) under the **Legibility shade** gradient (`--gradient-legibility-shade`, Figma node `166:2579`). It is a night-out street photo — not a stamp painting. Then the date and time, and the “On Nick’s phone” lime pill.
 - Notification: TripUp · Lisbon · now — "Ari started a poll: Where are we eating tonight? Tap to vote, closes in 20 min." Older: "Ren joined the trip for tonight · 2m ago".
 - Tap → 04c.
 
@@ -224,7 +224,7 @@ Screens 02 and 05 are the two key high-fidelity screens from the brief and the v
 - "Share recap" (outline; native share sheet or toast) and "Back to trip".
 
 ### 11B Squared up + stamp collected (alternative ending)
-- "All squared up" lime badge; the Portugal stamp **stamps down** (scale 1.3 → 1, slight rotation, soft shadow settles); "Lisbon is squared up." "All 5 transfers are done. Your Portugal stamp is now in your collection."; stat pills; "5 transfers · 22:14 – 22:22" row; same actions.
+- "All squared up" lime badge; `stamps/portugal.png` (the titled "PORTUGAL" stamp) **stamps down** (scale 1.3 → 1, slight rotation, soft shadow settles); "Lisbon is squared up." "All 5 transfers are done. Your Portugal stamp is now in your collection."; stat pills; "5 transfers · 22:14 – 22:22" row; same actions.
 - Ship both endings behind a demo toggle so the team can compare. Home's "Your stamps" updates to 5 countries after 11B.
 
 ## 5. Real-time simulation and demo controls

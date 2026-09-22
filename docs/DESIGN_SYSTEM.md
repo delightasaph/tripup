@@ -75,9 +75,9 @@ Uppercase section labels ("TODAY'S PLAN", "HAPPENING NOW") use Footnote/Medium i
   - Stamps: `0 4–14 8–26 rgba(31,30,36,.12–.16)`.
 
 ## 5. Components
-- **Ticket (trip hero)**: 350 × 150, sky gradient, rounded 24 with two semicircle notches (top and bottom, right third) like a ticket; left: Anton destination + dates (Footnote/Medium, navy); right: tilted Portugal stamp (~20°) partly cropped by the ticket edge. Export the ticket shape from Figma as SVG, don't approximate.
-- **Stamp**: Figma component set "Stamp" (page "Stamps", node `17:3667`) with 15 countries. Parts: perforated paper, painted illustration, Anton country title, "VISITED" cancel, wavy cancel lines, round "TRIPUP 2026" postmark, optional "x1" count. Export each country as PNG @3x (or SVG + PNG artwork).
-- **Avatar**: circle, sizes 20–52. Photo avatars crop to the face. Overlapping stacks use −6 spacing and a 2 px ring in the background colour. "+N" chip is white with Avatar/11.
+- **Ticket (trip hero)**: 350 × 150, sky gradient, rounded 24 with two semicircle notches (top and bottom, right third) like a ticket; left: Anton destination + dates (Footnote/Medium, navy); right: `stamps/portugal-ticket.png` (the untitled stamp) rotated ~20° in CSS and clipped by the ticket edge. Export the ticket shape from Figma as SVG, don't approximate.
+- **Stamp**: Figma component set "Stamp" (page "Stamps", node `17:3667`) with 15 countries. Parts: perforated paper, painted illustration, Anton country title, "VISITED" cancel, wavy cancel lines, round "TRIPUP 2026" postmark, optional "x1" count. Exported as flat PNGs in `public/assets/stamps/` (see §7); apply any tilt in CSS.
+- **Avatar**: circle, sizes 20–52. Photo avatars arrive pre-cropped to the face and pre-circular — draw them at size, unaltered. Overlapping stacks use −6 spacing and a 2 px ring in the background colour. "+N" chip is white with Avatar/11.
 - **Pill / chip**: 999 radius, 4–6 vertical × 9–12 horizontal padding, Caption/Medium or Footnote/Medium. Variants: white, lime, lilac, violet tint, ink (dark with lime text: "Next", "Won 4 · 2 · 1").
 - **Timeline row**: time column 49 pt (Footnote/Medium), node column 21 pt (10 pt dot; done = grey, next = ink with soft ring, open = violet ring, filled = solid violet), card 280 pt. Continuous 2 pt rail behind nodes, fading into violet at the open slot.
 - **Poll option card**: white card 24 radius, padding 14/16; photo tile 48 (radius 12) with a white 22 pt icon badge at bottom-right; name (Headline) + line (Caption); 8 pt bar (leader ink on lime card, others muted); voter faces + "n votes"; leader card is lime.
@@ -99,12 +99,28 @@ Uppercase section labels ("TODAY'S PLAN", "HAPPENING NOW") use Footnote/Medium i
 - Squared up: each receipt row checks in sequence (120 ms stagger). 11B: stamp drops from scale 1.3 with −5° rotation, lands with a small bounce and the shadow tightens; optional gentle haptic on iOS (`navigator.vibrate` is not available on iOS; skip).
 - Respect `prefers-reduced-motion`: replace springs with fades.
 
-## 7. Assets to export from Figma
-Put them in `public/assets/`:
-- `avatars/`: ari, nick, rebecca, william, phil, jess (PNG @3x, square; crop in CSS with `object-position` and scale).
-- `places/`: taberna, timeout, ramiro (restaurant photos, JPG).
-- `stamps/`: portugal, spain, france, italy, greece, germany (PNG @3x) + `belem-painting.jpg` (the painted Belém illustration used as the lock-screen wallpaper).
-- `ticket.svg` (ticket shape with notches), all icons as SVG.
+## 7. Assets
+In `public/assets/`. Everything below is already exported and committed unless marked **missing**.
+
+- `avatars/`: `ari`, `nick`, `rebecca`, `william`, `phil`, `jess` (PNG, 184 × 184).
+  **Already cropped to the face and already circular — render them as they are.** No extra zoom,
+  no `object-position` nudging, no CSS circular mask beyond the avatar's own border radius.
+  Ren has no photo on purpose: he is the initials avatar "RT" on Avatar/Ren.
+- `places/`: `taberna`, `timeout`, `ramiro` (WebP restaurant photos).
+- `stamps/`: 15 countries as `<country>.png` — `albania`, `belgium`, `brazil`, `england`, `france`,
+  `germany`, `greece`, `italy`, `kenya`, `netherlands`, `nigeria`, `portugal`, `spain`, `tanzania`,
+  `usa` — plus `portugal-ticket.png`. All are exported **flat, at 0°**; every tilt in the UI is a
+  CSS `rotate`, never baked into the file.
+  - `portugal-ticket.png` has **no country name**. This is the one on the Lisbon ticket, rotated
+    ~20° and clipped by the ticket edge.
+  - `portugal.png` has the Anton "PORTUGAL" title. This is the one that stamps down on ending 11B.
+  - Home's "Your stamps" row uses `spain`, `france`, `italy` and `greece`, tilted in code.
+- `lockscreen-wallpaper.jpg`: the lock-screen photo for 04b (1200 × 1774). A night-out street photo,
+  **not** a stamp painting. Fill the frame with `object-fit: cover` at roughly `52% center`, and lay
+  the **Legibility shade** over it — the gradient from Figma node `166:2579`, in tokens as
+  `--gradient-legibility-shade`:
+  `linear-gradient(180deg, rgb(20 36 71 / .45) 0%, rgb(20 36 71 / .05) 35%, rgb(13 26 51 / .15) 60%, rgb(8 15 31 / .6) 100%)`.
+- **Missing:** `ticket.svg` (the ticket shape with its two notches) and the line icons as SVG.
 - Fonts: Rubik and Anton from Google Fonts.
 
 Licensing: avatars are from the Material 3 3D avatar kit and restaurant photos are placeholders; credit them in the presentation.
