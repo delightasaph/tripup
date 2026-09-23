@@ -73,6 +73,8 @@ type AvatarStackProps = {
   /** Show at most this many faces, then a "+N" chip. */
   max?: number
   ring?: string
+  /** Fill behind the "+N" chip; defaults to white. */
+  chipFill?: string
 }
 
 /** Overlapping faces at −6 spacing, each with a 2 px ring in the background. */
@@ -81,6 +83,7 @@ export function AvatarStack({
   size,
   max = people.length,
   ring = 'var(--color-surface-ground)',
+  chipFill = 'var(--color-surface-white)',
 }: AvatarStackProps) {
   const shown = people.slice(0, max)
   const rest = people.length - shown.length
@@ -102,9 +105,10 @@ export function AvatarStack({
             width: size,
             height: size,
             borderRadius: '50%',
-            background: 'var(--color-surface-white)',
+            background: chipFill,
             boxShadow: `0 0 0 2px ${ring}`,
-            fontSize: 11,
+            // Avatar/11 on a 30 stack, Avatar/8 on a 22 one.
+            fontSize: size >= 30 ? 11 : 8,
             fontWeight: 600,
             letterSpacing: '0.2px',
           }}

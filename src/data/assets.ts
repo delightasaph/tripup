@@ -87,8 +87,9 @@ export const homeStamps = [
   { country: 'france', rotate: -33.6, cx: 385.6, cy: 91.7 },
 ] as const satisfies readonly { country: StampCountry; rotate: number; cx: number; cy: number }[]
 
-/** The row starts this far left of the content column. */
-export const homeStampsRowOffset = -26
+/** The row starts this far left of the content column (−15 since the Home
+ *  rework; it was −26 on the old frame). */
+export const homeStampsRowOffset = -15
 
 /**
  * The stamp's drop shadow, scaled to the width you are drawing it at.

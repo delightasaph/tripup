@@ -1,87 +1,87 @@
 # 01 · Home
 
-> ## ⚠️ STALE — re-fetch this screen
-> The Figma frame changed on 23 Sep after this record was written. **This record's
-> "do not re-fetch" instruction does not apply any more.** Re-pull the frame with one
-> `get_design_context` call, rewrite this record from what comes back, then rebuild the screen.
->
-> What changed: the buddy stack now reads **+3**, not +4 — the trip has six people until Ren joins.
+Figma node `162:429`. Built in `src/screens/Home.tsx`. **Do not re-fetch this screen** unless a
+STALE banner says otherwise.
 
-Figma node `162:429`. Reference render: `design/screens/01-home.png` (native 390 × 844).
-Built in `src/screens/Home.tsx`. **Do not re-fetch this screen.**
+Reference render: `design/screens/01-home.png` is the **old** frame and is stale. `/compare` flags
+it.
 
-The content column is **838 tall inside an 844 frame**, so Home scrolls — the stamps row sits below
-the fold by design.
+## The frame scrolls
+**1022 tall**, Content 350 × 941 at 20, 64. Sections stack in a column at **gap 20**. There is no
+docked chrome on Home — no tab bar — so the whole screen scrolls, with **110 pt** of ground below
+the last item per `PRODUCT_SPEC.md`. Scroll height comes out at 1065.
 
-## Frame skeleton
-| Part | Screen coords |
+| Section | y (screen) |
 |---|---|
-| Content column | 20, 64 · 350 × 838 |
-| Header | 20, 64 · 350 × 44 |
-| "Your trips" | 20, 128 · 156 × 36 |
-| Happening now | 20, 184 · 350 × 297 |
-| — label | 20, 184 · 121 × 15 |
-| — ticket | 20, 209 · 350 × 150 |
-| — stub | 20, 365 · 350 × 116 |
-| Coming up | 20, 501 · 350 × 168 |
-| — cards | 20, 531 · 350 × 138 |
-| Stamps collected | 20, 689 · 350 × 213 |
-| — row | 20, 719 · 350 × 183 |
+| Header | 64 · 350 × 44 |
+| "Your trips" | 128 |
+| "HAPPENING NOW" label | 184 |
+| Trip card | 209 · 350 × 271 |
+| — Next up panel | 345 · 326 × 110 |
+| Coming up header | 500 |
+| — cards | 530 · 350 × 138 |
+| Stamps heading | 704 |
+| — stamps row | 760 · 183 tall |
+| — "See your Stamps collection" | 951 · 350 × 54 |
+
+## What changed in this rework
+- The greeting sub-line is **"Last night in Lisbon"** in **Body/Medium 15** — it was
+  "3 trips with your crew" in Headline 17.
+- **The ticket and the white stub have merged into one card.** The trip hero is now the ticket at
+  its **tall** variant (350 × 271, radius 16) with the "Next up" panel sitting inside it.
+- Coming up cards gained a **more** button and a crew stack, and lost "· N buddies" from the date
+  line. **Porto is `Accent/Sky`** — an earlier pass recorded it as Lime, and the spec has been
+  corrected back.
+- The stamps row is now a full **Stamps** section with a centred heading, a subtitle and a
+  full-width dark CTA. Its row offset is **−15**, not −26.
 
 ## Header
-- Greeting: Ari avatar 40, gap 10, then "Hi Ari" Footnote/Regular `Ink/Secondary` over
-  "3 trips with your crew" Headline 17 SemiBold, gap 1.
-- Actions right, gap 10, both 44:
-  - **Notifications** is a single exported asset — `icons/notifications.svg` contains the white
-    circle, its shadow *and* the red unread dot, drawn on an 80 canvas with the button at 18, 12.
-    Place it in a 44 box at `left: -18, top: -12`; do not rebuild it out of parts.
-  - **New trip**: white circle, `drop-shadow(0 6px 9px rgb(31 30 36 / .08))`, `plus-ink` at 20.
+Greeting: Ari 40, gap 10, "Hi Ari" Footnote/Regular `Ink/Secondary` over "Last night in Lisbon"
+Body/Medium ink, gap 1. Actions gap 10, both 44: notifications is the single exported asset
+(button, shadow and unread dot on an 80 canvas, placed at −18/−12 in a 44 box); new trip is a white
+circle with `drop-shadow(0 6px 9px rgb(31 30 36 / .08))` and `plus-ink` 20.
 
-## Happening now
-- Label: 8 green dot (`Status/Positive`) then "HAPPENING NOW" Footnote/Medium uppercase
-  `Ink/Secondary` at x 14.
-- Ticket: the same component as screen 02.
-- **Stub** — white, radius 24, padding 16, gap 14,
-  `drop-shadow(0 6px 9px rgb(31 30 36 / .06))`, sitting 6 below the ticket.
-  - Tonight row, gap 12: a 40 `Accent/Violet Tint` tile (radius 12) holding `fork-knife-lg` at 18
-    (the glyph carries `Accent/Violet`); then "Tonight · 20:30" Caption/Regular `Ink/Secondary`
-    over "Dinner · not decided yet" Body/SemiBold; then a 44 `Ink/Primary` circle with
-    `arrow-right` at 20 (already white).
-  - Buddies row, gap 8: six 26 avatars, overlap −6, **2 px white ring** (not Surface/Ground — the
-    stub is white), then "You + 5 buddies" Caption/Regular `Ink/Secondary`.
+## Next up panel — inside the card at 12, 136 · 326 × 110
+`Surface/White 70%` with **`backdrop-filter: blur(3px)`**, radius 18, padding 12. Inner column
+gap 14:
+- Tonight row, gap 12: a 40 `Accent/Violet Tint` tile (radius 12) with `fork-knife-lg` 18, then
+  "Tonight · 20:30" Caption/Regular `Ink/Secondary` over "Dinner · not decided yet" Body/SemiBold,
+  gap 2.
+- Buddies row, `justify-between`: the 30 stack (Ari, Nic, Bea, "+3"), each ringed 2 px in
+  **`Surface/Ground`** — not white, even though the panel is white-70 — and an "Ask the group"
+  pill: `Accent/Violet`, padding `9 14`, Caption/Medium 12, white.
 
-## Coming up
-Header: "Coming up" Headline 17 SemiBold, "See all" Footnote/Regular `Ink/Secondary`.
-Cards 170 × 138, gap 10, radius 24, padding `14 14 16 16`, name pinned to the bottom by a spacer.
-- **Porto is `Accent/Lime`** — `PRODUCT_SPEC.md` §4 says Sky, and it is wrong. Berlin is
-  `Accent/Blush`.
-- "When" pill: `Surface/White 70%`, padding `4 9`, Caption 2/Medium 11.
-- Name Subheading/SemiBold 20, dates Caption/Regular `Ink/Secondary`.
-- Only **Berlin** shows a stamp slot; Porto's is hidden in the frame. Slot: 34 × 36, radius 4,
-  `rgb(255 255 255 / .35)` on a `1.2px dashed rgb(31 30 36 / .28)` border, rotated −6°.
+## Coming up — 170 × 138 cards, gap 10
+Radius 24, padding `14 14 14 16`. Porto `Accent/Sky`, Berlin `Accent/Blush`.
+Top row `justify-between`: the "when" pill (`Surface/White 70%`, padding `4 9`, Caption 2/Medium)
+and `more` 28. Then a flex spacer, the name in Subheading/SemiBold, the dates in Caption/Regular
+`Ink/Secondary`, and a people row with `padding-top 10`.
 
-## Stamps row
-England, Spain, Italy, France at scale 0.4275 of the 300 × 316 component (paper width 128.25),
-rotated −11.6 / −5.1 / −28.5 / −33.6. The row starts 26 left of the content column and runs past
-the right edge — **France is clipped by the phone frame, not by a container**, so do not clip the
-row at 350.
+The crew stack is 22 avatars overlapped −6, ringed 2 px in `Surface/White 70%`, ending in a "+N"
+chip on the same white-70 fill at **Avatar/8** (8 px, tracking 0.2). Note the "+N" chip's type is
+size-driven: **Avatar/11 in a 30 stack, Avatar/8 in a 22 one** — 05's 22 voter avatars use
+Avatar/7 for initials, which is a different element again.
 
-Positions are stored as **centres** (`homeStamps` in `src/data/assets.ts`), not corners: Figma
-reports a rotated node's x/y as its *bounding box* top-left, which shifts with the angle. Placing
-an unrotated box at those coordinates puts every stamp about 12 px out. A centre is
-rotation-invariant.
+"See all" is **underlined** Footnote/Regular.
 
-## Icons on this screen
-`notifications` (the whole 44 button), `plus-ink` (20), `fork-knife-lg` (18, `Accent/Violet`),
-`arrow-right` (20, baked white).
+## Stamps section
+Container `padding-top 16`, gap 8.
+- The heading block is a fixed **48** tall even though its content is 39 — "Stamps" Headline 17
+  centred over "Collect stamps with every successful trip" Footnote/Regular `Ink/Secondary`, gap 4.
+  The 9 pt of slack is part of the rhythm; collapsing it pulls everything below up by 9.
+  *(Inferred from the frame's box heights rather than pulled — the two text nodes were not worth a
+  call. Everything else in this section came from the file.)*
+- Stamps row 183 tall, starting 15 left of the column; the last stamp is clipped by the phone, not
+  by a container.
+- CTA: full-width ink pill, 54, `drop-shadow(0 10px 10px rgb(31 30 36 / .25))`, Body/Medium plus
+  `arrow-right` 20.
 
-## Gotchas found while building
-- The greeting sub-line is Headline 17, not a title style — "Your trips" below it is the Title 1.
-- The stub's avatar rings are white, while screen 02's nav rings are `Surface/Ground`. The ring
-  always matches whatever is behind the stack.
-- "Your trips" is Title 1, which carries **letter-spacing −0.7**. Tracking is 0 on every style up
-  to Headline; only the display sizes have it. Leaving it off ran the title 5.6 px long.
-- "HAPPENING NOW" is Footnote/Medium with **tracking 0** — the uppercase comes from the content,
-  not from added letter-spacing.
-- The stub's avatar stack shows all six faces with no "+N" chip, so the **last face must sit
-  flush**; a trailing −6 overlap shrinks the stack and pulls "You + 5 buddies" 6 px left.
+## Icons
+`notifications` (whole button) · `plus-ink` 20 · `fork-knife-lg` 18 · `more` 28 · `arrow-right` 20.
+
+## Gotchas
+- This screen cost **five** calls: the top-level node came back sparse (five stamp instances), so
+  the card, header, Coming up and the Stamps CTA were pulled separately. A screen with several
+  stamp instances will always need splitting.
+- The tall ticket's painting uses **two** masks composited with `mask-composite: intersect` — the
+  ticket silhouette (offset −149 to line up with the card) and the left-to-right fade.

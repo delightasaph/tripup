@@ -29,6 +29,7 @@ const builds: {
     reference: '/reference/01-home.png',
     render: <Home />,
     gaps: [],
+    referenceStale: true,
   },
   {
     id: 'trip',

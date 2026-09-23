@@ -106,17 +106,19 @@ export const upcomingTrips = [
   {
     id: 'porto',
     name: 'Porto',
-    line: '3 – 5 Oct · 4 buddies',
+    dates: '3 – 5 Oct',
     when: 'In 17 days',
-    // The frame uses lime here, not Sky as PRODUCT_SPEC.md §4 says.
-    fill: 'var(--color-accent-lime)',
+    fill: 'var(--color-accent-sky)',
+    people: [people.ari, people.nic, people.bea],
+    more: 1,
   },
   {
     id: 'berlin',
     name: 'Berlin',
-    line: '27 – 30 Nov · 5 buddies',
+    dates: '27 – 30 Nov',
     when: 'In 2 months',
     fill: 'var(--color-accent-blush)',
-    stampSlot: true,
+    people: [people.ari, people.mira, people.kofi],
+    more: 2,
   },
 ]

@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import { ticketShape } from '@/data/assets'
 
 /** The ten paths that make up the plane inside the postmark, with the exact
@@ -18,9 +19,39 @@ const PLANE = [
 
 const POSTMARK_INK = 'rgb(31 30 36 / 0.82)'
 
+/** The two sizes the ticket comes in. Postmark, waves, VISITED and the title
+ *  sit at identical offsets in both — only the shape, height, radius and the
+ *  painting's mask differ. */
+const VARIANTS = {
+  /** 02, 03a, 03b, 04, 06, 07, 08. */
+  compact: {
+    height: 150,
+    radius: 'var(--radius-card-lg)',
+    shape: '/assets/ticket.svg',
+    art: { left: 181, top: -21.04, width: 169, height: 227.856 },
+    masks: [{ url: '/assets/ticket/belem-mask.svg', position: '0px 0px', size: '169px 227.856px' }],
+  },
+  /** 01 Home, which carries the "Next up" panel inside the card. */
+  tall: {
+    height: 271,
+    radius: 'var(--radius-row)',
+    shape: '/assets/ticket/shape-tall.svg',
+    art: { left: 149, top: 0, width: 201, height: 271 },
+    masks: [
+      // The ticket silhouette, offset back to the card's origin, intersected
+      // with the left-to-right fade.
+      { url: '/assets/ticket/belem-mask-tall-a.svg', position: '-149px 0px', size: '350px 271px' },
+      { url: '/assets/ticket/belem-mask-tall-b.svg', position: '0px 0px', size: '201px 271px' },
+    ],
+  },
+} as const
+
 type TicketProps = {
   destination: string
   dates: string
+  variant?: keyof typeof VARIANTS
+  /** The "Next up" panel, on Home only. */
+  children?: ReactNode
 }
 
 /**
@@ -32,18 +63,23 @@ type TicketProps = {
  * "TripUp 2026" postmark, the cancel waves, and the VISITED cancel — each with
  * its own rotation, all clipped by the ticket edge.
  */
-export function Ticket({ destination, dates }: TicketProps) {
+export function Ticket({ destination, dates, variant = 'compact', children }: TicketProps) {
+  const v = VARIANTS[variant]
+  const maskImage = v.masks.map((m) => `url(${m.url})`).join(', ')
+  const maskPosition = v.masks.map((m) => m.position).join(', ')
+  const maskSize = v.masks.map((m) => m.size).join(', ')
+
   return (
     <div
       className="relative shrink-0 overflow-hidden"
-      style={{ width: 350, height: 150, borderRadius: 'var(--radius-card-lg)' }}
+      style={{ width: 350, height: v.height, borderRadius: v.radius }}
     >
       <img
-        src={ticketShape}
+        src={variant === 'compact' ? ticketShape : v.shape}
         alt=""
         aria-hidden="true"
         width={350}
-        height={150}
+        height={v.height}
         className="absolute inset-0 block"
       />
 
@@ -52,16 +88,20 @@ export function Ticket({ destination, dates }: TicketProps) {
         aria-hidden="true"
         className="absolute"
         style={{
-          left: 181,
-          top: -21.04,
-          width: 169,
-          height: 227.856,
-          maskImage: 'url(/assets/ticket/belem-mask.svg)',
-          WebkitMaskImage: 'url(/assets/ticket/belem-mask.svg)',
-          maskSize: '169px 227.856px',
-          WebkitMaskSize: '169px 227.856px',
+          left: v.art.left,
+          top: v.art.top,
+          width: v.art.width,
+          height: v.art.height,
+          maskImage,
+          WebkitMaskImage: maskImage,
+          maskPosition,
+          WebkitMaskPosition: maskPosition,
+          maskSize,
+          WebkitMaskSize: maskSize,
           maskRepeat: 'no-repeat',
           WebkitMaskRepeat: 'no-repeat',
+          maskComposite: 'intersect',
+          WebkitMaskComposite: 'source-in',
         }}
       >
         <div className="absolute inset-0 overflow-hidden">
@@ -179,6 +219,8 @@ export function Ticket({ destination, dates }: TicketProps) {
         <span className="font-display text-destination uppercase">{destination}</span>
         <span className="text-footnote font-medium">{dates}</span>
       </div>
+
+      {children}
     </div>
   )
 }

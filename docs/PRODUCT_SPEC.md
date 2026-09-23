@@ -154,15 +154,17 @@ No home indicator: the frames draw one, the build leaves it out.
 Screens 02 and 05 are the two key high-fidelity screens from the brief and the visual reference for the rest. Screens 04b, 04c and 11B were not in the original wireflow.
 
 ### 01 Home
-- Header: Ari avatar, "Hi Ari", "3 trips with your crew"; notifications button (red unread dot) and "+" new trip.
+- Header: Ari avatar, "Hi Ari", **"Last night in Lisbon"**; notifications button (red unread dot) and "+" new trip.
 - "Your trips" title. "HAPPENING NOW" label with green dot.
-- **Ticket card** (the trip hero, same component as screen 02): LISBON, 12–16 Sep, `stamps/portugal-ticket.png` (no country name) tilted ~20° in code. Below it a white stub: "Tonight · 20:30 / Dinner · not decided yet", dark arrow button, avatars "You + 5 buddies" (stack reads "+3": six people until Ren joins).
-- "Coming up": Porto (**Lime** — the frame uses lime, not Sky) and Berlin (Blush) cards with "In 17 days"/"In 2 months" pill and an empty dashed **stamp slot** (stamps are earned after a trip).
-- "Your stamps · 4 countries": row of stamp thumbnails — England, Spain, Italy, France, in that
-  order — overlapping and tilted counter-clockwise in code (the PNGs are flat). Figma has them all
-  at scale 0.4275 of the 300 × 316 component, rotated −11.6° / −5.1° / −28.5° / −33.6°, in a row
-  that starts 26 px left of the content column so England bleeds off the edge. The exact offsets
-  live in `src/data/assets.ts` as `homeStamps`.
+- **Trip card** — the ticket at its **tall** size, 350 × 271, radius 16. Same component as screen 02, same art; the ticket and the old white stub have merged into one card. LISBON, 12–16 Sep, and a frosted **"Next up"** panel inside it at 12/136: dinner icon tile, "Tonight · 20:30 / Dinner · not decided yet", the buddy stack ("+3": six people until Ren joins) and a violet "Ask the group" pill.
+- "Coming up": Porto (**Sky**) and Berlin (**Blush**) cards — "In 17 days"/"In 2 months" pill, a "more" button, the name, the dates, and the crew as a 22 pt stack with a "+N" chip. No stamp slot on these cards any more.
+- **Stamps** section: a centred "Stamps" heading over "Collect stamps with every successful trip",
+  then the row of thumbnails — England, Spain, Italy, France, in that order — overlapping and
+  tilted counter-clockwise in code (the PNGs are flat). Figma has them all at scale 0.4275 of the
+  300 × 316 component, rotated −11.6° / −5.1° / −28.5° / −33.6°, in a row that starts **15 px**
+  left of the content column so England bleeds off the edge. The exact offsets live in
+  `src/data/assets.ts` as `homeStamps`. Below the row, a full-width dark pill:
+  "See your Stamps collection".
 - Tap ticket, stub or arrow → 02.
 
 ### 02 Trip · Lisbon (Itinerary)
