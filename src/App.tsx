@@ -1,7 +1,9 @@
+import { useEffect } from 'react'
 import { BrowserRouter, Route, Routes, useSearchParams } from 'react-router-dom'
+import { DemoPanel } from '@/components/DemoPanel'
 import { DeviceFrame } from '@/components/DeviceFrame'
 import { Toast } from '@/components/Toast'
-import { useTripStore } from '@/store/tripStore'
+import { clearTripStoreTimers, useTripStore } from '@/store/tripStore'
 import { Placeholder } from '@/screens/Placeholder'
 import { TripLisbon } from '@/screens/TripLisbon'
 import { LivePoll } from '@/screens/LivePoll'
@@ -70,11 +72,17 @@ function Prototype() {
         <Placeholder active={active} />
       )}
       {showToast && <Toast title={toast.title} detail={toast.detail} icon={toast.icon} iconSize={toast.iconSize} />}
+      <DemoPanel />
     </DeviceFrame>
   )
 }
 
 export default function App() {
+  // The store's vote/settle timers are module-level, not component state, so
+  // they survive whichever screen is mounted — but they still need one place
+  // to be swept if the app itself is ever torn down.
+  useEffect(() => clearTripStoreTimers, [])
+
   return (
     <BrowserRouter>
       <Routes>
