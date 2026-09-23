@@ -38,6 +38,20 @@ export type IconName =
   | 'more'
   | 'person-plus'
   | 'walk-sm'
+  | 'app-mark'
+  | 'torch'
+  | 'camera'
+  | 'close'
+  | 'scan'
+  | 'backspace'
+  | 'bread'
+  | 'wine'
+  | 'card'
+  | 'bank'
+  | 'phone'
+  | 'apple-pay-mark'
+  | 'paypal-mark'
+  | 'check-lg'
 
 /**
  * Each file is the exact vector from Figma. Some carry a baked stroke colour
@@ -81,6 +95,20 @@ const exported: Record<IconName, string> = {
   more: '/assets/icons/more.svg',
   'person-plus': '/assets/icons/person-plus.svg',
   'walk-sm': '/assets/icons/walk-sm.svg',
+  'app-mark': '/assets/icons/app-mark.svg',
+  torch: '/assets/icons/torch.svg',
+  camera: '/assets/icons/camera.svg',
+  close: '/assets/icons/close.svg',
+  scan: '/assets/icons/scan.svg',
+  backspace: '/assets/icons/backspace.svg',
+  bread: '/assets/icons/bread.svg',
+  wine: '/assets/icons/wine.svg',
+  card: '/assets/icons/card.svg',
+  bank: '/assets/icons/bank.svg',
+  phone: '/assets/icons/phone.svg',
+  'apple-pay-mark': '/assets/icons/apple-pay-mark.svg',
+  'paypal-mark': '/assets/icons/paypal-mark.svg',
+  'check-lg': '/assets/icons/check-lg.svg',
 }
 
 type IconProps = {

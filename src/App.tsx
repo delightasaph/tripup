@@ -7,6 +7,14 @@ import { Home } from '@/screens/Home'
 import { Buddies } from '@/screens/Buddies'
 import { AddABuddy } from '@/screens/AddABuddy'
 import { NewPoll } from '@/screens/NewPoll'
+import { PollNotification } from '@/screens/PollNotification'
+import { Vote } from '@/screens/Vote'
+import { LogExpense } from '@/screens/LogExpense'
+import { SplitByItem } from '@/screens/SplitByItem'
+import { Balances } from '@/screens/Balances'
+import { Settle } from '@/screens/Settle'
+import { SquaredUp } from '@/screens/SquaredUp'
+import { SquaredUpStamp } from '@/screens/SquaredUpStamp'
 import { PlanUpdated } from '@/screens/PlanUpdated'
 import { Styleguide } from '@/screens/Styleguide'
 import { Compare } from '@/screens/Compare'
@@ -18,7 +26,7 @@ function Prototype() {
   const active = screenById(params.get('screen') ?? '')
 
   return (
-    <DeviceFrame time={active?.time ?? '18:05'}>
+    <DeviceFrame time={active?.time ?? '18:05'} chrome={active?.chrome ?? true}>
       {active?.id === 'home' ? (
         <Home />
       ) : active?.id === 'trip' ? (
@@ -29,8 +37,24 @@ function Prototype() {
         <AddABuddy />
       ) : active?.id === 'new-poll' ? (
         <NewPoll />
+      ) : active?.id === 'poll-notification' ? (
+        <PollNotification />
+      ) : active?.id === 'vote' ? (
+        <Vote />
       ) : active?.id === 'plan-updated' ? (
         <PlanUpdated />
+      ) : active?.id === 'log-expense' ? (
+        <LogExpense />
+      ) : active?.id === 'split-by-item' ? (
+        <SplitByItem />
+      ) : active?.id === 'balances' ? (
+        <Balances />
+      ) : active?.id === 'settle' ? (
+        <Settle />
+      ) : active?.id === 'squared-up' ? (
+        <SquaredUp />
+      ) : active?.id === 'squared-up-stamp' ? (
+        <SquaredUpStamp />
       ) : active?.id === 'live-poll' ? (
         <LivePoll />
       ) : (

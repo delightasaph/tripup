@@ -117,6 +117,10 @@
   --shadow-toast: 0 10px 24px -4px rgb(31 30 36 / 0.25);
   --shadow-sheet: 0 -8px 30px rgb(31 30 36 / 0.12);
   --shadow-winner: 0 12px 24px -8px rgb(115 140 25 / 0.25);
+  /* The "All expenses" day-group cards on 09 — distinct from --shadow-card. */
+  --shadow-list: 0 4px 12px rgb(31 30 36 / 0.06);
+  /* The transfers card on 11/11B and the "See transfers" row on 11B. */
+  --shadow-pop: 0 6px 9px rgb(31 30 36 / 0.05);
   /* Stamps cast their shadow with filter: drop-shadow(), not box-shadow, so it
      follows the perforated edge instead of the transparent PNG box. Figma sets
      it to 17.143px offset and blur on the 300px-wide component — 0.05714 of the

@@ -28,3 +28,11 @@ Conventions in these files:
 | 04 New poll | [04-new-poll.md](04-new-poll.md) | `164:2379` | yes |
 | 05 Live poll | [05-live-poll.md](05-live-poll.md) | `84:169` | yes |
 | 06 Plan updated | [06-plan-updated.md](06-plan-updated.md) | `4064:18080` | yes |
+| 04b Poll notification | [04b-poll-notification.md](04b-poll-notification.md) | `166:2578` | yes |
+| 04c Vote | [04c-vote.md](04c-vote.md) | `166:2631` | yes |
+| 07 Log the dinner | [07-log-the-dinner.md](07-log-the-dinner.md) | `168:2777` | yes |
+| 08 Split by item | [08-split-by-item.md](08-split-by-item.md) | `169:2976` | yes |
+| 09 Balances | [09-balances.md](09-balances.md) | `4048:16899` | yes |
+| 10 Ren settles | [10-ren-settles.md](10-ren-settles.md) | `171:3175` | yes |
+| 11 Squared up | [11-squared-up.md](11-squared-up.md) | `172:3175` | yes |
+| 11B Squared up + stamp | [11b-squared-up-stamp.md](11b-squared-up-stamp.md) | `172:3255` | yes |

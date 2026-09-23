@@ -16,6 +16,7 @@ export type ScreenId =
   | 'balances'
   | 'settle'
   | 'squared-up'
+  | 'squared-up-stamp'
 
 export type ScreenEntry = {
   id: ScreenId
@@ -27,6 +28,8 @@ export type ScreenEntry = {
   /** Status-bar clock for this screen. */
   time: string
   figmaNode: string
+  /** False when the screen draws its own chrome (04b's lock screen). */
+  chrome?: boolean
 }
 
 export const screens: ScreenEntry[] = [
@@ -35,8 +38,8 @@ export const screens: ScreenEntry[] = [
   { id: 'buddies', no: '03a', title: 'Buddies', phone: 'Ari', time: '18:05', figmaNode: '4058:3678' },
   { id: 'add-a-buddy', no: '03b', title: 'Add a buddy', phone: 'Ari', time: '18:05', figmaNode: '4058:3935' },
   { id: 'new-poll', no: '04', title: 'New poll', phone: 'Ari', time: '18:05', figmaNode: '164:2379' },
-  { id: 'poll-notification', no: '04b', title: 'Poll notification', phone: 'Nic', time: '18:06', figmaNode: '166:2578' },
-  { id: 'vote', no: '04c', title: 'Vote', phone: 'Nic', time: '18:06', figmaNode: '166:2631' },
+  { id: 'poll-notification', no: '04b', title: 'Poll notification', phone: 'Nic', time: '18:05', figmaNode: '166:2578', chrome: false },
+  { id: 'vote', no: '04c', title: 'Vote', phone: 'Nic', time: '18:05', figmaNode: '166:2631' },
   { id: 'live-poll', no: '05', title: 'Live poll', phone: 'Ari', time: '18:05', figmaNode: '84:169' },
   { id: 'plan-updated', no: '06', title: 'Plan updated', phone: 'Ari', time: '18:25', figmaNode: '4064:18080' },
   { id: 'log-expense', no: '07', title: 'Log the dinner', phone: 'Ari', time: '22:10', figmaNode: '168:2777' },
@@ -44,6 +47,7 @@ export const screens: ScreenEntry[] = [
   { id: 'balances', no: '09', title: 'Balances', phone: 'Ari', time: '22:12', figmaNode: '4048:16899' },
   { id: 'settle', no: '10', title: 'Ren settles', phone: 'Ren', time: '22:14', figmaNode: '171:3175' },
   { id: 'squared-up', no: '11', title: 'Squared up', phone: 'Ari', time: '22:25', figmaNode: '172:3175' },
+  { id: 'squared-up-stamp', no: '11B', title: 'Squared up + stamp', phone: 'Ari', time: '22:25', figmaNode: '172:3255' },
 ]
 
 export const screenById = (id: string): ScreenEntry | undefined =>
