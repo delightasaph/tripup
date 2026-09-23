@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { StatusBar } from '@/components/StatusBar'
-import { AddRen } from './AddRen'
+import { Buddies } from './Buddies'
 import { Home } from './Home'
 import { NewPoll } from './NewPoll'
 import { PlanUpdated } from './PlanUpdated'
@@ -43,14 +43,15 @@ const builds: {
     referenceStale: true,
   },
   {
-    id: 'add-buddy',
-    no: '03',
-    title: 'Add Ren',
-    node: '163:2180',
+    id: 'buddies',
+    no: '03a',
+    title: 'Buddies',
+    node: '4058:3678',
     time: '18:05',
     reference: '/reference/03-add-ren.png',
-    render: <AddRen />,
+    render: <Buddies />,
     gaps: [],
+    referenceStale: true,
   },
   {
     id: 'new-poll',

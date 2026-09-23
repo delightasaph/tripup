@@ -4,7 +4,8 @@
 export type ScreenId =
   | 'home'
   | 'trip'
-  | 'add-buddy'
+  | 'buddies'
+  | 'add-a-buddy'
   | 'new-poll'
   | 'poll-notification'
   | 'vote'
@@ -31,7 +32,8 @@ export type ScreenEntry = {
 export const screens: ScreenEntry[] = [
   { id: 'home', no: '01', title: 'Home', phone: 'Ari', time: '18:05', figmaNode: '162:429' },
   { id: 'trip', no: '02', title: 'Trip · Lisbon', phone: 'Ari', time: '18:05', figmaNode: '4064:17467' },
-  { id: 'add-buddy', no: '03', title: 'Add Ren', phone: 'Ari', time: '18:05', figmaNode: '163:2180' },
+  { id: 'buddies', no: '03a', title: 'Buddies', phone: 'Ari', time: '18:05', figmaNode: '4058:3678' },
+  { id: 'add-a-buddy', no: '03b', title: 'Add a buddy', phone: 'Ari', time: '18:05', figmaNode: '4058:3935' },
   { id: 'new-poll', no: '04', title: 'New poll', phone: 'Ari', time: '18:05', figmaNode: '164:2379' },
   { id: 'poll-notification', no: '04b', title: 'Poll notification', phone: 'Nic', time: '18:06', figmaNode: '166:2578' },
   { id: 'vote', no: '04c', title: 'Vote', phone: 'Nic', time: '18:06', figmaNode: '166:2631' },
