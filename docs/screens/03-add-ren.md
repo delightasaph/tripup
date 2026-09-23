@@ -7,7 +7,9 @@
 > - **03a Buddies** — `4058:3678` — the group view: six buddies with names, plus one
 >   "Add a buddy / Anyone on the trip can add people" row with a chevron.
 > - **03b Add a buddy** — `4058:3935` — search with "Ren" typed, results, "Joins from tonight",
->   Invite link / Add Ren. Header carries a bare ink back arrow returning to 03a.
+>   **Cancel / Add Ren**. **No back arrow** — Cancel is the way back, and so is dragging the sheet
+>   down. (An earlier draft of this banner said "Invite link / Add Ren" with a back arrow; that was
+>   wrong. `PRODUCT_SPEC.md` §4 and A6 were right: the invite-link affordance is cut.)
 >
 > Re-pull both with one `get_design_context` each, write a record per screen
 > (`03a-buddies.md`, `03b-add-a-buddy.md`), and split `src/screens/AddRen.tsx` to match.
