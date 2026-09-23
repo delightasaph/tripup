@@ -5,11 +5,11 @@
  *  Ren is deliberately absent: he is the initials avatar "RT". */
 export const avatarPhotos = {
   ari: '/assets/avatars/ari.png',
-  nick: '/assets/avatars/nick.png',
-  rebecca: '/assets/avatars/rebecca.png',
-  william: '/assets/avatars/william.png',
-  phil: '/assets/avatars/phil.png',
-  jess: '/assets/avatars/jess.png',
+  nic: '/assets/avatars/nic.png',
+  bea: '/assets/avatars/bea.png',
+  kofi: '/assets/avatars/kofi.png',
+  sven: '/assets/avatars/sven.png',
+  mira: '/assets/avatars/mira.png',
 } as const
 
 export const placePhotos = {
@@ -51,7 +51,7 @@ export const stamps = {
  *  stamp that drops on ending 11B. They are not interchangeable. */
 export const ticketStamp = '/assets/stamps/portugal-ticket.png'
 
-/** The dashed "still to vote" ring behind Phil's avatar on 05 (Figma 84:306).
+/** The dashed "still to vote" ring behind Sven's avatar on 05 (Figma 84:306).
  *  Exported at 84 x 84 and drawn at 42. */
 export const pendingRing = '/assets/pending-ring.png'
 

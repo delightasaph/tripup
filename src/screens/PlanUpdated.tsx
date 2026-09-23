@@ -2,7 +2,7 @@ import { Toast } from '@/components/Toast'
 import { TripLisbon } from './TripLisbon'
 
 /**
- * 06 · Plan updated — Figma 167:2903.
+ * 06 · Plan updated — Figma 4064:18080.
  * The trip screen at 18:25 with the dinner slot resolved and the closing
  * toast up. Everything else is screen 02 unchanged.
  */

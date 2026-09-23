@@ -1,6 +1,6 @@
 import { Avatar, type Person } from './Avatar'
 
-/** The latest vote event, on a faint ink pill: "Nick voted Time Out Market". */
+/** The latest vote event, on a faint ink pill: "Nic voted Time Out Market". */
 export function Ticker({ person, event, when }: { person: Person; event: string; when: string }) {
   return (
     <div

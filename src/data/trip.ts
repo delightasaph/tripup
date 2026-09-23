@@ -3,23 +3,23 @@ import type { Person } from '@/components/Avatar'
 /** The cast, per docs/PRODUCT_SPEC.md §3. Ari is "You" on her own phone. */
 export const people: Record<string, Person> = {
   ari: { id: 'ari', label: 'You', initials: 'AM', fill: '--color-avatar-ari', photo: 'ari' },
-  nick: { id: 'nick', label: 'Nick', initials: 'NO', fill: '--color-avatar-nick', photo: 'nick' },
-  rebecca: {
-    id: 'rebecca',
-    label: 'Rebecca',
-    initials: 'RH',
-    fill: '--color-avatar-rebecca',
-    photo: 'rebecca',
+  nic: { id: 'nic', label: 'Nic', initials: 'NO', fill: '--color-avatar-nic', photo: 'nic' },
+  bea: {
+    id: 'bea',
+    label: 'Bea',
+    initials: 'BH',
+    fill: '--color-avatar-bea',
+    photo: 'bea',
   },
-  william: {
-    id: 'william',
-    label: 'William',
-    initials: 'WC',
-    fill: '--color-avatar-william',
-    photo: 'william',
+  kofi: {
+    id: 'kofi',
+    label: 'Kofi',
+    initials: 'KC',
+    fill: '--color-avatar-kofi',
+    photo: 'kofi',
   },
-  phil: { id: 'phil', label: 'Phil', initials: 'PD', fill: '--color-avatar-phil', photo: 'phil' },
-  jess: { id: 'jess', label: 'Jess', initials: 'JM', fill: '--color-avatar-jess', photo: 'jess' },
+  sven: { id: 'sven', label: 'Sven', initials: 'SD', fill: '--color-avatar-sven', photo: 'sven' },
+  mira: { id: 'mira', label: 'Mira', initials: 'MM', fill: '--color-avatar-mira', photo: 'mira' },
   // New tonight, and deliberately without a photo.
   ren: { id: 'ren', label: 'Ren', initials: 'RT', fill: '--color-avatar-ren' },
   marta: { id: 'marta', label: 'Marta', initials: 'ML', fill: '--color-avatar-marta' },
@@ -38,11 +38,11 @@ export const buddySearch = {
 
 export const tripBuddies = [
   people.ari,
-  people.nick,
-  people.rebecca,
-  people.william,
-  people.phil,
-  people.jess,
+  people.nic,
+  people.bea,
+  people.kofi,
+  people.sven,
+  people.mira,
 ]
 
 export const lisbon = {
@@ -70,7 +70,7 @@ export const dinnerPoll = {
       line: 'Cosy tasca · €€ · 6 min walk',
       photo: 'taberna' as const,
       icon: 'bowl' as const,
-      voters: [people.ari, people.rebecca, people.william],
+      voters: [people.ari, people.bea, people.kofi],
       fill: 159 / 318,
     },
     {
@@ -79,7 +79,7 @@ export const dinnerPoll = {
       line: 'Buzzy food hall · € · 11 min walk',
       photo: 'timeout' as const,
       icon: 'fork-knife' as const,
-      voters: [people.nick, people.ren],
+      voters: [people.nic, people.ren],
       fill: 104.9 / 318,
     },
     {
@@ -88,7 +88,7 @@ export const dinnerPoll = {
       line: 'Seafood feast · €€€ · 9 min by tram',
       photo: 'ramiro' as const,
       icon: 'fish' as const,
-      voters: [people.jess],
+      voters: [people.mira],
       fill: 54.1 / 318,
     },
   ],
@@ -98,8 +98,8 @@ export const dinnerPoll = {
     { id: 'timeout', name: 'Time Out Market', line: 'Buzzy food hall · € · 11 min walk', photo: 'timeout' as const, icon: 'fork-knife' as const },
     { id: 'ramiro', name: 'Cervejaria Ramiro', line: 'Seafood feast · €€€ · 9 min by tram', photo: 'ramiro' as const, icon: 'fish' as const },
   ],
-  ticker: { person: people.nick, event: 'voted Time Out Market', when: 'just now' },
-  waitingOn: people.phil,
+  ticker: { person: people.nic, event: 'voted Time Out Market', when: 'just now' },
+  waitingOn: people.sven,
 }
 
 export const upcomingTrips = [

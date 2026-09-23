@@ -51,11 +51,11 @@ export const colours: { group: string; items: Swatch[] }[] = [
 
 export const avatarFills: { name: string; varName: string; initials: string }[] = [
   { name: 'Ari', varName: '--color-avatar-ari', initials: 'AM' },
-  { name: 'Nick', varName: '--color-avatar-nick', initials: 'NO' },
-  { name: 'Rebecca', varName: '--color-avatar-rebecca', initials: 'RH' },
-  { name: 'William', varName: '--color-avatar-william', initials: 'WC' },
-  { name: 'Phil', varName: '--color-avatar-phil', initials: 'PD' },
-  { name: 'Jess', varName: '--color-avatar-jess', initials: 'JM' },
+  { name: 'Nic', varName: '--color-avatar-nic', initials: 'NO' },
+  { name: 'Bea', varName: '--color-avatar-bea', initials: 'BH' },
+  { name: 'Kofi', varName: '--color-avatar-kofi', initials: 'KC' },
+  { name: 'Sven', varName: '--color-avatar-sven', initials: 'SD' },
+  { name: 'Mira', varName: '--color-avatar-mira', initials: 'MM' },
   { name: 'Ren', varName: '--color-avatar-ren', initials: 'RT' },
   { name: 'Marta', varName: '--color-avatar-marta', initials: 'ML' },
   { name: 'Hugo', varName: '--color-avatar-hugo', initials: 'HS' },

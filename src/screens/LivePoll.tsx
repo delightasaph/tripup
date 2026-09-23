@@ -12,7 +12,7 @@ import { dinnerPoll } from '@/data/trip'
  * Static layout; the countdown, arriving votes and animation come later.
  *
  * Offsets are the frame's own: content at x 20 / y 64, body at +60, options at
- * +154 with cards at 0 / 140 / 268, "Waiting on Phil" at +562, actions at 756.
+ * +154 with cards at 0 / 140 / 268, "Waiting on Sven" at +562, actions at 756.
  */
 export function LivePoll() {
   const { question, askedLine, askedBy, closesIn, options, ticker, waitingOn } = dinnerPoll
@@ -56,7 +56,7 @@ export function LivePoll() {
           ))}
         </div>
 
-        {/* Waiting on Phil */}
+        {/* Waiting on Sven */}
         <div
           className="relative"
           style={{

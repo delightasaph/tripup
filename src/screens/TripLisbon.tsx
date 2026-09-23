@@ -10,8 +10,8 @@ import { Ticket } from '@/components/Ticket'
 import { lisbon, tripBuddies } from '@/data/trip'
 
 /**
- * 02 · Trip · Lisbon (Itinerary) — Figma 122:7866, and the same screen with
- * the dinner slot resolved for 06 Plan updated (167:2903).
+ * 02 · Trip · Lisbon (Itinerary) — Figma 4064:17467, and the same screen with
+ * the dinner slot resolved for 06 Plan updated (4064:18080).
  * Static layout; the flow and motion come later.
  *
  * Offsets are the Figma frame's own: content column at x 20 / y 64, 350 wide;
