@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import type { IconName } from '@/components/Icon'
 import { dinnerBillItems, dinnerBill, openingBalanceCents, settledAt } from '@/data/expenses'
+import { placesCatalog } from '@/data/places'
 import { dinnerPoll, people, placeShortNames } from '@/data/trip'
 import { formatEuros } from '@/domain/money'
 import { nettedTransfers, type Balance, type Transfer } from '@/domain/netting'
@@ -10,9 +11,13 @@ import { billTotal, splitByItems, splitEqually, type BillItem } from '@/domain/s
 /** Everyone on the trip once Ren has joined, Ari included — the voting body
  *  and the settle-up roster. */
 const allSevenIds = ['ari', 'nic', 'bea', 'kofi', 'sven', 'mira', 'ren']
-/** Every place Ari could put on the poll — "Add a place" toggles among these
- *  three, since they're the only ones with real photography. */
-const catalogPlaceIds = dinnerPoll.places.map((p) => p.id)
+/** Every place Ari could put on the poll — "Add a place" searches the whole
+ *  catalog, not just the three pre-loaded onto the poll. Used to keep
+ *  `pollOptionIds` in a stable, catalog-wide order as places are toggled. */
+const catalogPlaceIds = placesCatalog.map((p) => p.id)
+/** The poll starts pre-loaded with just the three real-photo places — the
+ *  rest of the catalog is only pulled in via "Add a place". */
+const initialPollOptionIds = dinnerPoll.places.map((p) => p.id)
 /** Where a simulated voter's preferred pick lands if Ari removed it from the
  *  poll before sending — falls back to whichever catalog place is still in. */
 function resolveOptionId(preferred: string, included: string[]): string {
@@ -98,7 +103,7 @@ const initialWineSharedBy = dinnerBillItems.find((i) => i.id === 'wine')!.shared
 const initialStory: StoryState = {
   renJoined: false,
   pollQuestion: dinnerPoll.question,
-  pollOptionIds: catalogPlaceIds,
+  pollOptionIds: initialPollOptionIds,
   pollDeadlineMinutes: 20,
   pollSent: false,
   pollClosed: false,
@@ -398,7 +403,7 @@ export const selectTickerEvent = memoize((state) => {
   if (e.kind === 'deadline') {
     return { person: people.ari, event: `extended the deadline to ${e.minutes} min`, when: 'just now' }
   }
-  const place = dinnerPoll.places.find((p) => p.id === e.optionId)
+  const place = placesCatalog.find((p) => p.id === e.optionId)
   return { person: people[e.personId], event: `voted ${place?.name ?? ''}`, when: 'just now' }
 })
 
@@ -407,7 +412,7 @@ export const selectTickerEvent = memoize((state) => {
 export const selectPollOptionsView = memoize((state) => {
   const outcome = selectPollOutcome(state)
   const total = selectTotalVoters(state)
-  return dinnerPoll.places.filter((place) => state.pollOptionIds.includes(place.id)).map((place) => {
+  return placesCatalog.filter((place) => state.pollOptionIds.includes(place.id)).map((place) => {
     const count = outcome.counts[place.id] ?? 0
     return {
       ...place,
