@@ -112,8 +112,11 @@ export function Home() {
                 padding: 12,
                 borderRadius: 'var(--radius-row-lg)',
                 background: 'var(--color-surface-white-70)',
-                backdropFilter: 'blur(3px)',
-                WebkitBackdropFilter: 'blur(3px)',
+                // Figma background blur 4. Figma's radius is twice the CSS
+                // backdrop-filter value, so 4 in the file is 2px here — the
+                // export confirms it (blur 6 exported as 3px, 4 as 2px).
+                backdropFilter: 'blur(2px)',
+                WebkitBackdropFilter: 'blur(2px)',
               }}
             >
               <div className="flex min-w-0 flex-1 flex-col items-start" style={{ gap: 14 }}>
@@ -179,16 +182,19 @@ export function Home() {
           className="flex w-full shrink-0 flex-col items-center"
           style={{ paddingTop: 16, gap: 8 }}
         >
-          {/* The header block is a fixed 48 in the frame, taller than its
-              39 of content — the slack is part of the rhythm. */}
-          <div
-            className="flex w-full flex-col items-center"
-            style={{ height: 48, gap: 4 }}
-          >
-            <h2 className="text-headline font-semibold">Stamps</h2>
-            <p className="text-footnote" style={{ color: 'var(--color-ink-secondary)' }}>
-              Collect stamps with every successful trip
-            </p>
+          {/* Frame 7 is 292 wide and holds a 246 header block that is a fixed
+              48 tall — taller than its 39 of content. The slack is part of the
+              rhythm; collapsing it pulls everything below up by 9. */}
+          <div className="flex shrink-0 flex-col items-center" style={{ width: 292 }}>
+            <div
+              className="flex flex-col items-center whitespace-nowrap"
+              style={{ width: 246, height: 48, gap: 4 }}
+            >
+              <h2 className="text-headline font-semibold">Stamps</h2>
+              <p className="text-footnote" style={{ color: 'var(--color-ink-secondary)' }}>
+                Collect stamps with every successful trip
+              </p>
+            </div>
           </div>
 
           {/* The row starts 15 left of the column and runs past the right edge —

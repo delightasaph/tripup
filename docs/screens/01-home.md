@@ -42,8 +42,14 @@ Body/Medium ink, gap 1. Actions gap 10, both 44: notifications is the single exp
 circle with `drop-shadow(0 6px 9px rgb(31 30 36 / .08))` and `plus-ink` 20.
 
 ## Next up panel — inside the card at 12, 136 · 326 × 110
-`Surface/White 70%` with **`backdrop-filter: blur(3px)`**, radius 18, padding 12. Inner column
+`Surface/White 70%` with **`backdrop-filter: blur(2px)`**, radius 18, padding 12. Inner column
 gap 14:
+
+> **Blur units.** The file's background blur is **4**; CSS needs **2px**. Figma's background-blur
+> radius is twice the `backdrop-filter` value, and the export confirms it — the same node exported
+> `3px` when the file said 6, and `2px` now it says 4. Always halve the Figma number; writing the
+> file's value straight into CSS renders twice as blurry as the design.
+
 - Tonight row, gap 12: a 40 `Accent/Violet Tint` tile (radius 12) with `fork-knife-lg` 18, then
   "Tonight · 20:30" Caption/Regular `Ink/Secondary` over "Dinner · not decided yet" Body/SemiBold,
   gap 2.
@@ -66,11 +72,12 @@ Avatar/7 for initials, which is a different element again.
 
 ## Stamps section
 Container `padding-top 16`, gap 8.
-- The heading block is a fixed **48** tall even though its content is 39 — "Stamps" Headline 17
-  centred over "Collect stamps with every successful trip" Footnote/Regular `Ink/Secondary`, gap 4.
-  The 9 pt of slack is part of the rhythm; collapsing it pulls everything below up by 9.
-  *(Inferred from the frame's box heights rather than pulled — the two text nodes were not worth a
-  call. Everything else in this section came from the file.)*
+- The heading block sits in a **292**-wide frame and is itself **246 × 48** — a fixed 48 even
+  though its content is 39. "Stamps" Headline 17 centred over "Collect stamps with every successful
+  trip" Footnote/Regular `Ink/Secondary`, gap 4. The 9 pt of slack is part of the rhythm;
+  collapsing it pulls everything below up by 9. The subtitle is 248 wide, so it overhangs its own
+  246 block by a pixel each side — centred, not clipped. *(Pulled from the file; an earlier pass
+  inferred this from box heights and got the type right but not the widths.)*
 - Stamps row 183 tall, starting 15 left of the column; the last stamp is clipped by the phone, not
   by a container.
 - CTA: full-width ink pill, 54, `drop-shadow(0 10px 10px rgb(31 30 36 / .25))`, Body/Medium plus
