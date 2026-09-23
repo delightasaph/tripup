@@ -9,10 +9,14 @@ import { TripLisbon } from './TripLisbon'
  * 04 · New poll — Figma 164:2379.
  * The trip screen under a scrim, the "Ren joined" toast still up from 03, and
  * the New poll sheet (164:2513) at y 235.5.
+ *
+ * The toast sits **above** the scrim — the frame draws it after — so it stays
+ * undimmed while everything behind it dims. The root must not clip, or the
+ * scrim's overhang over the status bar is cut off.
  */
 export function NewPoll() {
   return (
-    <div className="relative h-full overflow-hidden">
+    <div className="relative h-full">
       <TripLisbon />
       <Scrim />
       <Toast title="Ren joined the trip" detail="Everyone was told" />

@@ -1,16 +1,18 @@
 # 04 · New poll
 
-> ## ⚠️ STALE — re-fetch this screen
-> The Figma frame changed on 23 Sep after this record was written. **This record's
-> "do not re-fetch" instruction does not apply any more.** Re-pull the frame with one
-> `get_design_context` call, rewrite this record from what comes back, then rebuild the screen.
->
-> What changed: the trip **ticket card** behind the sheet was reworked — same new treatment as 02.
-
 Figma node `164:2379`; the sheet is `164:2513`, the toast `164:2506`. Reference render:
 `design/screens/04-new-poll.png`. Built in `src/screens/NewPoll.tsx`. **Do not re-fetch.**
 
 Screen 02 under a scrim, the "Ren joined" toast still up from 03, and the New poll sheet.
+
+**Resolved after the rework.** The only thing that changed on this frame was the trip screen behind
+it, which is composed from the current `TripLisbon` — so no re-pull was needed and none was spent.
+The sheet itself is unchanged and every row still lands: sheet 0, 235.5 · header 268.5 · question
+315.5 · options header 394 · options 427 · deadline 677 · send 756.
+
+The **toast sits above the scrim** — the frame draws it after — so it stays undimmed while
+everything behind it dims. The scrim covers the status bar; the screen root must not clip or that
+overhang is cut off.
 
 ## Toast — 20, 56 · 350 × 50
 Ink, radius 20, padding `10 16 10 10`, gap 10,
