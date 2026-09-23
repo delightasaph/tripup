@@ -78,8 +78,9 @@ Container `padding-top 16`, gap 8.
   collapsing it pulls everything below up by 9. The subtitle is 248 wide, so it overhangs its own
   246 block by a pixel each side — centred, not clipped. *(Pulled from the file; an earlier pass
   inferred this from box heights and got the type right but not the widths.)*
-- Stamps row 183 tall, starting 15 left of the column; the last stamp is clipped by the phone, not
-  by a container.
+- **Stamps row: the frame's own render, not four placed stamps.** 390 × 207, origin Frame 15 at
+  (−20, −4), so it sits full bleed at screen x 0 inside a 183-tall block.
+
 - CTA: full-width ink pill, 54, `drop-shadow(0 10px 10px rgb(31 30 36 / .25))`, Body/Medium plus
   `arrow-right` 20.
 
@@ -92,3 +93,22 @@ Container `padding-top 16`, gap 8.
   stamp instances will always need splitting.
 - The tall ticket's painting uses **two** masks composited with `mask-composite: intersect` — the
   ticket silhouette (offset −149 to line up with the card) and the left-to-right fade.
+
+### Why the stamps row is a render
+I first placed four `Stamp` components and derived each rotation by solving the rotated-bounding-box
+equations against the instance bboxes in the metadata. **That was wrong** — it produced angles about
+three times too steep (Italy −28.5°, France −33.6°, against roughly −12° at most in the frame).
+
+The flaw: the four instances are the *same size*, so the bbox differences come from the "VISITED"
+cancel overhanging each stamp by a different amount once rotated, not from the angle. Fitting three
+unknowns to two equations gave a self-consistent but false answer — the "all four solve to scale
+0.4275" result I treated as validation was an artefact of the fit, not evidence.
+
+The per-stamp transforms are not recoverable from sparse metadata, and a `get_design_context` on the
+row returns sparse because of the four stamp instances. So the row is the frame's render.
+
+Two consequences worth knowing:
+- Figma flattened it onto **white** (Frame 15 has no fill), so the field was keyed out with an
+  edge flood fill. Interior highlights are untouched.
+- **It cannot gain a fifth stamp.** `PRODUCT_SPEC.md` says Home shows 5 countries after ending 11B;
+  that state needs its own render of the same frame.

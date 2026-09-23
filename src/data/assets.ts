@@ -69,6 +69,20 @@ export type AvatarPhotoId = keyof typeof avatarPhotos
 export const ticketShape = '/assets/ticket.svg'
 
 /**
+ * Home's stamps row, as the frame's own render.
+ *
+ * 390 x 207, keyed off the white Figma flattened it onto. Its origin is
+ * Frame 15 at (-20, -4), so it sits full bleed at screen x 0.
+ *
+ * It is a render rather than four placed `Stamp`s because the per-stamp
+ * transforms are not recoverable from the metadata — see the note in
+ * docs/screens/01-home.md. **If Home ever has to show five stamps (after
+ * ending 11B), this needs a second render of that state; it cannot gain a
+ * stamp on its own.**
+ */
+export const homeStampsRow = '/assets/stamps/home-row.png'
+
+/**
  * Home's "Your stamps · 4 countries" row, read off the Figma frame
  * (162:429 > 165:24924). The countries are England, Spain, Italy and France —
  * Portugal is NOT among them; it is the stamp Ari earns at the end of this trip.

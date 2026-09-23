@@ -1,14 +1,8 @@
 import { Avatar, AvatarStack } from '@/components/Avatar'
 import { ComingUpCard } from '@/components/ComingUpCard'
 import { Icon } from '@/components/Icon'
-import { Stamp } from '@/components/Stamp'
 import { Ticket } from '@/components/Ticket'
-import {
-  homeStampScale,
-  homeStamps,
-  homeStampsRowOffset,
-  stampNaturalSize,
-} from '@/data/assets'
+import { homeStampsRow } from '@/data/assets'
 import { lisbon, people, tripBuddies, upcomingTrips } from '@/data/trip'
 
 /**
@@ -19,9 +13,6 @@ import { lisbon, people, tripBuddies, upcomingTrips } from '@/data/trip'
  * sections stack at gap 20.
  */
 export function Home() {
-  const paperWidth = stampNaturalSize.width * homeStampScale
-  const paperHeight = paperWidth * (stampNaturalSize.height / stampNaturalSize.width)
-
   return (
     <div className="no-scrollbar h-full overflow-y-auto" style={{ overflowX: 'hidden' }}>
       <div
@@ -197,20 +188,28 @@ export function Home() {
             </div>
           </div>
 
-          {/* The row starts 15 left of the column and runs past the right edge —
-              the last stamp is clipped by the phone, not by this container. */}
+          {/*
+            The row is the frame's own render, not four placed stamps.
+
+            Deriving each stamp's rotation from its bounding box did not work:
+            the four instances are the same size, so the bbox differences come
+            from the "VISITED" overhang rather than the angle, and solving
+            three unknowns against two equations produced angles roughly three
+            times too steep. The frame render is exact, so it wins.
+
+            Figma exported it on white (Frame 15 has no fill), so the field was
+            keyed out. Its origin is Frame 15 at (-20, -4), which puts it full
+            bleed at screen x 0.
+          */}
           <div className="relative w-full shrink-0" style={{ height: 183 }}>
-            <div className="absolute" style={{ left: homeStampsRowOffset, top: 0 }}>
-              {homeStamps.map((s) => (
-                <div
-                  key={s.country}
-                  className="absolute"
-                  style={{ left: s.cx - paperWidth / 2, top: s.cy - paperHeight / 2 }}
-                >
-                  <Stamp country={s.country} paperWidth={paperWidth} rotate={s.rotate} />
-                </div>
-              ))}
-            </div>
+            <img
+              src={homeStampsRow}
+              alt="Your stamps: England, Spain, Italy and France"
+              width={390}
+              height={207}
+              className="absolute"
+              style={{ left: -20, top: -4, maxWidth: 'none' }}
+            />
           </div>
 
           <button
