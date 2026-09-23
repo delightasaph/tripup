@@ -11,6 +11,7 @@ import { SectionHeader } from '@/components/SectionHeader'
 import { Timeline, TimelineRow } from '@/components/Timeline'
 import { Ticket } from '@/components/Ticket'
 import { placePhotos } from '@/data/assets'
+import { placesCatalog, type PlaceCatalogEntry } from '@/data/places'
 import { dinnerPoll, lisbon } from '@/data/trip'
 import { useScreenNav } from '@/lib/useScreenNav'
 import { selectBuddyPeople, useTripStore } from '@/store/tripStore'
@@ -75,7 +76,7 @@ export function TripLisbon({
 
   const decided = (dinner ?? (pollClosed ? 'decided' : 'open')) === 'decided'
   const shownCrew = crew ?? liveCrew
-  const winningPlace = dinnerPoll.places.find((p) => p.id === winnerId) ?? dinnerPoll.places[0]
+  const winningPlace = placesCatalog.find((p) => p.id === winnerId) ?? dinnerPoll.places[0]
 
   const comingSoon = () => showToast({ title: 'Coming soon', detail: 'Maps aren’t wired up in this prototype' })
 
@@ -307,7 +308,7 @@ function DinnerDecided({
   onLogExpense,
   onMap,
 }: {
-  place: (typeof dinnerPoll.places)[number]
+  place: PlaceCatalogEntry
   onLogExpense: () => void
   onMap: () => void
 }) {
@@ -331,13 +332,23 @@ function DinnerDecided({
           className="shrink-0 overflow-hidden"
           style={{ width: 48, height: 48, borderRadius: 'var(--radius-tile)' }}
         >
-          <motion.img
-            layoutId="dinner-photo"
-            src={placePhotos[place.photo]}
-            alt=""
-            aria-hidden="true"
-            className="h-full w-full object-cover"
-          />
+          {place.photo ? (
+            <motion.img
+              layoutId="dinner-photo"
+              src={placePhotos[place.photo]}
+              alt=""
+              aria-hidden="true"
+              className="h-full w-full object-cover"
+            />
+          ) : (
+            <motion.div
+              layoutId="dinner-photo"
+              className="flex h-full w-full items-center justify-center"
+              style={{ background: 'var(--color-surface-white-70)' }}
+            >
+              <Icon name={place.icon} size={22} />
+            </motion.div>
+          )}
         </div>
         <div className="flex min-w-0 flex-1 flex-col items-start" style={{ gap: 5 }}>
           <p className="w-full text-headline font-semibold">{place.name}</p>

@@ -1,4 +1,5 @@
 import type { Person } from '@/components/Avatar'
+import { placesCatalog } from './places'
 
 /** The cast, per docs/PRODUCT_SPEC.md §3. Ari is "You" on her own phone. */
 export const people: Record<string, Person> = {
@@ -92,12 +93,9 @@ export const dinnerPoll = {
       fill: 54.1 / 318,
     },
   ],
-  /** The three places as they appear while composing the poll (04). */
-  places: [
-    { id: 'taberna', name: 'Taberna da Rua das Flores', line: 'Cosy tasca · €€ · 6 min walk', photo: 'taberna' as const, icon: 'bowl' as const },
-    { id: 'timeout', name: 'Time Out Market', line: 'Buzzy food hall · € · 11 min walk', photo: 'timeout' as const, icon: 'fork-knife' as const },
-    { id: 'ramiro', name: 'Cervejaria Ramiro', line: 'Seafood feast · €€€ · 9 min by tram', photo: 'ramiro' as const, icon: 'fish' as const },
-  ],
+  /** The three places the poll starts with, composing it (04) — the same
+   *  entries as in `src/data/places.ts`'s wider search catalog. */
+  places: placesCatalog.filter((p) => p.id === 'taberna' || p.id === 'timeout' || p.id === 'ramiro'),
   ticker: { person: people.nic, event: 'voted Time Out Market', when: 'just now' },
   waitingOn: people.sven,
 }

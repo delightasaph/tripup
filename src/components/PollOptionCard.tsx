@@ -9,8 +9,10 @@ export type PollOption = {
   name: string
   /** "Cosy tasca · €€ · 6 min walk" */
   line: string
-  photo: keyof typeof placePhotos
-  /** The small badge on the photo tile. */
+  /** Only the three photographed places have one — everything found through
+   *  "Add a place"'s search renders `icon` as a centered tile glyph instead
+   *  of a small corner badge. */
+  photo?: keyof typeof placePhotos
   icon: IconName
   voters: Person[]
 }
@@ -77,33 +79,50 @@ export function PollOptionCard({ option, fill, leading, yourVote, sharedElement,
       {/* Top row */}
       <div className="absolute" style={{ left: 14, top: 14, width: 320, height: 52 }}>
         <div className="absolute" style={{ left: 0, top: 0, width: 52, height: 52 }}>
-          <motion.img
-            layoutId={sharedElement ? 'dinner-photo' : undefined}
-            src={placePhotos[option.photo]}
-            alt=""
-            aria-hidden="true"
-            style={{
-              width: 48,
-              height: 48,
-              objectFit: 'cover',
-              borderRadius: 'var(--radius-tile)',
-              display: 'block',
-            }}
-          />
-          <span
-            className="absolute flex items-center justify-center"
-            style={{
-              left: 34,
-              top: 34,
-              width: 22,
-              height: 22,
-              borderRadius: '50%',
-              background: 'var(--color-surface-white)',
-              boxShadow: 'var(--shadow-card)',
-            }}
-          >
-            <Icon name={option.icon} size={13} />
-          </span>
+          {option.photo ? (
+            <>
+              <motion.img
+                layoutId={sharedElement ? 'dinner-photo' : undefined}
+                src={placePhotos[option.photo]}
+                alt=""
+                aria-hidden="true"
+                style={{
+                  width: 48,
+                  height: 48,
+                  objectFit: 'cover',
+                  borderRadius: 'var(--radius-tile)',
+                  display: 'block',
+                }}
+              />
+              <span
+                className="absolute flex items-center justify-center"
+                style={{
+                  left: 34,
+                  top: 34,
+                  width: 22,
+                  height: 22,
+                  borderRadius: '50%',
+                  background: 'var(--color-surface-white)',
+                  boxShadow: 'var(--shadow-card)',
+                }}
+              >
+                <Icon name={option.icon} size={13} />
+              </span>
+            </>
+          ) : (
+            <motion.div
+              layoutId={sharedElement ? 'dinner-photo' : undefined}
+              className="flex items-center justify-center"
+              style={{
+                width: 48,
+                height: 48,
+                borderRadius: 'var(--radius-tile)',
+                background: 'var(--color-surface-ground)',
+              }}
+            >
+              <Icon name={option.icon} size={22} />
+            </motion.div>
+          )}
         </div>
         <div className="absolute" style={{ left: 66, top: 0, width: 254 }}>
           <h3 className="text-headline font-semibold" style={{ marginTop: 4 }}>

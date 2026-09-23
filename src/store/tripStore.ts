@@ -29,6 +29,13 @@ export type Ending = 'A' | 'B'
 
 export type ToastPayload = { title: string; detail: string; icon?: IconName; iconSize?: number }
 
+/** The latest thing that happened on the live poll — a vote, or Ari
+ *  extending the deadline — so `Ticker.tsx` has one thing to render
+ *  regardless of which kind it is. */
+export type PollEvent =
+  | { kind: 'vote'; personId: string; optionId: string }
+  | { kind: 'deadline'; minutes: number }
+
 interface StoryState {
   renJoined: boolean
 
@@ -41,6 +48,7 @@ interface StoryState {
   pollClosed: boolean
   votes: Vote[]
   closesInSeconds: number
+  lastEvent: PollEvent | null
   nudged: boolean
   changingVote: boolean
   winnerId: string | null
@@ -66,6 +74,7 @@ interface TripStore extends StoryState, DemoMeta {
   setPollQuestion: (question: string) => void
   togglePollOption: (placeId: string) => void
   setPollDeadline: (minutes: number) => void
+  extendDeadline: (minutes: number) => void
   sendPoll: () => void
   castVote: (personId: string, optionId: string, options?: { allowChange?: boolean }) => void
   requestChangeVote: () => void
@@ -95,6 +104,7 @@ const initialStory: StoryState = {
   pollClosed: false,
   votes: [],
   closesInSeconds: 1200,
+  lastEvent: null,
   nudged: false,
   changingVote: false,
   winnerId: null,
@@ -196,6 +206,20 @@ export const useTripStore = create<TripStore>((set, get) => {
 
     setPollDeadline: (minutes) => set({ pollDeadlineMinutes: minutes }),
 
+    /** Changes the deadline mid-poll (05's countdown pill), re-basing the
+     *  remaining time by the time already elapsed rather than just resetting
+     *  the clock — 6 of the original 20 gone still means 6 gone of the new
+     *  30. Pushes a `lastEvent` so the ticker announces it the way a vote
+     *  does. */
+    extendDeadline: (minutes) => {
+      const state = get()
+      if (state.pollClosed || !state.pollSent || minutes === state.pollDeadlineMinutes) return
+      const elapsed = state.pollDeadlineMinutes * 60 - state.closesInSeconds
+      const closesInSeconds = Math.max(0, minutes * 60 - elapsed)
+      set({ pollDeadlineMinutes: minutes, closesInSeconds, lastEvent: { kind: 'deadline', minutes } })
+      maybeAutoClose()
+    },
+
     sendPoll: () => {
       const state = get()
       if (state.pollSent) return
@@ -220,11 +244,12 @@ export const useTripStore = create<TripStore>((set, get) => {
       if (state.pollClosed) return
       const existing = state.votes.find((v) => v.personId === personId)
       if (existing && !options?.allowChange) return
+      const lastEvent: PollEvent = { kind: 'vote', personId, optionId }
       if (existing) {
-        set({ votes: state.votes.map((v) => (v.personId === personId ? { ...v, optionId } : v)) })
+        set({ votes: state.votes.map((v) => (v.personId === personId ? { ...v, optionId } : v)), lastEvent })
       } else {
         const order = state.votes.length === 0 ? 0 : Math.max(...state.votes.map((v) => v.order)) + 1
-        set({ votes: [...state.votes, { personId, optionId, order }] })
+        set({ votes: [...state.votes, { personId, optionId, order }], lastEvent })
       }
       maybeAutoClose()
     },
@@ -364,6 +389,18 @@ export const selectPendingVoters = memoize((state) => {
 export function selectYourVote(state: StoryState, personId: string): string | null {
   return state.votes.find((v) => v.personId === personId)?.optionId ?? null
 }
+
+/** The ticker's one line, whatever kind of event produced it — a vote or a
+ *  deadline extension. `Ticker.tsx` just renders whatever comes back. */
+export const selectTickerEvent = memoize((state) => {
+  const e = state.lastEvent
+  if (!e) return null
+  if (e.kind === 'deadline') {
+    return { person: people.ari, event: `extended the deadline to ${e.minutes} min`, when: 'just now' }
+  }
+  const place = dinnerPoll.places.find((p) => p.id === e.optionId)
+  return { person: people[e.personId], event: `voted ${place?.name ?? ''}`, when: 'just now' }
+})
 
 /** The three option cards, with their voters/count/fill/leader status derived
  *  live from `state.votes` — 05 (Live poll) and 04c (Vote) both read this. */

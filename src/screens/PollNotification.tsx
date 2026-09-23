@@ -1,23 +1,24 @@
+import { motion } from 'framer-motion'
 import { Icon } from '@/components/Icon'
 import { Pill } from '@/components/Pill'
 import { lockScreenWallpaper, lockScreenWallpaperPosition } from '@/data/assets'
 import { useScreenNav } from '@/lib/useScreenNav'
+import { HOVER_SMALL, TAP_SMALL, TAP_TRANSITION } from '@/styles/motion'
 
 /**
  * 04b · Poll notification, Nic's lock screen — Figma `166:2578`.
  *
  * Not part of the original wireflow. Draws its own chrome (big clock, no iOS
  * status bar) — the screen renders with `chrome={false}` in the registry.
- * Tap → 04c.
+ * Tapping the poll's own notification (not empty screen space, the way a
+ * real lock screen works) → 04c.
  */
 export function PollNotification() {
   const { go } = useScreenNav()
 
   return (
-    <button
-      type="button"
-      onClick={() => go('vote')}
-      className="relative flex h-full w-full flex-col items-center overflow-hidden text-left"
+    <div
+      className="relative flex h-full w-full flex-col items-center overflow-hidden"
       style={{ paddingTop: 70, paddingInline: 12 }}
     >
       <img
@@ -54,12 +55,14 @@ export function PollNotification() {
 
       <div style={{ height: 10 }} />
 
-      {/* Notifications */}
+      {/* Notifications — the poll one is the real tap target, the way a
+          lock screen actually works, not the whole empty screen. */}
       <div className="relative flex w-full shrink-0 flex-col items-start" style={{ gap: 8 }}>
         <NotificationCard
           title="TripUp · Lisbon"
           time="now"
           body="Ari started a poll: Where are we eating tonight? Tap to vote, closes in 20 min."
+          onClick={() => go('vote')}
         />
         <NotificationCard
           title="TripUp · Lisbon"
@@ -77,7 +80,7 @@ export function PollNotification() {
         <QuickAction label="Torch" icon="torch" />
         <QuickAction label="Camera" icon="camera" />
       </div>
-    </button>
+    </div>
   )
 }
 
@@ -86,15 +89,24 @@ function NotificationCard({
   time,
   body,
   faded,
+  onClick,
 }: {
   title: string
   time: string
   body: string
   faded?: boolean
+  onClick?: () => void
 }) {
+  const Tag = onClick ? motion.button : motion.div
+
   return (
-    <div
-      className="flex w-full shrink-0 items-start"
+    <Tag
+      type={onClick ? 'button' : undefined}
+      onClick={onClick}
+      whileHover={onClick ? HOVER_SMALL : undefined}
+      whileTap={onClick ? TAP_SMALL : undefined}
+      transition={TAP_TRANSITION}
+      className="flex w-full shrink-0 items-start text-left"
       style={{
         gap: 10,
         padding: '12px 14px',
@@ -120,7 +132,7 @@ function NotificationCard({
         </div>
         <p className="w-full text-footnote">{body}</p>
       </div>
-    </div>
+    </Tag>
   )
 }
 

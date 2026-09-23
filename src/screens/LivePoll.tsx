@@ -1,6 +1,7 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Avatar } from '@/components/Avatar'
 import { Button, IconButton } from '@/components/Button'
+import { DeadlineSheet } from '@/components/DeadlineSheet'
 import { Icon } from '@/components/Icon'
 import { LivePill } from '@/components/LivePill'
 import { PollOptionCard } from '@/components/PollOptionCard'
@@ -12,6 +13,7 @@ import {
   formatCountdown,
   selectPendingVoters,
   selectPollOptionsView,
+  selectTickerEvent,
   selectYourVote,
   useTripStore,
 } from '@/store/tripStore'
@@ -28,6 +30,7 @@ export function LivePoll() {
 
   const question = useTripStore((s) => s.pollQuestion)
   const closesInSeconds = useTripStore((s) => s.closesInSeconds)
+  const deadlineMinutes = useTripStore((s) => s.pollDeadlineMinutes)
   const pollClosed = useTripStore((s) => s.pollClosed)
   const winnerId = useTripStore((s) => s.winnerId)
   const nudged = useTripStore((s) => s.nudged)
@@ -36,10 +39,18 @@ export function LivePoll() {
   const optionsView = useTripStore(selectPollOptionsView)
   const pendingVoters = useTripStore(selectPendingVoters)
   const yourVote = useTripStore((s) => selectYourVote(s, 'ari'))
+  const ticker = useTripStore(selectTickerEvent)
   const nudgeSven = useTripStore((s) => s.nudgeSven)
   const requestChangeVote = useTripStore((s) => s.requestChangeVote)
   const changeVoteTo = useTripStore((s) => s.changeVoteTo)
   const closePollNow = useTripStore((s) => s.closePollNow)
+  const extendDeadline = useTripStore((s) => s.extendDeadline)
+  const [deadlineOpen, setDeadlineOpen] = useState(false)
+
+  // Ari's the asker in this scenario, and 05 is always her own view — but
+  // written as a real check, not a hard "true", since who's allowed to move
+  // the deadline is a creator permission, not a screen one.
+  const isCreator = dinnerPoll.askedBy.id === 'ari'
 
   // The poll can close on its own (everyone voted, or the nudge chain lands
   // Sven's vote) — when it does, follow everyone else to 06.
@@ -48,14 +59,6 @@ export function LivePoll() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pollClosed])
 
-  const lastVote = votes.at(-1)
-  const ticker = lastVote
-    ? {
-        person: people[lastVote.personId],
-        event: `voted ${dinnerPoll.places.find((p) => p.id === lastVote.optionId)?.name ?? ''}`,
-        when: 'just now',
-      }
-    : null
   // Votes trickle in over ~6s; the "waiting on / nudge" panel is about the
   // final straggler, so it only appears once everyone else is in — showing it
   // mid-trickle would offer a Nudge for whoever's merely next alphabetically,
@@ -71,7 +74,10 @@ export function LivePoll() {
           <IconButton label="Back to itinerary" size={40} onClick={back}>
             <Icon name="arrow-left" size={20} />
           </IconButton>
-          <LivePill countdown={formatCountdown(closesInSeconds)} />
+          <LivePill
+            countdown={formatCountdown(closesInSeconds)}
+            onEdit={isCreator ? () => setDeadlineOpen(true) : undefined}
+          />
         </div>
 
         <div style={{ height: 20 }} />
@@ -175,6 +181,14 @@ export function LivePoll() {
           Close poll now
         </Button>
       </div>
+
+      <DeadlineSheet
+        open={deadlineOpen}
+        value={deadlineMinutes}
+        footnote="Or as soon as all 7 of you have voted, whichever comes first."
+        onSelect={extendDeadline}
+        onClose={() => setDeadlineOpen(false)}
+      />
     </div>
   )
 }

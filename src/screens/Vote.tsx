@@ -4,10 +4,10 @@ import { Avatar } from '@/components/Avatar'
 import { IconButton } from '@/components/Button'
 import { Icon } from '@/components/Icon'
 import { LivePill } from '@/components/LivePill'
+import { PlaceTile } from '@/components/PlaceTile'
 import { Pill } from '@/components/Pill'
 import { PollOptionCard } from '@/components/PollOptionCard'
 import { Ticker } from '@/components/Ticker'
-import { placePhotos } from '@/data/assets'
 import { dinnerPoll, people } from '@/data/trip'
 import { useScreenNav } from '@/lib/useScreenNav'
 import { HOVER_LIFT, HOVER_SMALL, TAP_LARGE, TAP_SMALL, TAP_TRANSITION } from '@/styles/motion'
@@ -15,6 +15,7 @@ import {
   formatCountdown,
   selectPendingVoters,
   selectPollOptionsView,
+  selectTickerEvent,
   selectYourVote,
   useTripStore,
 } from '@/store/tripStore'
@@ -37,6 +38,7 @@ export function Vote() {
   const optionsView = useTripStore(selectPollOptionsView)
   const pendingVoters = useTripStore(selectPendingVoters)
   const nicsVote = useTripStore((s) => selectYourVote(s, 'nic'))
+  const ticker = useTripStore(selectTickerEvent)
   const castVote = useTripStore((s) => s.castVote)
 
   const option = optionsView.find((p) => p.id === selected) ?? optionsView[0]
@@ -72,11 +74,7 @@ export function Vote() {
           </h1>
 
           <div style={{ height: 16 }} />
-          <Ticker
-            person={people[votes.at(-1)!.personId]}
-            event={`voted ${dinnerPoll.places.find((p) => p.id === votes.at(-1)!.optionId)?.name ?? ''}`}
-            when="just now"
-          />
+          {ticker && <Ticker person={ticker.person} event={ticker.event} when={ticker.when} />}
 
           <div className="relative" style={{ marginTop: 16, height: 388 }}>
             {optionsView.map((o, i) => (
@@ -132,13 +130,7 @@ export function Vote() {
         </h1>
 
         <div style={{ height: 16 }} />
-        {votes.length > 0 && (
-          <Ticker
-            person={people[votes.at(-1)!.personId]}
-            event={`voted ${dinnerPoll.places.find((p) => p.id === votes.at(-1)!.optionId)?.name ?? ''}`}
-            when="just now"
-          />
-        )}
+        {ticker && <Ticker person={ticker.person} event={ticker.event} when={ticker.when} />}
 
         {/* Options — selectable, no results shown yet */}
         <div className="flex w-full flex-col items-start" style={{ marginTop: 16, gap: 8 }}>
@@ -166,18 +158,7 @@ export function Vote() {
                 }}
               >
                 <div className="relative shrink-0" style={{ width: 52, height: 52 }}>
-                  <img
-                    src={placePhotos[p.photo]}
-                    alt=""
-                    aria-hidden="true"
-                    style={{
-                      width: 48,
-                      height: 48,
-                      objectFit: 'cover',
-                      borderRadius: 'var(--radius-tile)',
-                      display: 'block',
-                    }}
-                  />
+                  <PlaceTile place={p} />
                   <span
                     className="absolute flex items-center justify-center rounded-pill"
                     style={{
