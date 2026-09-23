@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { HOVER_SMALL, TAP_SMALL, TAP_TRANSITION } from '@/styles/motion'
 import { Icon, type IconName } from './Icon'
+import { QuickAddFab, type QuickAddItem } from './QuickAddFab'
 
 export type Tab = { id: string; label: string; icon: IconName }
 
@@ -10,7 +11,8 @@ type BottomBarProps = {
   /** Label for the FAB, which adds to the trip. */
   fabLabel?: string
   onTabChange?: (id: string) => void
-  onFabClick?: () => void
+  /** The FAB's quick-add menu rows — omit to hide the FAB entirely. */
+  fabItems?: QuickAddItem[]
 }
 
 /**
@@ -23,7 +25,7 @@ type BottomBarProps = {
  * instead of cutting between two flat colours, even though the two tabs live
  * on separate screens/routes.
  */
-export function BottomBar({ tabs, activeId, fabLabel = 'Add to trip', onTabChange, onFabClick }: BottomBarProps) {
+export function BottomBar({ tabs, activeId, fabLabel = 'Add to trip', onTabChange, fabItems }: BottomBarProps) {
   return (
     <>
       <div
@@ -84,24 +86,13 @@ export function BottomBar({ tabs, activeId, fabLabel = 'Add to trip', onTabChang
             )
           })}
         </div>
-        <motion.button
-          type="button"
-          aria-label={fabLabel}
-          onClick={onFabClick}
-          whileHover={HOVER_SMALL}
-          whileTap={TAP_SMALL}
-          transition={TAP_TRANSITION}
-          className="flex items-center justify-center rounded-pill"
-          style={{
-            width: 60,
-            height: 60,
-            background: 'var(--color-ink-primary)',
-            filter: 'drop-shadow(0 10px 10px rgb(31 30 36 / 0.25))',
-          }}
-        >
-          <Icon name="plus-white" size={20} />
-        </motion.button>
+        {/* The FAB manages its own absolute position (it grows into a panel
+            that must escape this row's layout) — this spacer just keeps
+            `justify-between` spacing the tab bar the same as when it sat
+            here directly. */}
+        <div aria-hidden="true" style={{ width: 60, height: 60 }} />
       </div>
+      {fabItems && <QuickAddFab items={fabItems} label={fabLabel} />}
     </>
   )
 }
