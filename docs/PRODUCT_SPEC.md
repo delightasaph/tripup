@@ -138,6 +138,15 @@ Figma file `qITM47IS3nfWVV3KxyH3pv`, page "Hi-Fidelity Screens". Build in this o
 | 10 | Ren settles | `171:3175` | Ren |
 | 11 | Squared up | `172:3175` | Ari |
 | 11B | Squared up + stamp collected (alternative) | `172:3255` | Ari |
+| 12 | Quick add (FAB sheet) | `4093:2356` | Ari |
+| 13 | New poll · what are we deciding (filled) | `4094:2129` | Ari |
+| 13b | Time of the event (wheel picker) | `4095:2140` | Ari |
+| 13c | Deadline (wheel picker) | `4095:2389` | Ari |
+| 14 | Trip · an extra poll on the plan | `4101:2206` | Ari |
+| 15 | Notifications | `4098:2195` | Ari |
+| 16 | Log expense (from quick add) | `4097:2350` | Ari |
+| 17 | Expense detail (sheet over 09) | `4098:2440` | Ari |
+| 18 | New poll · empty state | `4097:2617` | Ari |
 
 ### Scroll and breathing room
 Long screens scroll; the **scrolling column** gets 110 pt of empty ground below its last item so
@@ -260,6 +269,70 @@ group view **and** adds Ren" — so seeing who is on the trip and adding someone
 ### 11B Squared up + stamp collected (alternative ending)
 - "All squared up" lime badge; `stamps/portugal.png` (the titled "PORTUGAL" stamp) **stamps down** (scale 1.3 → 1, slight rotation, soft shadow settles); "Lisbon is squared up." "All 5 transfers are done. Your Portugal stamp is now in your collection."; stat pills; "5 transfers · 22:14 – 22:22" row; same actions.
 - Ship both endings behind a demo toggle so the team can compare. Home's "Your stamps" updates to 5 countries after 11B — Portugal joins England, Spain, Italy and France.
+
+
+### 12 Quick add (sheet over 02)
+The FAB opens a **bottom sheet**, not an expanding overlay. Same `Sheet` component, spring and scrim
+as every other sheet; the screen behind scales to 0.96.
+- Two tiles: **New poll** and **Log expense** — `Accent/Violet Tint`, radius 16, 66 high. Both are
+  real actions. (An earlier draft had a third "Smart add" tile; it was cut, so every tile works.)
+- Three rows: **Transport** (Flight, train, bus…), **Stay** (Hotel, hostel, Airbnb…), **Spot or
+  event** (Restaurant, museum, beach…).
+- **The three rows are signposts, not flows.** Each closes the sheet and shows a toast — "Adding
+  transport isn't in this prototype yet", and so on. This is deliberate: the menu states the
+  information architecture, and an honest toast beats a dead tap. Do not build those flows.
+- New poll → 18. Log expense → 16.
+
+### 13 / 18 New poll · what are we deciding (sheet)
+**18** (`4097:2617`) is how it opens: placeholder question, both rows read "Not set", Continue
+disabled. **13** (`4094:2129`) is the same sheet filled in.
+- Question field (Ground, radius 16) with a violet caret.
+- "Time of the event" → 13b. "Deadline" → 13c. Values sit right-aligned with a chevron; grey and
+  "Not set" until chosen, then ink and semibold.
+- Cancel / Continue. Continue is disabled until there is a question **and** an event time.
+- Continue → the **existing places step (04)**. Do not build a second places step.
+
+**Two entry points, deliberately different lengths:**
+- **FAB → New poll** → 18 → 13 → 04 → send. Nothing is known, so the question and time are asked.
+- **Empty dinner slot → "Ask the group"** → straight to 04. The slot already knows the question and
+  the time, so step 1 is skipped.
+Same store action, same poll object, two routes in.
+
+### 13b / 13c Wheel picker (sheet over 13)
+One component, two titles. Three columns — day, hour, minute — five visible rows of 44. The selected
+row sits on a Ground band (radius 12, inset 20); neighbours drop to 55% opacity at ±1 and 22% at ±2.
+The day column shows **"Today"** for the current date. Clear / Done.
+- Build it as a real scrolling wheel with snap (`scroll-snap-type: y mandatory` on the column,
+  `scroll-snap-align: center` on the cells) so it carries native momentum. Not a `<select>`.
+- **The event time cannot be in the past.** Options start from the current clock; earlier times are
+  not offered.
+
+### 14 Trip · an extra poll on the plan
+What the itinerary looks like after a poll is created from the quick add.
+- **A new poll never replaces an existing item.** The dinner slot at 20:30 is untouched. The new poll
+  is inserted as its own timeline row at the event time chosen in 13 — here **23:00**, after dinner.
+- Card is the same open-slot component: dashed violet, question as the title, "Live · closes in
+  18:24 · 2 of 7 voted", violet **See the poll** → 05.
+- Section header counts the new item: "2 of 5 done".
+- Create five more polls and five more rows appear, in time order, and the day scrolls. Rows are
+  ordered by time, always.
+
+### 15 Notifications
+Pushed from the bell on 01 and 02; clears the unread dot.
+- "Notifications" + "2 new". Groups: TODAY / YESTERDAY / EARLIER.
+- Rows: violet unread dot, title (who did what, with the amount), sub-line (the item and your
+  share), time right-aligned. Content is drawn from the ledger in §3 — no invented events.
+
+### 16 Log expense (from quick add)
+Screen 07 with one difference: there is no plan to link to, so the lime linked-plan chip is replaced
+by a **"what's this for"** field (Ground, radius 16). Same amount keypad, same Paid by / Split rows.
+One prop on the existing component, not a new screen.
+
+### 17 Expense detail (sheet over 09)
+Tapping any ledger row on 09 opens it, read-only.
+- Title, "Tue 15 Sep · 21:30 · paid by Kofi", the amount as Title 1 with a "your share €25" pill.
+- "SPLIT EQUALLY · 6 OF YOU" and the six people with their share; the payer is marked "· paid".
+- One dark **Done**. Per-person amounts come from the split logic in `src/domain/`, never hard-coded.
 
 ## 5. Real-time simulation and demo controls
 - A small **demo panel** (collapsible, outside the phone frame on desktop; long-press the status bar on mobile) with: "View as: Ari / Nic / Ren", "Jump to screen", "Reset demo", "Ending: A / B", speed.

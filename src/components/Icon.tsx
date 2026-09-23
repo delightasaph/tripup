@@ -52,6 +52,11 @@ export type IconName =
   | 'apple-pay-mark'
   | 'paypal-mark'
   | 'check-lg'
+  | 'quick-add-poll'
+  | 'quick-add-expense'
+  | 'quick-add-transport'
+  | 'quick-add-stay'
+  | 'quick-add-spot'
 
 /**
  * Each file is the exact vector from Figma. Some carry a baked stroke colour
@@ -109,18 +114,28 @@ const exported: Record<IconName, string> = {
   'apple-pay-mark': '/assets/icons/apple-pay-mark.svg',
   'paypal-mark': '/assets/icons/paypal-mark.svg',
   'check-lg': '/assets/icons/check-lg.svg',
+  // Quick add (12). `quick-add-poll` is 17.19 × 14.84 in the frame, not a
+  // square — draw it at that ratio inside its 24 box rather than stretching.
+  'quick-add-poll': '/assets/icons/quick-add-poll.svg',
+  'quick-add-expense': '/assets/icons/quick-add-expense.svg',
+  'quick-add-transport': '/assets/icons/quick-add-transport.svg',
+  'quick-add-stay': '/assets/icons/quick-add-stay.svg',
+  'quick-add-spot': '/assets/icons/quick-add-spot.svg',
 }
 
 type IconProps = {
   name: IconName
   size: number
+  /** Width stays `size`; pass this when the exported glyph isn't square
+   *  (`quick-add-poll` is 17.19 × 14.84) so it isn't stretched to fit. */
+  height?: number
   /** Tints the glyph. Exported SVGs carry Ink/Primary, so this only applies
    *  where the design asks for another colour. */
   color?: string
   className?: string
 }
 
-export function Icon({ name, size, color, className }: IconProps) {
+export function Icon({ name, size, height = size, color, className }: IconProps) {
   const src = exported[name]
 
   // Tinting needs a mask: an <img> cannot be recoloured.
@@ -132,7 +147,7 @@ export function Icon({ name, size, color, className }: IconProps) {
         style={{
           display: 'inline-block',
           width: size,
-          height: size,
+          height,
           backgroundColor: color,
           maskImage: `url(${src})`,
           WebkitMaskImage: `url(${src})`,
@@ -146,6 +161,6 @@ export function Icon({ name, size, color, className }: IconProps) {
   }
 
   return (
-    <img src={src} alt="" aria-hidden="true" width={size} height={size} className={className} />
+    <img src={src} alt="" aria-hidden="true" width={size} height={height} className={className} />
   )
 }

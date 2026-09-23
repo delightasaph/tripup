@@ -18,11 +18,6 @@ export const DUR_SLOW = 0.42
 export const SPRING_SHEET = { type: 'spring', stiffness: 380, damping: 34, mass: 0.9 } as const
 /** Faces, chips, counts. */
 export const SPRING_POP = { type: 'spring', stiffness: 500, damping: 30 } as const
-/** The FAB's container-transform into the quick-add panel — snappier and
- *  less bouncy than the sheet spring, since it's a small element growing in
- *  place, not a large surface sliding from off-screen. */
-export const SPRING_FAB_EXPAND = { type: 'spring', stiffness: 420, damping: 38, mass: 0.8 } as const
-
 /** Press feedback for ordinary controls — chips, rows, buttons. */
 export const TAP_SMALL = { scale: 0.97 }
 /** Press feedback for large cards, where 0.97 would be felt as jitter. */

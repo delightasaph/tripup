@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import { HOVER_SMALL, TAP_SMALL, TAP_TRANSITION } from '@/styles/motion'
+import { Fab } from './Fab'
 import { Icon, type IconName } from './Icon'
-import { QuickAddFab, type QuickAddItem } from './QuickAddFab'
 
 export type Tab = { id: string; label: string; icon: IconName }
 
@@ -11,8 +11,8 @@ type BottomBarProps = {
   /** Label for the FAB, which adds to the trip. */
   fabLabel?: string
   onTabChange?: (id: string) => void
-  /** The FAB's quick-add menu rows — omit to hide the FAB entirely. */
-  fabItems?: QuickAddItem[]
+  /** Opens the quick-add sheet (12) — omit to hide the FAB entirely. */
+  onFabPress?: () => void
 }
 
 /**
@@ -25,7 +25,7 @@ type BottomBarProps = {
  * instead of cutting between two flat colours, even though the two tabs live
  * on separate screens/routes.
  */
-export function BottomBar({ tabs, activeId, fabLabel = 'Add to trip', onTabChange, fabItems }: BottomBarProps) {
+export function BottomBar({ tabs, activeId, fabLabel = 'Add to trip', onTabChange, onFabPress }: BottomBarProps) {
   return (
     <>
       <div
@@ -86,13 +86,13 @@ export function BottomBar({ tabs, activeId, fabLabel = 'Add to trip', onTabChang
             )
           })}
         </div>
-        {/* The FAB manages its own absolute position (it grows into a panel
-            that must escape this row's layout) — this spacer just keeps
+        {/* The FAB is positioned against the frame, not this row, so the
+            scrim and sheet can rise over it — this spacer just keeps
             `justify-between` spacing the tab bar the same as when it sat
             here directly. */}
         <div aria-hidden="true" style={{ width: 60, height: 60 }} />
       </div>
-      {fabItems && <QuickAddFab items={fabItems} label={fabLabel} />}
+      {onFabPress && <Fab onPress={onFabPress} label={fabLabel} />}
     </>
   )
 }

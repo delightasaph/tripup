@@ -81,7 +81,16 @@ Already resolved, don't redo: the FAB's routing (`TripLisbon.tsx`'s `onFabClick`
 New Poll or Log Expense depending on whether dinner is decided) and the deadline picker itself — see
 §2 below for what changes about the FAB next.
 
-## 2. Next (build after §0 and §1 are done and verified) — the FAB becomes a quick-add menu
+## 2. ~~The FAB becomes a quick-add menu~~ — SUPERSEDED
+
+**This section is no longer the design.** The container transform described below was built, then
+replaced: the FAB now opens an ordinary bottom sheet (screen 12, Figma `4093:2356`) using the same
+`Sheet`, spring, scrim and 0.96 backdrop scale as every other sheet in the app, with the content
+the frame specifies. See `docs/PRODUCT_SPEC.md` §4 · 12 and `docs/screens/12-quick-add.md`.
+`SPRING_FAB_EXPAND` was removed with it. The rest of this section is kept only as a record of what
+was tried.
+
+### Original brief (historical)
 
 Right now the FAB does one fixed thing depending on state. Change it to open a small quick-add menu,
 with room to grow:

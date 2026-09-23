@@ -287,10 +287,7 @@ export function TripLisbon({
         ]}
         activeId={tab}
         onTabChange={(id) => changeTab(id as Tab)}
-        fabItems={[
-          { id: 'poll', label: 'Add a poll', icon: 'list', onSelect: () => go('new-poll') },
-          { id: 'expense', label: 'Add an expense', icon: 'receipt', onSelect: () => go('log-expense') },
-        ]}
+        onFabPress={() => go('quick-add')}
       />
     </motion.div>
   )

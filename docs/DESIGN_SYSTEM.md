@@ -95,11 +95,73 @@ Uppercase section labels ("TODAY'S PLAN", "HAPPENING NOW") use Footnote/Medium i
 - **Live pill**: white pill, pulsing red dot, "Live" in Alert, divider, "closes in mm:ss".
 - **Ticker**: pill on `rgba(31,30,36,.05)`, 20 pt avatar, bold name + event.
 - **Toast**: ink pill-card 350 wide at y 56, lime 28 pt icon circle, title (Footnote/Medium white) + sub (Caption lime). Auto-dismiss 3 s.
+- **Wheel picker**: three columns (day 150, hour 52, minute 52), cells 44 high, five visible. Selected
+  row on a `Surface/Ground` band, radius 12, inset 20; neighbours at 55% (±1) and 22% (±2) opacity.
+  Selected text Subheading/SemiBold in `Ink/Primary`, the rest Subheading/Medium in `Ink/Secondary`.
+  Actions: Clear (outline) and Done (ink). Native scroll-snap, never a `<select>`.
+- **Quick-add icons**: five 1.5 px stroke icons drawn for the FAB sheet — bars (New poll), receipt
+  (Log expense), paper plane (Transport), house (Stay), pin (Spot or event). Export them with
+  screen 12; do not substitute an icon library.
 - **Sheet**, **Scrim**, **Segmented control** (white track, ink selected segment), **Keypad** (Ground keys 48 high, radius 14, 8 gap), **Radio** (24 pt: empty 1.5 px ring at 25% ink; selected ink fill + white check).
 - **Tab bar**: white 60 high rounded 999; active tab is an ink pill 48 high with white icon + label; inactive grey.
 - **Icons**: 1.5 px stroke line icons, 13–20 pt, ink by default (from the Figma file; export as SVG).
 
 ## 6. Motion (Framer Motion)
+
+### 6.0 The feel
+The target is an iOS app, not a web page: nothing snaps, nothing janks, and every touch answers
+immediately. These rules apply everywhere and come before the per-element list below.
+
+**Tokens.** Put these in `tokens.css` / a motion module and never hand-write a duration in a
+component.
+
+| Token | Value | Use |
+|---|---|---|
+| `--ease-out` | `cubic-bezier(0.22, 1, 0.36, 1)` | anything entering or settling |
+| `--ease-in-out` | `cubic-bezier(0.4, 0, 0.2, 1)` | anything moving between two states |
+| `--dur-micro` | 120 ms | press feedback, checkbox, chip |
+| `--dur-fast` | 200 ms | fades, toasts, scrim |
+| `--dur-base` | 280 ms | screen transitions, cards |
+| `--dur-slow` | 420 ms | the stamp landing, and nothing else |
+| spring/sheet | `stiffness 380, damping 34, mass 0.9` | sheets |
+| spring/pop | `stiffness 500, damping 30` | faces, chips, counts |
+
+**Animate transform and opacity only.** Never animate `width`, `height`, `top`, `left`, `margin` or
+`box-shadow` — they force layout on every frame. Move with `translate3d`, size with `scale`, and for
+a shadow change, cross-fade a second element that carries the heavier shadow. Set `will-change` only
+while a thing is actually animating.
+
+**Every touch answers.** Interactive elements take `whileTap={{ scale: 0.97 }}` with
+`--dur-micro`; large cards use `0.985` so the effect is felt, not seen. Tap targets stay 44 pt.
+Never gate feedback behind the action's result.
+
+**Scrolling is native momentum, never scripted.** Real scroll containers only — no scroll-jacking,
+no animating `scrollTop` on a wheel event. Set `overscroll-behavior: contain` on sheets so a sheet
+at its end doesn't drag the page behind it, and `scroll-behavior: smooth` only for programmatic
+jumps. Sticky headers use `position: sticky`, not scroll listeners.
+
+**Screen transitions.** Forward: the new screen enters from `translateX(24px)` + `opacity 0` over
+`--dur-base` with `--ease-out`, the old one leaves to `-12px` and fades. Back is the mirror. Sheets
+come up from the bottom with spring/sheet, the scrim fades over `--dur-fast`, and the screen behind
+scales to `0.96` and stays there until the sheet leaves — that one detail is most of the iOS feel.
+Sheets are draggable down and dismiss on distance **or** velocity, not distance alone.
+
+**Continuity over replacement.** Where the same object appears on two screens, it moves — use
+Framer's `layoutId`. The one that matters is the winning poll option's photo travelling into the
+dinner slot on 06; the trip ticket between 01 and 02 is the second.
+
+**Numbers and lists.** Amounts count up with spring/pop, never linearly. Lists stagger children
+40 ms on first mount only — never on re-render, or the screen twitches every state change.
+
+**Reduced motion.** Under `prefers-reduced-motion: reduce`, every transform becomes a 120 ms
+opacity fade, staggers drop to 0, the stamp lands without bounce, and the live dot stops pulsing.
+Nothing becomes unreachable.
+
+**Performance.** 60 fps on a mid-range phone is the bar. Images carry explicit width and height so
+nothing reflows as they load; fonts are preloaded; no animation runs on a screen that isn't visible;
+and timers for the simulated real-time events are cleared on unmount.
+
+### 6.1 Per element
 - Sheets: slide up with spring (stiffness ~380, damping ~34); scrim fades 200 ms. Drag the grabber down to dismiss.
 - Toasts: drop in from −20 px with fade, 250 ms; out after 3 s.
 - Poll: bar widths spring to new values (400 ms); vote counts tick; new voter face pops in (scale 0.6 → 1); ticker text slides up. Leader change cross-fades card fill to lime.

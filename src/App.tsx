@@ -20,6 +20,7 @@ import { Settle } from '@/screens/Settle'
 import { SquaredUp } from '@/screens/SquaredUp'
 import { SquaredUpStamp } from '@/screens/SquaredUpStamp'
 import { PlanUpdated } from '@/screens/PlanUpdated'
+import { QuickAdd } from '@/screens/QuickAdd'
 import { Styleguide } from '@/screens/Styleguide'
 import { Compare } from '@/screens/Compare'
 import { screenById } from '@/screens/registry'
@@ -61,6 +62,8 @@ function screenFor(id: string | undefined, tab: 'itinerary' | 'expenses') {
       return <SquaredUpStamp />
     case 'live-poll':
       return <LivePoll />
+    case 'quick-add':
+      return <QuickAdd />
     default:
       return <Placeholder active={screenById(id ?? '')} />
   }

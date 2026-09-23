@@ -17,6 +17,11 @@ export type ScreenId =
   | 'settle'
   | 'squared-up'
   | 'squared-up-stamp'
+  | 'quick-add'
+  | 'poll-question'
+  | 'notifications'
+  | 'log-expense-new'
+  | 'expense-detail'
 
 export type ScreenEntry = {
   id: ScreenId
@@ -52,6 +57,14 @@ export const screens: ScreenEntry[] = [
   { id: 'settle', no: '10', title: 'Ren settles', phone: 'Ren', time: '22:14', figmaNode: '171:3175' },
   { id: 'squared-up', no: '11', title: 'Squared up', phone: 'Ari', time: '22:25', figmaNode: '172:3175' },
   { id: 'squared-up-stamp', no: '11B', title: 'Squared up + stamp', phone: 'Ari', time: '22:25', figmaNode: '172:3255' },
+  { id: 'quick-add', no: '12', title: 'Quick add', phone: 'Ari', time: '18:05', figmaNode: '4093:2356', sheet: true },
+  // 18 and 13 are one sheet in two states — empty, then filled — so they are
+  // one screen id. 13b/13c (the wheel picker) are a layer inside it, not
+  // routes of their own.
+  { id: 'poll-question', no: '18 / 13', title: 'New poll · what are we deciding', phone: 'Ari', time: '18:05', figmaNode: '4097:2617', sheet: true },
+  { id: 'notifications', no: '15', title: 'Notifications', phone: 'Ari', time: '18:05', figmaNode: '4098:2195' },
+  { id: 'log-expense-new', no: '16', title: 'Log expense (quick add)', phone: 'Ari', time: '18:05', figmaNode: '4097:2350', sheet: true },
+  { id: 'expense-detail', no: '17', title: 'Expense detail', phone: 'Ari', time: '22:12', figmaNode: '4098:2440', sheet: true },
 ]
 
 export const screenById = (id: string): ScreenEntry | undefined =>
