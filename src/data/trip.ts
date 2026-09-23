@@ -102,6 +102,13 @@ export const dinnerPoll = {
   waitingOn: people.sven,
 }
 
+/** Short form of each place's name, for toasts and chips ("Poll closed · Taberna won"). */
+export const placeShortNames: Record<string, string> = {
+  taberna: 'Taberna',
+  timeout: 'Time Out',
+  ramiro: 'Ramiro',
+}
+
 export const upcomingTrips = [
   {
     id: 'porto',

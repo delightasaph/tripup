@@ -1,10 +1,12 @@
-import { billTotal, splitByItems, type BillItem } from '@/domain/split'
-import { nettedTransfers, type Balance } from '@/domain/netting'
+import { billTotal, type BillItem } from '@/domain/split'
 import { people } from './trip'
 
 const allBuddies = ['ari', 'nic', 'bea', 'kofi', 'sven', 'mira', 'ren']
 
-/** The Taberna bill, itemised — docs/PRODUCT_SPEC.md §3 "Dinner bill". */
+/** The Taberna bill, itemised — docs/PRODUCT_SPEC.md §3 "Dinner bill". Shares,
+ *  balances and the netted transfers are all derived reactively from this in
+ *  `src/store/tripStore.ts` (split mode and who's sharing the wine can change
+ *  at runtime), not baked in here. */
 export const dinnerBillItems: BillItem[] = [
   { id: 'mains', label: 'Mains to share', amountCents: 9800, sharedBy: allBuddies },
   { id: 'petiscos', label: 'Petiscos & bread', amountCents: 4200, sharedBy: allBuddies },
@@ -23,9 +25,6 @@ export const dinnerBill = {
   totalCents: billTotal(dinnerBillItems),
 }
 
-/** Per-person share of the dinner, derived from the items above (A5, split by item). */
-export const dinnerShares = splitByItems(dinnerBillItems)
-
 /** Opening balances before dinner, from the 14 earlier expenses (€1,094, cents). */
 export const openingBalanceCents: Record<string, number> = {
   ari: -3000,
@@ -36,20 +35,6 @@ export const openingBalanceCents: Record<string, number> = {
   mira: 2000,
   ren: 0,
 }
-
-/** balance = what they had before + what they paid − their share of this bill. */
-export const balancesAfterDinner: Balance[] = allBuddies.map((id) => {
-  const paid = id === dinnerBill.paidBy.id ? dinnerBill.totalCents : 0
-  const share = dinnerShares[id] ?? 0
-  return { personId: id, cents: openingBalanceCents[id] + paid - share }
-})
-
-export const balanceAfterDinnerById: Record<string, number> = Object.fromEntries(
-  balancesAfterDinner.map((b) => [b.personId, b.cents]),
-)
-
-/** The 5 transfers the netting algorithm settles the trip in — docs/PRODUCT_SPEC.md §3. */
-export const settleTransfers = nettedTransfers(balancesAfterDinner)
 
 /** Settlement times (screen 11), in the order the transfers actually land. */
 export const settledAt: Record<string, string> = {
@@ -111,22 +96,14 @@ export type LedgerDay = { label: string; entries: LedgerEntry[] }
  * The full expense history behind "€1,284 spent in total" on 09 — Figma
  * `4048:16899`. Presentational: each historical item's payer/share split
  * isn't specified beyond what's shown here, so these are fixed figures
- * rather than run through `splitByItems`. Today's dinner entry is the
- * exception — it reads live off `dinnerBill`/`dinnerShares` so it can never
- * drift from the numbers on 07/08/09's balances card.
+ * rather than run through `splitByItems`. Tonight's dinner is deliberately
+ * **not** in here — the Balances screen prepends it live from the store, so
+ * it can never drift from the split mode the demo is currently showing.
  */
 export const expenseLedger: LedgerDay[] = [
   {
     label: 'WED 16 SEP · TODAY',
     entries: [
-      {
-        id: 'dinner',
-        title: `Dinner · ${dinnerBill.restaurant}`,
-        sub: 'You paid',
-        amountCents: dinnerBill.totalCents,
-        youPaid: true,
-        shareCents: dinnerShares.ari,
-      },
       {
         id: 'bikes',
         title: 'Bikes along the river',
