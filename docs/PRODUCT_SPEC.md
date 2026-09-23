@@ -223,7 +223,7 @@ group view **and** adds Ren" — so seeing who is on the trip and adding someone
 
 ### 06 Plan updated
 - Back on the trip at 18:25. Toast: "Poll closed · Taberna won / Added to the plan for 20:30".
-- The dashed dinner slot **morphs** into a lime card with ink border: "Taberna da Rua das Flores", dark pill "Won 4 · 2 · 1", "6 min walk", buttons "Map" (outline) and "Log expense" (dark). Timeline node turns solid violet.
+- The dashed dinner slot **morphs** into a lime card with an ink border: the restaurant's **48 pt photo tile** (the same tile as the poll option card on 05 — wire it as a shared element), "Taberna da Rua das Flores", and a meta line "Dinner · 6 min walk". Actions: **"Log expense"** (dark, 201 wide) and **"Map"** (icon only, 43 wide, no background). Timeline node turns solid violet. The buddy stack reads "+4" — Ren is on the trip by now.
 - Log expense → 07.
 
 ### 07 Log the dinner (sheet)

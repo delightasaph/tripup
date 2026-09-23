@@ -1,4 +1,4 @@
-import { AvatarStack } from '@/components/Avatar'
+import { AvatarStack, type Person } from '@/components/Avatar'
 import { BottomBar } from '@/components/BottomBar'
 import { Button, IconButton } from '@/components/Button'
 import { DayStrip } from '@/components/DayStrip'
@@ -18,7 +18,10 @@ import { lisbon, tripBuddies } from '@/data/trip'
  * chrome — bottom fade, tab bar, FAB — is docked to the viewport, not to the
  * end of the content, and never moves below the fold.
  */
-export function TripLisbon({ dinner = 'open' }: { dinner?: 'open' | 'decided' } = {}) {
+export function TripLisbon({
+  dinner = 'open',
+  crew = tripBuddies,
+}: { dinner?: 'open' | 'decided'; crew?: Person[] } = {}) {
   const decided = dinner === 'decided'
 
   return (
@@ -41,7 +44,7 @@ export function TripLisbon({ dinner = 'open' }: { dinner?: 'open' | 'decided' } 
                 <Icon name="arrow-left" size={20} />
               </IconButton>
               <div className="flex items-center" style={{ gap: 8 }}>
-                <AvatarStack people={tripBuddies} size={30} max={3} />
+                <AvatarStack people={crew} size={30} max={3} />
                 <IconButton
                   label="Add a buddy"
                   size={30}
@@ -183,55 +186,62 @@ export function TripLisbon({ dinner = 'open' }: { dinner?: 'open' | 'decided' } 
 }
 
 /**
- * The dinner slot once the poll has resolved (06): lime with an ink stroke and
- * the winner's own shadow, 280 x 124.
+ * The dinner slot once the poll has resolved (06) — Figma 4064:18230.
+ *
+ * Lime with an ink stroke and a green-cast shadow, hugging its content. The
+ * photo is the **same 48 tile as the poll option card on 05**, which is what
+ * makes the shared-element transition from the poll into the slot possible.
+ *
+ * There is no "Won 4 · 2 · 1" pill any more, and Map is an icon-only button.
  */
 function DinnerDecided() {
   return (
     <div
-      className="shrink-0"
+      className="flex shrink-0 flex-col items-start"
       style={{
         width: 280,
-        height: 124,
+        gap: 12,
         borderRadius: 'var(--radius-card)',
         background: 'var(--color-accent-lime)',
-        outline: '1.5px solid var(--color-ink-primary)',
-        outlineOffset: '-1.5px',
+        border: '1.5px solid var(--color-ink-primary)',
         padding: 14,
         filter: 'drop-shadow(0 12px 12px rgb(115 140 26 / 0.25))',
       }}
     >
-      <p className="text-headline font-semibold">Taberna da Rua das Flores</p>
-      <div className="flex items-center" style={{ marginTop: 5, gap: 6 }}>
-        <span
-          className="inline-flex items-center rounded-pill text-caption2 font-medium"
-          style={{
-            gap: 4,
-            padding: '3px 8px',
-            background: 'var(--color-ink-primary)',
-            color: 'var(--color-accent-lime)',
-          }}
+      <div className="flex w-full items-start" style={{ gap: 12 }}>
+        <div
+          className="shrink-0 overflow-hidden"
+          style={{ width: 48, height: 48, borderRadius: 'var(--radius-tile)' }}
         >
-          <Icon name="won" size={11} />
-          Won 4 · 2 · 1
-        </span>
-        <span className="text-caption" style={{ color: 'var(--color-ink-secondary)' }}>
-          6 min walk
-        </span>
+          <img
+            src={placePhotos.taberna}
+            alt=""
+            aria-hidden="true"
+            className="h-full w-full object-cover"
+          />
+        </div>
+        <div className="flex min-w-0 flex-1 flex-col items-start" style={{ gap: 5 }}>
+          <p className="w-full text-headline font-semibold">Taberna da Rua das Flores</p>
+          <div className="flex items-center" style={{ gap: 4 }}>
+            <span className="text-caption" style={{ color: 'var(--color-ink-secondary)' }}>
+              Dinner ·
+            </span>
+            <span className="flex items-center" style={{ gap: 2 }}>
+              <Icon name="walk-sm" size={14} />
+              <span className="text-caption" style={{ color: 'var(--color-ink-secondary)' }}>
+                6 min walk
+              </span>
+            </span>
+          </div>
+        </div>
       </div>
-      <div className="flex items-start" style={{ marginTop: 12, gap: 8 }}>
+
+      <div className="flex w-full items-start" style={{ gap: 8 }}>
         <button
           type="button"
           className="flex shrink-0 items-center justify-center rounded-pill text-footnote font-medium"
-          style={{ height: 40, gap: 6, paddingInline: 14, background: 'var(--color-surface-white)' }}
-        >
-          <Icon name="map" size={16} />
-          Map
-        </button>
-        <button
-          type="button"
-          className="flex min-w-0 flex-1 items-center justify-center rounded-pill text-footnote font-medium"
           style={{
+            width: 201,
             height: 40,
             gap: 6,
             paddingInline: 14,
@@ -241,6 +251,14 @@ function DinnerDecided() {
         >
           <Icon name="receipt" size={16} />
           Log expense
+        </button>
+        <button
+          type="button"
+          aria-label="Map"
+          className="flex shrink-0 items-center justify-center rounded-pill"
+          style={{ width: 43, height: 40, paddingInline: 14 }}
+        >
+          <Icon name="direction-right" size={24} />
         </button>
       </div>
     </div>

@@ -37,6 +37,7 @@ export type IconName =
   | 'direction-right'
   | 'more'
   | 'person-plus'
+  | 'walk-sm'
 
 /**
  * Each file is the exact vector from Figma. Some carry a baked stroke colour
@@ -79,6 +80,7 @@ const exported: Record<IconName, string> = {
   'direction-right': '/assets/icons/direction-right.svg',
   more: '/assets/icons/more.svg',
   'person-plus': '/assets/icons/person-plus.svg',
+  'walk-sm': '/assets/icons/walk-sm.svg',
 }
 
 type IconProps = {

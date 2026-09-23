@@ -1,4 +1,5 @@
 import { Toast } from '@/components/Toast'
+import { people, tripBuddies } from '@/data/trip'
 import { TripLisbon } from './TripLisbon'
 
 /**
@@ -9,7 +10,8 @@ import { TripLisbon } from './TripLisbon'
 export function PlanUpdated() {
   return (
     <div className="relative h-full overflow-hidden">
-      <TripLisbon dinner="decided" />
+      {/* Ren is on the trip by now, so the stack reads +4. */}
+      <TripLisbon dinner="decided" crew={[...tripBuddies, people.ren]} />
       <Toast
         title="Poll closed · Taberna won"
         detail="Added to the plan for 20:30"
