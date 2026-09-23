@@ -6,8 +6,11 @@ type SheetProps = {
    * The sheet's top edge **in Figma frame coordinates** (y from the top of the
    * 844 frame). Screens render below the status bar, so this is converted
    * internally — passing a screen-space value puts the sheet 50 px low.
+   *
+   * Omit it when the frame's sheet hugs its content (bottom-anchored, no
+   * height set); the sheet then sizes to what it holds.
    */
-  frameTop: number
+  frameTop?: number
   /** Vertical gap between the sheet's sections. */
   gap?: number
 }
@@ -22,7 +25,10 @@ export function Sheet({ children, frameTop, gap = 16 }: SheetProps) {
     <div
       className="absolute inset-x-0 bottom-0 flex flex-col items-start"
       style={{
-        top: `calc(${frameTop}px - var(--status-bar-height))`,
+        top:
+          frameTop === undefined
+            ? undefined
+            : `calc(${frameTop}px - var(--status-bar-height))`,
         background: 'var(--color-surface-white)',
         borderTopLeftRadius: 'var(--radius-sheet)',
         borderTopRightRadius: 'var(--radius-sheet)',

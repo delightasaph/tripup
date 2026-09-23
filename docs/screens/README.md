@@ -23,9 +23,8 @@ Conventions in these files:
 |---|---|---|---|
 | 01 Home | [01-home.md](01-home.md) | `162:429` | yes — **rebuilt** |
 | 02 Trip · Lisbon | [02-trip-lisbon.md](02-trip-lisbon.md) | `4064:17467` | yes — **rebuilt** |
-| 03a Buddies | _to write_ | `4058:3678` | no — **new** |
-| 03b Add a buddy | _to write_ | `4058:3935` | no — **new** |
-| ~~03 Add Ren~~ | [03-add-ren.md](03-add-ren.md) | ~~`163:2180`~~ | superseded |
+| 03a Buddies | [03a-buddies.md](03a-buddies.md) | `4058:3678` | yes |
+| 03b Add a buddy | [03b-add-a-buddy.md](03b-add-a-buddy.md) | `4058:3935` | yes |
 | 04 New poll | [04-new-poll.md](04-new-poll.md) | `164:2379` | yes |
 | 05 Live poll | [05-live-poll.md](05-live-poll.md) | `84:169` | yes |
 | 06 Plan updated | [06-plan-updated.md](06-plan-updated.md) | `4064:18080` | yes |

@@ -5,6 +5,7 @@ import { TripLisbon } from '@/screens/TripLisbon'
 import { LivePoll } from '@/screens/LivePoll'
 import { Home } from '@/screens/Home'
 import { Buddies } from '@/screens/Buddies'
+import { AddABuddy } from '@/screens/AddABuddy'
 import { NewPoll } from '@/screens/NewPoll'
 import { PlanUpdated } from '@/screens/PlanUpdated'
 import { Styleguide } from '@/screens/Styleguide'
@@ -24,6 +25,8 @@ function Prototype() {
         <TripLisbon />
       ) : active?.id === 'buddies' ? (
         <Buddies />
+      ) : active?.id === 'add-a-buddy' ? (
+        <AddABuddy />
       ) : active?.id === 'new-poll' ? (
         <NewPoll />
       ) : active?.id === 'plan-updated' ? (
