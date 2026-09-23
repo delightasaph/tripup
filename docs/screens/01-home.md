@@ -1,5 +1,12 @@
 # 01 · Home
 
+> ## ⚠️ STALE — re-fetch this screen
+> The Figma frame changed on 23 Sep after this record was written. **This record's
+> "do not re-fetch" instruction does not apply any more.** Re-pull the frame with one
+> `get_design_context` call, rewrite this record from what comes back, then rebuild the screen.
+>
+> What changed: the buddy stack now reads **+3**, not +4 — the trip has six people until Ren joins.
+
 Figma node `162:429`. Reference render: `design/screens/01-home.png` (native 390 × 844).
 Built in `src/screens/Home.tsx`. **Do not re-fetch this screen.**
 

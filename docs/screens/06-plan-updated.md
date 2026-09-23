@@ -1,6 +1,15 @@
 # 06 · Plan updated
 
-Figma node `167:2903`; the changed row is `167:2997`, the toast `167:3250`. Reference render:
+> ## ⚠️ STALE — re-fetch this screen
+> The Figma frame changed on 23 Sep after this record was written. **This record's
+> "do not re-fetch" instruction does not apply any more.** Re-pull the frame with one
+> `get_design_context` call, rewrite this record from what comes back, then rebuild the screen.
+>
+> **The node id also changed** — it is now `4064:18080`.
+>
+> What changed: the trip **ticket card** was reworked, and the winning dinner card now carries the restaurant photo as a 48 pt tile (the same tile as the poll option card on 05 — wire it as a shared element).
+
+Figma node `4064:18080`; the changed row is `167:2997`, the toast `167:3250`. Reference render:
 `design/screens/06-plan-updated.png`. Built as `TripLisbon dinner="decided"` plus a toast in
 `src/screens/PlanUpdated.tsx`. **Do not re-fetch.**
 

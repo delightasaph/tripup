@@ -1,5 +1,12 @@
 # 04 · New poll
 
+> ## ⚠️ STALE — re-fetch this screen
+> The Figma frame changed on 23 Sep after this record was written. **This record's
+> "do not re-fetch" instruction does not apply any more.** Re-pull the frame with one
+> `get_design_context` call, rewrite this record from what comes back, then rebuild the screen.
+>
+> What changed: the trip **ticket card** behind the sheet was reworked — same new treatment as 02.
+
 Figma node `164:2379`; the sheet is `164:2513`, the toast `164:2506`. Reference render:
 `design/screens/04-new-poll.png`. Built in `src/screens/NewPoll.tsx`. **Do not re-fetch.**
 

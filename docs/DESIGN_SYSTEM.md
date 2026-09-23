@@ -7,6 +7,9 @@ Values come from the Figma file's local styles (file `qITM47IS3nfWVV3KxyH3pv`, p
 - Status bar: 50 pt (iOS style, black text; white on the lock screen). Home indicator: 134 × 5, 13 pt from the bottom.
 - Screen padding: **20 pt** left/right, content starts at **64 pt** from the top.
 - Floating bottom bar: tab bar 264 × 60 + FAB 60 × 60, at y = 756, with a 150 pt fade from `Surface/Ground` transparent → opaque behind it.
+- **Scroll padding:** the scrolling column gets 110 pt of empty ground below its last item, so
+  content clears the floating bar. Docked controls — the tab bar and any pinned primary action —
+  sit outside the scroll area and never move below the fold.
 - Bottom sheets: full width, top corners **28**, padding 10 / 20 / 34, grabber 40 × 5 (`Line/Default`), over a scrim.
 
 ## 2. Colour
@@ -38,7 +41,7 @@ Values come from the Figma file's local styles (file `qITM47IS3nfWVV3KxyH3pv`, p
 | Ticket "sky gradient" | linear, top→bottom `#ADCCE8` → `#80A8D4` | Trip ticket background |
 | Sunset card gradient | Blush `#F7DDD3` → Sand `#F5E7C4`, diagonal | "Next" itinerary item |
 
-Initials avatar fills: Ari `#DCC0F6` · Nick `#C4D6FF` · Rebecca `#F5CDBF` · William `#D6EE8E` · Phil `#F1DC9F` · Jess `#BFE7D3` · **Ren `#FFCBAA`** · Marta `#E6E0FA` · Hugo `#F3E3C8`.
+Initials avatar fills: Ari `#DCC0F6` · Nic `#C4D6FF` · Bea `#F5CDBF` · Kofi `#D6EE8E` · Sven `#F1DC9F` · Mira `#BFE7D3` · **Ren `#FFCBAA`** · Marta `#E6E0FA` · Hugo `#F3E3C8`.
 
 ## 3. Typography
 Tracking is **0 on every style up to Headline**. Only the display sizes carry it: Title 1 −0.7,
@@ -110,7 +113,7 @@ Uppercase section labels ("TODAY'S PLAN", "HAPPENING NOW") use Footnote/Medium i
 ## 7. Assets
 In `public/assets/`. Everything below is already exported and committed unless marked **missing**.
 
-- `avatars/`: `ari`, `nick`, `rebecca`, `william`, `phil`, `jess` (PNG, 184 × 184).
+- `avatars/`: `ari`, `nic`, `bea`, `kofi`, `sven`, `mira` (PNG, 184 × 184).
   **Already cropped to the face and already circular — render them as they are.** No extra zoom,
   no `object-position` nudging, no CSS circular mask beyond the avatar's own border radius.
   Ren has no photo on purpose: he is the initials avatar "RT" on Avatar/Ren.

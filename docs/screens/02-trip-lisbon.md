@@ -1,6 +1,15 @@
 # 02 · Trip · Lisbon (Itinerary)
 
-Figma node `122:7866`. Reference render: `design/screens/02-trip-lisbon.png` (native 390 × 844).
+> ## ⚠️ STALE — re-fetch this screen
+> The Figma frame changed on 23 Sep after this record was written. **This record's
+> "do not re-fetch" instruction does not apply any more.** Re-pull the frame with one
+> `get_design_context` call, rewrite this record from what comes back, then rebuild the screen.
+>
+> **The node id also changed** — it is now `4064:17467`.
+>
+> What changed: the trip **ticket card** was reworked (new stamp/postmark treatment), and the Sunset "Next" card gained a 36 pt white round **directions** button at its bottom-right. Done items get no such button.
+
+Figma node `4064:17467`. Reference render: `design/screens/02-trip-lisbon.png` (native 390 × 844).
 Built in `src/screens/TripLisbon.tsx`. **Do not re-fetch this screen.**
 
 ## Frame skeleton
@@ -25,7 +34,7 @@ Vertical rhythm: nav → 10 → ticket → 16 → day strip → 16 → Today's p
 - Back button 40 × 40, white, full pill radius, `drop-shadow(0 6px 9px rgb(31 30 36 / .08))`.
   Icon `arrow-left` at 20, inset 10.
 - Buddy stack, right-aligned, gap 8 to the add button. Avatars 30 × 30, overlap −6, 2 px ring in
-  `Surface/Ground`. Three faces (Ari, Nick, Rebecca) then a white "+3" chip, Rubik SemiBold 11,
+  `Surface/Ground`. Three faces (Ari, Nic, Bea) then a white "+3" chip, Rubik SemiBold 11,
   letter-spacing 0.2.
 - Add-a-buddy button 30 × 30, `Accent/Lime`, 2 px `Surface/Ground` ring, **no shadow**. Icon
   `plus-small` at 16.

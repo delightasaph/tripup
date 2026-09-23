@@ -39,7 +39,8 @@ Last evening of a group trip to Lisbon (Wed 16 Sep, day 5 of 5). The group is ba
 - A3 Used on the go, one-handed, in short bursts.
 - A4 Polls have a deadline: close after 20 min **or** as soon as everyone has voted.
 - A5 Bills can be split by item, as easily as evenly.
-- A6 Everyone has the app; a new friend joins via contact or invite link.
+- A6 Everyone has the app; a new friend joins from contacts. (The invite-link affordance was cut
+  from 03b to keep the sheet to two actions — see the note in §4.)
 - A7 Balances and settling feel like tools people already know.
 
 ## 3. Cast and mock data
@@ -48,11 +49,11 @@ Last evening of a group trip to Lisbon (Wed 16 Sep, day 5 of 5). The group is ba
 | id | Name | Label on Ari's phone | Avatar | Notes |
 |---|---|---|---|---|
 | ari | Ari M. | "You" | 3D illustrated avatar | The demo user |
-| nick | Nick O. | Nick | 3D avatar | |
-| rebecca | Rebecca H. | Rebecca | 3D avatar | |
-| william | William C. | William | 3D avatar | |
-| phil | Phil D. | Phil | 3D avatar | Last to vote |
-| jess | Jess M. | Jess | 3D avatar | |
+| nic | Nic O. | Nic | 3D avatar | |
+| bea | Bea H. | Bea | 3D avatar | |
+| kofi | Kofi C. | Kofi | 3D avatar | |
+| sven | Sven D. | Sven | 3D avatar | Last to vote |
+| mira | Mira M. | Mira | 3D avatar | |
 | ren | Ren Takahashi | Ren | **Initials "RT"** on Avatar/Ren colour | New tonight; no photo yet on purpose |
 
 Contacts shown in the Add-buddy search: Marta Lopes (ML), Hugo Silva (HS), initials avatars.
@@ -84,35 +85,35 @@ Asked by Ari, for dinner at 20:30. Closes in 20 min or when all 7 have voted.
 | Time Out Market | Buzzy food hall · € · 11 min walk | restaurant photo | fork & knife |
 | Cervejaria Ramiro | Seafood feast · €€€ · 9 min by tram | restaurant photo | fish |
 
-Votes: Taberna = Ari, Rebecca, William (+ Phil last) · Time Out = Nick, Ren · Ramiro = Jess.
-Live state shown on screen 05: 3 · 2 · 1, 6 of 7 voted, waiting on Phil. Final: **Won 4 · 2 · 1**.
+Votes: Taberna = Ari, Bea, Kofi (+ Sven last) · Time Out = Nic, Ren · Ramiro = Mira.
+Live state shown on screen 05: 3 · 2 · 1, 6 of 7 voted, waiting on Sven. Final: **Won 4 · 2 · 1**.
 
 ### Dinner bill (Taberna, paid by Ari): €190
 | Item | Price | Shared by | Each |
 |---|---|---|---|
 | Mains to share | €98 | all 7 | €14 |
 | Petiscos & bread | €42 | all 7 | €6 |
-| Vinho verde × 2 | €50 | 5 (Nick and Ren skipped) | €10 |
+| Vinho verde × 2 | €50 | 5 (Nic and Ren skipped) | €10 |
 
-Shares: Nick and Ren **€20**; everyone else **€30**. Check: 2×20 + 5×30 = 190.
+Shares: Nic and Ren **€20**; everyone else **€30**. Check: 2×20 + 5×30 = 190.
 
 ### Balances
 Opening balances before dinner (from the 14 earlier expenses, €1,094 total; Ren has none, per A2):
-Ari −30 · Nick +50 · Phil −30 · Rebecca −25 · William +15 · Jess +20 · Ren 0 (sum 0).
+Ari −30 · Nic +50 · Sven −30 · Bea −25 · Kofi +15 · Mira +20 · Ren 0 (sum 0).
 
-After dinner (Ari paid 190): Ari **+130** · Nick +30 · Phil −60 · Rebecca −55 · William −15 · Jess −10 · Ren −20 (sum 0).
+After dinner (Ari paid 190): Ari **+130** · Nic +30 · Sven −60 · Bea −55 · Kofi −15 · Mira −10 · Ren −20 (sum 0).
 Trip total: **€1,284 over 15 expenses, 5 days**.
 
 Netted transfers (exactly these 5, shown on screen 09):
-1. Phil → You €60
-2. Rebecca → You €55
-3. William → You €15
-4. Ren → Nick €20
-5. Jess → Nick €10
+1. Sven → You €60
+2. Bea → You €55
+3. Kofi → You €15
+4. Ren → Nic €20
+5. Mira → Nic €10
 
 Netting algorithm: minimise the number of transfers. Prefer exact debtor/creditor matches and subsets that sum exactly to a creditor's balance, then fall back to greedy largest-first. Unit-test that the balances above produce exactly the 5 transfers above.
 
-Settlement times (screen 11): Ren→Nick 22:14 · Phil→You 22:16 · Rebecca→You 22:18 · William→You 22:20 · Jess→Nick 22:22.
+Settlement times (screen 11): Ren→Nic 22:14 · Sven→You 22:16 · Bea→You 22:18 · Kofi→You 22:20 · Mira→Nic 22:22.
 
 ### Clock (status bar) per screen
 18:05 Home → New poll and Live poll · 18:25 poll closes (06) · 22:10 logging the dinner (07/08) · 22:12 balances (09) · 22:14 Ren pays (10) · 22:25 squared up (11).
@@ -123,26 +124,39 @@ Figma file `qITM47IS3nfWVV3KxyH3pv`, page "Hi-Fidelity Screens". Build in this o
 | # | Screen | Figma node | Whose phone |
 |---|---|---|---|
 | 01 | Home | `162:429` | Ari |
-| 02 | Trip · Lisbon (Itinerary tab) | `122:7866` | Ari |
-| 03 | Add Ren (Buddies sheet) | `163:2180` | Ari |
+| 02 | Trip · Lisbon (Itinerary tab) | `4064:17467` | Ari |
+| 03a | Buddies (group view sheet) | `4058:3678` | Ari |
+| 03b | Add a buddy (search sheet) | `4058:3935` | Ari |
 | 04 | New poll (sheet) | `164:2379` | Ari |
-| 04b | Poll notification (lock screen) | `166:2578` | Nick |
-| 04c | Vote (buddy view) | `166:2631` | Nick |
+| 04b | Poll notification (lock screen) | `166:2578` | Nic |
+| 04c | Vote (buddy view) | `166:2631` | Nic |
 | 05 | Live poll | `84:169` | Ari |
-| 06 | Plan updated | `167:2903` | Ari |
+| 06 | Plan updated | `4064:18080` | Ari |
 | 07 | Log the dinner (expense sheet) | `168:2777` | Ari |
 | 08 | Split by item | `169:2976` | Ari |
-| 09 | Balances (Expenses tab) | `170:3175` | Ari |
+| 09 | Balances (Expenses tab) | `4048:16899` | Ari |
 | 10 | Ren settles | `171:3175` | Ren |
 | 11 | Squared up | `172:3175` | Ari |
 | 11B | Squared up + stamp collected (alternative) | `172:3255` | Ari |
+
+### Scroll and breathing room
+Long screens scroll; the **scrolling column** gets 110 pt of empty ground below its last item so
+content can always be dragged clear of the floating bar and never dead-stops at the viewport edge.
+
+This is padding on the scrolling column only. **Docked controls never scroll and never move below
+the fold** — the floating tab bar, and any primary action pinned to the bottom of a screen or a
+sheet (the vote button on 04c, the pay button on 10, the sheet buttons on 03b, 04, 07, 08). A
+screen must never be reachable in a state where its primary action is off-screen. If a frame is
+taller than 844 in Figma, that extra height is content, not chrome.
+
+No home indicator: the frames draw one, the build leaves it out.
 
 Screens 02 and 05 are the two key high-fidelity screens from the brief and the visual reference for the rest. Screens 04b, 04c and 11B were not in the original wireflow.
 
 ### 01 Home
 - Header: Ari avatar, "Hi Ari", "3 trips with your crew"; notifications button (red unread dot) and "+" new trip.
 - "Your trips" title. "HAPPENING NOW" label with green dot.
-- **Ticket card** (the trip hero, same component as screen 02): LISBON, 12–16 Sep, `stamps/portugal-ticket.png` (no country name) tilted ~20° in code. Below it a white stub: "Tonight · 20:30 / Dinner · not decided yet", dark arrow button, avatars "You + 5 buddies".
+- **Ticket card** (the trip hero, same component as screen 02): LISBON, 12–16 Sep, `stamps/portugal-ticket.png` (no country name) tilted ~20° in code. Below it a white stub: "Tonight · 20:30 / Dinner · not decided yet", dark arrow button, avatars "You + 5 buddies" (stack reads "+3": six people until Ren joins).
 - "Coming up": Porto (**Lime** — the frame uses lime, not Sky) and Berlin (Blush) cards with "In 17 days"/"In 2 months" pill and an empty dashed **stamp slot** (stamps are earned after a trip).
 - "Your stamps · 4 countries": row of stamp thumbnails — England, Spain, Italy, France, in that
   order — overlapping and tilted counter-clockwise in code (the PNGs are flat). Figma has them all
@@ -155,15 +169,29 @@ Screens 02 and 05 are the two key high-fidelity screens from the brief and the v
 - Nav: back, buddy stack (3 avatars + "+3") and lime "+" to add a buddy.
 - Ticket hero (Anton "LISBON", dates, `stamps/portugal-ticket.png` tilted ~20° in code). No "last night"/"day x of y" chips: the date lives in one place.
 - Day strip Sat 12 → Today 16 (Today selected, dark).
-- "TODAY'S PLAN · 2 of 4 done". Vertical timeline: time column, node, card. Done items faded. Sunset card is "Next" (warm gradient, "12 min walk"). Dinner is the **dashed violet open slot** with "Ask the group" (violet primary).
+- "TODAY'S PLAN · 2 of 4 done". Vertical timeline: time column, node, card. Done items faded. Sunset card is "Next" (warm gradient, "12 min walk", plus a 36 pt white round **directions** button at its bottom-right — only on the next item, never on done items). Dinner is the **dashed violet open slot** with "Ask the group" (violet primary).
 - Floating tab bar (Itinerary / Expenses) + dark "+" FAB, with a fade behind.
-- Buddy stack or lime "+" → 03. "Ask the group" → 04.
+- Buddy stack or lime "+" → 03a. "Ask the group" → 04.
 
-### 03 Add Ren (sheet over 02)
-- Scrim over the trip. Sheet: "Buddies · 6 on this trip", row of current buddies (Ari labelled "You"), search field with "Ren", results: **Ren Takahashi** selected (lime row, check), Marta Lopes, Hugo Silva.
-- Info row: "Joins from tonight · Earlier expenses stay out of his share".
-- Buttons: "Invite link" (outline), "Add Ren" (dark).
-- Add Ren → sheet closes, buddy stack becomes "+4", toast "Ren joined the trip · Everyone was told". Continue to 04 if the user came from "Ask the group"; otherwise stay on 02.
+### 03a Buddies (sheet over 02)
+The group view. The brief's wording is two beats — Ari "taps into the current trip to open up a
+group view **and** adds Ren" — so seeing who is on the trip and adding someone are separate steps.
+- Scrim over the trip. Sheet hugs its content (short): "Buddies" + "6 on this trip".
+- Row of the six current buddies with names under each avatar; Ari is labelled "You".
+- One row: violet-tint "+" tile, **"Add a buddy"** / "Anyone on the trip can add people" (assumption
+  A1, stated on screen), chevron right.
+- Add a buddy → 03b.
+
+### 03b Add a buddy (sheet over 02)
+- Header: "Add a buddy" left, "6 on this trip" right. **No back arrow** — the sheet carries two
+  actions already, and a third control at the top makes it top-heavy.
+- Search field with "Ren" typed. Results: **Ren Takahashi** selected (lime row, check), Marta Lopes,
+  Hugo Silva.
+- Info row: "Joins from tonight · Earlier expenses stay out of their share".
+- Buttons: **"Cancel"** (outline, returns to 03a) and "Add Ren" (dark). Cancel is the way back;
+  dragging the sheet down does the same.
+- Add Ren → sheet closes, buddy stack becomes "+4", toast "Ren joined the trip · Everyone was told".
+  Continue to 04 if the user came from "Ask the group"; otherwise stay on 02.
 
 ### 04 New poll (sheet)
 - Toast from step 03 still visible at top. Sheet: "New poll" + violet pill "Dinner · 20:30" (the slot it fills).
@@ -172,23 +200,23 @@ Screens 02 and 05 are the two key high-fidelity screens from the brief and the v
 - Deadline row: "Closes in 20 min · or as soon as all 7 have voted" (tap to change).
 - "Send to 6 buddies" → 05 (Ari's view) and triggers 04b on the demo's "other phones".
 
-### 04b Poll notification (Nick's lock screen)
-- Wallpaper: the photo `assets/lockscreen-wallpaper.jpg` (`object-fit: cover`, ~`52% center`) under the **Legibility shade** gradient (`--gradient-legibility-shade`, Figma node `166:2579`). It is a night-out street photo — not a stamp painting. Then the date and time, and the “On Nick’s phone” lime pill.
+### 04b Poll notification (Nic's lock screen)
+- Wallpaper: the photo `assets/lockscreen-wallpaper.jpg` (`object-fit: cover`, ~`52% center`) under the **Legibility shade** gradient (`--gradient-legibility-shade`, Figma node `166:2579`). It is a night-out street photo — not a stamp painting. Then the date and time, and the “On Nic’s phone” lime pill.
 - Notification: TripUp · Lisbon · now — "Ari started a poll: Where are we eating tonight? Tap to vote, closes in 20 min." Older: "Ren joined the trip for tonight · 2m ago".
 - Tap → 04c.
 
-### 04c Vote (Nick's view)
-- Close (×), "On Nick's phone", Live pill with countdown.
-- Same question header; ticker "Rebecca voted · 1 min ago".
+### 04c Vote (Nic's view)
+- Close (×), "On Nic's phone", Live pill with countdown.
+- Same question header; ticker "Bea voted · 1 min ago".
 - Options as selectable cards (radio). Selected card has a 2 px ink border and filled check. **Results are hidden until you vote** (avoids herd voting); note "5 of 7 have voted · results show once you vote".
 - "Vote for Time Out Market" (label follows the selection). After voting, show the live results view (same layout as 05 without the asker controls).
 
 ### 05 Live poll (Ari's view)
 - Back, Live pill "closes in mm:ss" (counts down every second).
 - "Ari asked · for dinner at 20:30" (in code: show "You asked" when the viewer is the creator), question title.
-- Live ticker: latest vote event, animates in ("Nick voted Time Out Market · just now").
+- Live ticker: latest vote event, animates in ("Nic voted Time Out Market · just now").
 - Option cards: photo tile + name + line, progress bar, voter faces, "3 votes". Leader card is lime; "Your vote" chip on Ari's pick. Bars and counts animate when votes arrive.
-- "6 of 7 voted · Waiting on Phil" with dashed pending avatar and **Nudge** (lilac). Nudge → toast "Phil was nudged"; simulated Phil votes Taberna ~2 s later → all voted → poll auto-closes → 06.
+- "6 of 7 voted · Waiting on Sven" with dashed pending avatar and **Nudge** (lilac). Nudge → toast "Sven was nudged"; simulated Sven votes Taberna ~2 s later → all voted → poll auto-closes → 06.
 - "Change vote" (outline) and "Close poll now" (dark, only for the creator) → closes → 06.
 
 ### 06 Plan updated
@@ -206,20 +234,20 @@ Screens 02 and 05 are the two key high-fidelity screens from the brief and the v
 ### 08 Split by item (sheet)
 - Sentence header: "€190 for [dinner at Taberna], paid by [you], split by item." (lime and lilac inline chips).
 - Item rows: Mains to share €98 (Everyone · 7 · €14 each), Petiscos & bread €42 (Everyone · 7 · €6 each), Vinho verde × 2 €50 expanded (ink border): "Who's sharing this? Tap to leave someone out." 7 avatars; tapping toggles; skipped people are faded with "Skipped" in alert red. Per-person amounts recompute live.
-- Summary: "Ren & Nick pay €20 · Everyone else €30".
+- Summary: "Ren & Nic pay €20 · Everyone else €30".
 - "Back" / "Log expense" → 09.
 
 ### 09 Balances (Expenses tab)
 - Title "Lisbon" (Rubik, Title 1) and "€1,284 spent · 15 expenses". Tab bar: Expenses active.
 - Toast: "Dinner logged · €190 / You paid, so +€160 to you. Everyone's updated."
-- Lilac card: "You're owed" + pill "was −€30 before dinner", **€130** (large), "Phil, Rebecca and William pay you. Ren and Jess pay Nick."
+- Lilac card: "You're owed" + pill "was −€30 before dinner", **€130** (large), "Sven, Bea and Kofi pay you. Ren and Mira pay Nic."
 - "Settle up · 5 transfers, netted": rows from → to with amounts; rows paying you are green-tinted.
 - Demo: switching to Ren's phone → 10.
 
 ### 10 Ren settles (Ren's phone)
-- Close (×), "On Ren's phone". Amount card: RT → Nick, "You owe Nick", **€20,00**, "Dinner at Taberna · Food only · you skipped the wine".
+- Close (×), "On Ren's phone". Amount card: RT → Nic, "You owe Nic", **€20,00**, "Dinner at Taberna · Food only · you skipped the wine".
 - "Pay with": Apple Pay (default, selected), Card Visa ·· 4410, PayPal, Bank transfer. Radio selection.
-- "Nick is told the moment it's sent" + "Pay Nick €20" (dark, with method icon). Tap → short processing (Apple Pay-like sheet or spinner ~1 s) → success → back to Ari's phone; the Ren → Nick row flips to done.
+- "Nic is told the moment it's sent" + "Pay Nic €20" (dark, with method icon). Tap → short processing (Apple Pay-like sheet or spinner ~1 s) → success → back to Ari's phone; the Ren → Nic row flips to done.
 - Demo: remaining transfers complete automatically one by one (~0.8 s apart) → 11.
 
 ### 11 Squared up
@@ -232,9 +260,9 @@ Screens 02 and 05 are the two key high-fidelity screens from the brief and the v
 - Ship both endings behind a demo toggle so the team can compare. Home's "Your stamps" updates to 5 countries after 11B — Portugal joins England, Spain, Italy and France.
 
 ## 5. Real-time simulation and demo controls
-- A small **demo panel** (collapsible, outside the phone frame on desktop; long-press the status bar on mobile) with: "View as: Ari / Nick / Ren", "Jump to screen", "Reset demo", "Ending: A / B", speed.
-- Simulated events: after "Send to 6 buddies", votes from the other buddies arrive over ~6 s (Rebecca, William, Jess, Ren, Nick), leaving Phil pending; the ticker and bars update on each. Nudge triggers Phil's vote.
-- When the demo switches phones, the state is shared: Nick's vote in 04c shows up on Ari's 05.
+- A small **demo panel** (collapsible, outside the phone frame on desktop; long-press the status bar on mobile) with: "View as: Ari / Nic / Ren", "Jump to screen", "Reset demo", "Ending: A / B", speed.
+- Simulated events: after "Send to 6 buddies", votes from the other buddies arrive over ~6 s (Bea, Kofi, Mira, Ren, Nic), leaving Sven pending; the ticker and bars update on each. Nudge triggers Sven's vote.
+- When the demo switches phones, the state is shared: Nic's vote in 04c shows up on Ari's 05.
 
 ## 6. Edge cases worth handling (lightweight)
 - Close poll early with a tie → leader by earliest vote; show "Tie broken by first vote".

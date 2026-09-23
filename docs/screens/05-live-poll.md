@@ -14,7 +14,7 @@ Built in `src/screens/LivePoll.tsx`. **Do not re-fetch this screen.**
 | — question | 20, 154 · 330 × 64 |
 | — live ticker | 20, 234 · 255 × 28 |
 | — options group | 20, 278 · 350 × 388 |
-| — waiting on Phil | 20, 686 · 350 × 64 |
+| — waiting on Sven | 20, 686 · 350 × 64 |
 | Bottom fade | 0, 714 · 390 × 130 |
 | Actions | 20, 756 · 350 × 54 |
 | Home indicator | 128, 830 · 134 × 5 |
@@ -63,13 +63,13 @@ Internals (card-relative):
 Bar fills are the Figma pixel widths over the 318 track: **159 / 104.9 / 54.1** — i.e. Taberna 3,
 Time Out 2, Ramiro 1.
 
-## Waiting on Phil
+## Waiting on Sven
 350 × 64, radius **20**, `Surface/White 70%`, with a **1 px `Line/Default` border**, gap 11,
 padding-left 11, padding-right 14.
 - Pending avatar at 10, 10 · 42: the dashed ring is an exported PNG (`assets/pending-ring.png`,
-  84 × 84 drawn at 42, Figma `84:306`), not a CSS border. Phil's 36 avatar sits at 3, 3 inside it at
+  84 × 84 drawn at 42, Figma `84:306`), not a CSS border. Sven's 36 avatar sits at 3, 3 inside it at
   **55%** opacity.
-- Text at 64, 13: "6 of 7 voted" Body 15 SemiBold; "Waiting on Phil" Caption 12 `Ink/Secondary`,
+- Text at 64, 13: "6 of 7 voted" Body 15 SemiBold; "Waiting on Sven" Caption 12 `Ink/Secondary`,
   21 down.
 - Nudge button at 241, 13 · 95 × 38: `Accent/Lilac`, pill, ink Body/Medium, icon `bell` 16.
 
@@ -91,6 +91,6 @@ All exported into `public/assets/icons/`: `arrow-left`, `bowl` (13), `fork-knife
   Figma uses 7 inside a 22 circle and 11 inside a 30.
 - The icon badge on each photo tile has its own small shadow, `0 2px 4px rgb(0 0 0 / .12)`, even
   though the card it sits on has none.
-- The "waiting on Phil" card's 1 px stroke must be an **`outline` with `outline-offset: -1px`**,
+- The "waiting on Sven" card's 1 px stroke must be an **`outline` with `outline-offset: -1px`**,
   not a `border` — a border moves its contents 1 px in. Figma draws a stroke on the frame without
   displacing children; CSS border-box does not.

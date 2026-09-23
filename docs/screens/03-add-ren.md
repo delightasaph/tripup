@@ -1,5 +1,18 @@
 # 03 · Add Ren
 
+> ## ⚠️ SUPERSEDED — this screen was split in two
+> The combined Buddies + search sheet (`163:2180`) is retired. **Ignore the "do not re-fetch"
+> instruction below.** The flow is now two sheets, per `docs/PRODUCT_SPEC.md` §4:
+>
+> - **03a Buddies** — `4058:3678` — the group view: six buddies with names, plus one
+>   "Add a buddy / Anyone on the trip can add people" row with a chevron.
+> - **03b Add a buddy** — `4058:3935` — search with "Ren" typed, results, "Joins from tonight",
+>   Invite link / Add Ren. Header carries a bare ink back arrow returning to 03a.
+>
+> Re-pull both with one `get_design_context` each, write a record per screen
+> (`03a-buddies.md`, `03b-add-a-buddy.md`), and split `src/screens/AddRen.tsx` to match.
+> The rest of this file describes the retired screen and is kept only for the shared geometry.
+
 Figma node `163:2180`; the sheet itself is `163:2307`. Reference render:
 `design/screens/03-add-ren.png`. Built in `src/screens/AddRen.tsx`. **Do not re-fetch this screen.**
 
