@@ -12,7 +12,7 @@ Built in `src/screens/LivePoll.tsx`. **Do not re-fetch this screen.**
 | Body | 20, 124 · 350 × 626 |
 | — asked-by row | 20, 124 · 209 × 22 |
 | — question | 20, 154 · 330 × 64 |
-| — live ticker | 20, 234 · 255 × 28 |
+| — live ticker | 20, 234 · ~250 × 28 (content-driven) |
 | — options group | 20, 278 · 350 × 388 |
 | — waiting on Sven | 20, 686 · 350 × 64 |
 | Bottom fade | 0, 714 · 390 × 130 |
@@ -34,6 +34,7 @@ Built in `src/screens/LivePoll.tsx`. **Do not re-fetch this screen.**
 
 ## Live ticker
 Auto-width pill, 28 tall, background `rgb(31 30 36 / .05)`, padding `4 12 4 4`, gap 8, avatar 20.
+Its width is content-driven — 255 with the old cast, 248 now that it reads "Nic". Don't pin it.
 Text is Caption 12: the **name** is Medium `Ink/Primary`, the rest Regular `Ink/Secondary`.
 `aria-live="polite"`.
 
@@ -94,3 +95,9 @@ All exported into `public/assets/icons/`: `arrow-left`, `bowl` (13), `fork-knife
 - The "waiting on Sven" card's 1 px stroke must be an **`outline` with `outline-offset: -1px`**,
   not a `border` — a border moves its contents 1 px in. Figma draws a stroke on the frame without
   displacing children; CSS border-box does not.
+
+## Verified after the cast rename
+Re-measured with no Figma call — this record carries no STALE banner, so the frame is unchanged.
+Everything still lands: asked-by 50, 127.5 · question 20, 154 · ticker 20, 234 · cards 278 / 418 /
+546 at 132 / 120 / 120 · bars 36, 356 / 496 / 624 · "6 of 7 voted" 84, 699 · actions 20, 756 and
+167, 756. Copy reads "Nic voted Time Out Market" and "Waiting on Sven".
