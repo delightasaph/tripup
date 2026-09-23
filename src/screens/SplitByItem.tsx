@@ -1,9 +1,11 @@
+import { motion } from 'framer-motion'
 import { Avatar } from '@/components/Avatar'
 import { Icon } from '@/components/Icon'
 import { Scrim, Sheet } from '@/components/Sheet'
 import { people, tripBuddies } from '@/data/trip'
 import { useScreenNav } from '@/lib/useScreenNav'
 import { formatEuros } from '@/domain/money'
+import { HOVER_SMALL, SPRING_POP, TAP_SMALL, TAP_TRANSITION } from '@/styles/motion'
 import { selectBillItems, selectDinnerShares, selectDinnerTotal, useTripStore } from '@/store/tripStore'
 import { TripLisbon } from './TripLisbon'
 
@@ -56,10 +58,10 @@ export function SplitByItem() {
 
   return (
     <div className="relative h-full">
-      <TripLisbon dinner="decided" crew={[...tripBuddies, people.ren]} />
+      <TripLisbon dinner="decided" crew={[...tripBuddies, people.ren]} scaleForSheet />
       <Scrim onClick={back} />
 
-      <Sheet gap={14}>
+      <Sheet gap={14} onDismiss={back}>
         {/* Summary sentence */}
         <div className="flex w-full shrink-0 flex-col items-start text-heading font-semibold" style={{ gap: 6 }}>
           <p>
@@ -116,20 +118,29 @@ export function SplitByItem() {
                       {allBuddies.map((id) => {
                         const included = wineSharedBy.includes(id)
                         return (
-                          <button
+                          <motion.button
                             key={id}
                             type="button"
                             onClick={() => toggle(id)}
                             aria-pressed={included}
+                            whileHover={HOVER_SMALL}
+                            whileTap={TAP_SMALL}
+                            transition={TAP_TRANSITION}
                             className="flex flex-col items-center"
                             style={{ gap: 5 }}
                           >
-                            <span className="relative" style={{ width: 38, height: 38 }}>
-                              <span style={{ display: 'block', opacity: included ? 1 : 0.35 }}>
-                                <Avatar person={people[id]} size={38} />
-                              </span>
+                            <motion.span
+                              className="relative"
+                              style={{ width: 38, height: 38 }}
+                              animate={{ opacity: included ? 1 : 0.35 }}
+                              transition={{ duration: 0.15 }}
+                            >
+                              <Avatar person={people[id]} size={38} />
                               {included && (
-                                <span
+                                <motion.span
+                                  initial={{ scale: 0.4, opacity: 0 }}
+                                  animate={{ scale: 1, opacity: 1 }}
+                                  transition={SPRING_POP}
                                   className="absolute flex items-center justify-center rounded-pill"
                                   style={{
                                     right: -3,
@@ -141,9 +152,9 @@ export function SplitByItem() {
                                   }}
                                 >
                                   <Icon name="check-white" size={9} />
-                                </span>
+                                </motion.span>
                               )}
-                            </span>
+                            </motion.span>
                             <span
                               className="text-caption2 font-medium whitespace-nowrap"
                               style={{
@@ -154,7 +165,7 @@ export function SplitByItem() {
                             >
                               {included ? people[id].label : 'Skipped'}
                             </span>
-                          </button>
+                          </motion.button>
                         )
                       })}
                     </div>
@@ -185,9 +196,12 @@ export function SplitByItem() {
 
         {/* Actions */}
         <div className="flex w-full shrink-0 items-start" style={{ gap: 10 }}>
-          <button
+          <motion.button
             type="button"
             onClick={back}
+            whileHover={HOVER_SMALL}
+            whileTap={TAP_SMALL}
+            transition={TAP_TRANSITION}
             className="flex shrink-0 items-center justify-center rounded-pill text-body font-medium"
             style={{
               height: 54,
@@ -197,10 +211,13 @@ export function SplitByItem() {
             }}
           >
             Back
-          </button>
-          <button
+          </motion.button>
+          <motion.button
             type="button"
             onClick={logAndContinue}
+            whileHover={HOVER_SMALL}
+            whileTap={TAP_SMALL}
+            transition={TAP_TRANSITION}
             className="flex min-w-0 flex-1 items-center justify-center rounded-pill text-body font-medium"
             style={{
               height: 54,
@@ -212,7 +229,7 @@ export function SplitByItem() {
           >
             <Icon name="check" size={18} color="var(--color-surface-white)" />
             Log expense
-          </button>
+          </motion.button>
         </div>
       </Sheet>
     </div>

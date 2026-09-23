@@ -130,6 +130,17 @@
   --stamp-shadow-ratio: 0.05714;
   --shadow-device: 0 24px 70px -10px rgb(31 30 36 / 0.28);
 
+  /* ---- Motion (docs/DESIGN_SYSTEM.md §6.0) ------------------------------ */
+  /* Mirrored as numeric constants for Framer Motion in src/styles/motion.ts —
+     a `transition` prop needs seconds and cubic-bezier arrays, not CSS
+     strings, so these stay in sync by hand rather than by var() lookup. */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --dur-micro: 120ms;
+  --dur-fast: 200ms;
+  --dur-base: 280ms;
+  --dur-slow: 420ms;
+
   /* ---- Device canvas ---------------------------------------------------- */
   --device-width: 390px;
   --device-height: 844px;

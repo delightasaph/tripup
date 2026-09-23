@@ -1,5 +1,9 @@
+import { motion, useReducedMotion } from 'framer-motion'
+
 /** White pill with a pulsing red dot: "Live · closes in mm:ss". */
 export function LivePill({ countdown }: { countdown: string }) {
+  const reduceMotion = useReducedMotion()
+
   return (
     <div
       className="flex items-center"
@@ -16,13 +20,14 @@ export function LivePill({ countdown }: { countdown: string }) {
         className="relative flex shrink-0 items-center justify-center"
         style={{ marginLeft: 12, width: 14, height: 14 }}
       >
-        <span
+        <motion.span
+          animate={reduceMotion ? { opacity: 0.18 } : { scale: [1, 2.2, 1], opacity: [0.18, 0, 0.18] }}
+          transition={reduceMotion ? undefined : { duration: 1.6, repeat: Infinity, ease: 'easeOut' }}
           style={{
             position: 'absolute',
             inset: 0,
             borderRadius: '50%',
             background: 'var(--color-status-alert)',
-            opacity: 0.18,
           }}
         />
         <span

@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion'
 import { AvatarStack } from '@/components/Avatar'
 import { Icon } from '@/components/Icon'
 import { SquaredUpActions } from '@/components/SquaredUpActions'
@@ -5,6 +6,7 @@ import { settledAt, tripSpend } from '@/data/expenses'
 import { people, tripBuddies } from '@/data/trip'
 import { useScreenNav } from '@/lib/useScreenNav'
 import { formatEuros } from '@/domain/money'
+import { SPRING_POP } from '@/styles/motion'
 import { selectSettleTransfers, useTripStore } from '@/store/tripStore'
 
 /**
@@ -28,7 +30,10 @@ export function SquaredUp() {
         style={{ paddingTop: 34, paddingInline: 'var(--screen-padding)', gap: 14 }}
       >
         {/* Squared up card */}
-        <div
+        <motion.div
+          initial={{ opacity: 0, y: 12, scale: 0.98 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.35, ease: 'easeOut' }}
           className="flex w-full shrink-0 flex-col items-start"
           style={{
             gap: 14,
@@ -38,12 +43,15 @@ export function SquaredUp() {
           }}
         >
           <div className="flex w-full items-center justify-between">
-            <span
+            <motion.span
+              initial={{ scale: 0.5, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={SPRING_POP}
               className="flex shrink-0 items-center justify-center rounded-pill"
               style={{ width: 56, height: 56, background: 'var(--color-ink-primary)' }}
             >
               <Icon name="check-lg" size={24} />
-            </span>
+            </motion.span>
             <AvatarStack
               people={[...tripBuddies, people.ren]}
               size={28}
@@ -54,7 +62,7 @@ export function SquaredUp() {
           <p className="text-body w-full" style={{ color: 'var(--color-ink-secondary)' }}>
             All 5 transfers are done and everyone got the news. Nobody owes anybody.
           </p>
-        </div>
+        </motion.div>
 
         {/* Transfers */}
         <div
@@ -72,12 +80,15 @@ export function SquaredUp() {
                 <span aria-hidden="true" style={{ width: '100%', height: 1, background: 'var(--color-line-default)' }} />
               )}
               <div className="flex w-full items-center" style={{ gap: 10, padding: '11px 0' }}>
-                <span
+                <motion.span
+                  initial={{ scale: 0.4, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ ...SPRING_POP, delay: i * 0.12 }}
                   className="flex shrink-0 items-center justify-center rounded-pill"
                   style={{ width: 22, height: 22, background: 'var(--color-status-positive)' }}
                 >
                   <Icon name="check-white" size={11} />
-                </span>
+                </motion.span>
                 <span className="min-w-0 flex-1 text-body font-medium whitespace-nowrap">
                   {people[t.fromId].label} → {t.toId === 'ari' ? 'You' : people[t.toId].label}
                 </span>

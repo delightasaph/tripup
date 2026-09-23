@@ -7,6 +7,7 @@ The primary audience is a **PM who must be able to demo it without explanation**
 Read these before writing code:
 - `docs/PRODUCT_SPEC.md` — the scenario, every screen, states, interactions, mock data and business rules.
 - `docs/DESIGN_SYSTEM.md` — colour, type, spacing, radii, shadows, components, motion, assets.
+- `docs/INTERACTION_EXECUTION_BRIEF.md` — read after the two above, before any further UI/motion work. **§0 is a live bug to fix first** (the Itinerary/Expenses tab switch currently crossfades the whole screen instead of just the tab content — actively reported as broken). §1 lists the remaining feature gaps (live-poll deadline edit, real place search, the untouched poll-notification screen) and what's already done — check `git diff --stat` too before redoing anything. §2 is the FAB quick-add menu, next after the rest.
 
 ## Hard constraints (from the brief)
 - Real code. A Figma click-through does not count.

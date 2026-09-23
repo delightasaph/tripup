@@ -1,3 +1,5 @@
+import { motion } from 'framer-motion'
+import { HOVER_LIFT, TAP_LARGE, TAP_TRANSITION } from '@/styles/motion'
 import { Avatar, type Person } from './Avatar'
 import { Icon } from './Icon'
 
@@ -24,7 +26,7 @@ export function ComingUpCard({ trip, onClick }: { trip: UpcomingTrip; onClick?: 
   const white70 = 'var(--color-surface-white-70)'
 
   return (
-    <div
+    <motion.div
       role="button"
       tabIndex={0}
       aria-label={`Open ${trip.name}`}
@@ -35,6 +37,9 @@ export function ComingUpCard({ trip, onClick }: { trip: UpcomingTrip; onClick?: 
           onClick()
         }
       }}
+      whileHover={HOVER_LIFT}
+      whileTap={TAP_LARGE}
+      transition={TAP_TRANSITION}
       className="flex min-w-0 flex-1 cursor-pointer flex-col items-start text-left"
       style={{
         height: 138,
@@ -50,9 +55,11 @@ export function ComingUpCard({ trip, onClick }: { trip: UpcomingTrip; onClick?: 
         >
           {trip.when}
         </span>
-        <button
+        <motion.button
           type="button"
           aria-label={`More about ${trip.name}`}
+          whileTap={{ scale: 0.9 }}
+          transition={TAP_TRANSITION}
           className="shrink-0"
           onClick={(e) => {
             e.stopPropagation()
@@ -60,7 +67,7 @@ export function ComingUpCard({ trip, onClick }: { trip: UpcomingTrip; onClick?: 
           }}
         >
           <Icon name="more" size={28} />
-        </button>
+        </motion.button>
       </div>
 
       <div className="min-h-0 w-full flex-1" />
@@ -97,6 +104,6 @@ export function ComingUpCard({ trip, onClick }: { trip: UpcomingTrip; onClick?: 
           </span>
         </div>
       </div>
-    </div>
+    </motion.div>
   )
 }

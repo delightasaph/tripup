@@ -1,4 +1,6 @@
-import { motion } from 'framer-motion'
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
+import { useEffect, useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { AvatarStack, type Person } from '@/components/Avatar'
 import { BottomBar } from '@/components/BottomBar'
 import { Button, IconButton } from '@/components/Button'
@@ -12,10 +14,18 @@ import { placePhotos } from '@/data/assets'
 import { dinnerPoll, lisbon } from '@/data/trip'
 import { useScreenNav } from '@/lib/useScreenNav'
 import { selectBuddyPeople, useTripStore } from '@/store/tripStore'
+import { DUR_FAST, HOVER_SMALL, SPRING_SHEET, TAP_SMALL, TAP_TRANSITION } from '@/styles/motion'
+import { ExpensesBody } from './Balances'
+
+type Tab = 'itinerary' | 'expenses'
 
 /**
- * 02 · Trip · Lisbon (Itinerary) — Figma 4064:17467, and the same screen with
- * the dinner slot resolved for 06 Plan updated.
+ * 02 · Trip · Lisbon — Figma 4064:17467 (Itinerary) and 4048:16899 (Expenses,
+ * "Balances"). One persistently-mounted shell now owns the nav row and the
+ * tab bar; Itinerary and Expenses are two internal bodies it swaps, not two
+ * router-level screens — see docs/INTERACTION_EXECUTION_BRIEF.md §0. Tapping
+ * the tab bar never remounts the nav row, the buddy stack, or the bar
+ * itself; only the body content crossfades, opacity only.
  *
  * The frame is 922 tall with a fold marked at 844, so this screen scrolls. The
  * chrome — bottom fade, tab bar, FAB — is docked to the viewport, not to the
@@ -24,12 +34,44 @@ import { selectBuddyPeople, useTripStore } from '@/store/tripStore'
 export function TripLisbon({
   dinner,
   crew,
-}: { dinner?: 'open' | 'decided'; crew?: Person[] } = {}) {
+  scaleForSheet,
+  ticketShared,
+  initialTab,
+  syncTabToUrl,
+}: {
+  dinner?: 'open' | 'decided'
+  crew?: Person[]
+  scaleForSheet?: boolean
+  /** True only for screen 02 itself — see `Ticket`'s `shared` prop. */
+  ticketShared?: boolean
+  /** Which body to open on. Re-syncs the tab if this changes later (e.g. the
+   *  browser back button lands on a different `?tab=`). */
+  initialTab?: Tab
+  /** True only for the canonical `/?screen=trip` mount in App.tsx — pushes
+   *  tab changes into the URL (`?tab=expenses`) so it stays a real deep
+   *  link. Backdrop reuses (a sheet's dimmed trip screen, 06 Plan updated)
+   *  leave this off: their tab state is purely local. */
+  syncTabToUrl?: boolean
+} = {}) {
   const { go, back } = useScreenNav()
+  const navigate = useNavigate()
   const pollClosed = useTripStore((s) => s.pollClosed)
   const winnerId = useTripStore((s) => s.winnerId)
   const liveCrew = useTripStore(selectBuddyPeople)
   const showToast = useTripStore((s) => s.showToast)
+  const reduceMotion = useReducedMotion()
+
+  const [tab, setTab] = useState<Tab>(initialTab ?? 'itinerary')
+  const expensesAnimatedRef = useRef(false)
+
+  // The browser back/forward buttons (or any external nav) change `initialTab`
+  // out from under us — follow it. Tapping the tab bar itself goes through
+  // `changeTab` below, which already set local state before the URL updates,
+  // so this is a same-value no-op in that direction.
+  useEffect(() => {
+    if (initialTab && initialTab !== tab) setTab(initialTab)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialTab])
 
   const decided = (dinner ?? (pollClosed ? 'decided' : 'open')) === 'decided'
   const shownCrew = crew ?? liveCrew
@@ -37,8 +79,21 @@ export function TripLisbon({
 
   const comingSoon = () => showToast({ title: 'Coming soon', detail: 'Maps aren’t wired up in this prototype' })
 
+  const changeTab = (next: Tab) => {
+    setTab(next)
+    if (syncTabToUrl) {
+      navigate(next === 'expenses' ? '/?screen=trip&tab=expenses' : '/?screen=trip', { replace: true })
+    }
+  }
+
   return (
-    <div className="relative h-full overflow-hidden">
+    <motion.div
+      className="relative h-full overflow-hidden"
+      initial={false}
+      animate={{ scale: scaleForSheet && !reduceMotion ? 0.96 : 1 }}
+      transition={SPRING_SHEET}
+      style={{ transformOrigin: '50% 0%' }}
+    >
       <div className="no-scrollbar h-full overflow-y-auto" style={{ overflowX: 'hidden' }}>
         <div
           className="flex flex-col items-start"
@@ -50,149 +105,177 @@ export function TripLisbon({
             gap: 16,
           }}
         >
-          {/* Top: nav + ticket */}
-          <div className="flex w-full shrink-0 flex-col items-start" style={{ gap: 10 }}>
-            <div className="flex h-[40px] w-full items-center justify-between">
-              <IconButton label="Back to trips" size={40} onClick={back}>
-                <Icon name="arrow-left" size={20} />
-              </IconButton>
-              <div className="flex items-center" style={{ gap: 8 }}>
-                <button type="button" aria-label="Buddies on this trip" onClick={() => go('buddies')}>
-                  <AvatarStack people={shownCrew} size={30} max={3} />
-                </button>
-                <IconButton
-                  label="Add a buddy"
-                  size={30}
-                  background="var(--color-accent-lime)"
-                  ring="var(--color-surface-ground)"
-                  style={{ filter: 'none' }}
-                  onClick={() => go('add-a-buddy')}
-                >
-                  <Icon name="plus-small" size={16} />
-                </IconButton>
-              </div>
-            </div>
-            <Ticket destination={lisbon.destination} dates={lisbon.dates} />
-          </div>
-
-          <DayStrip days={lisbon.days} />
-
-          <div className="flex w-full shrink-0 flex-col items-start" style={{ paddingTop: 8, gap: 12 }}>
-            <SectionHeader label="Today’s plan" meta="2 of 4 done" />
-
-            <Timeline>
-              <TimelineRow time="10:00" node="done" timeOpacity={0.6}>
-                <DoneCard
-                  title="Pastéis de Belém"
-                  line="Breakfast · Belém · €18"
-                  photo="pasteis"
-                />
-              </TimelineRow>
-
-              <TimelineRow time="15:00" node="done" timeOpacity={0.6}>
-                <DoneCard title="Tram 28 to Graça" line="Praça Martim Moniz" />
-              </TimelineRow>
-
-              <TimelineRow time="18:30" timeTone="ink" timeOffset={16} node="next">
-                <div
-                  className="relative flex shrink-0 flex-col items-start justify-center overflow-hidden"
-                  style={{
-                    width: 280,
-                    height: 84,
-                    gap: 10,
-                    padding: '14px 14px 12px 16px',
-                    borderRadius: 'var(--radius-card)',
-                    background:
-                      'linear-gradient(158.199deg, rgb(247 221 211) 7.1429%, rgb(245 231 196) 78.571%)',
-                  }}
-                >
-                  <div className="flex w-full flex-col items-start" style={{ gap: 4 }}>
-                    <p className="text-headline font-semibold">Sunset at Miradouro</p>
-                    <p className="text-caption" style={{ color: 'var(--color-ink-secondary)' }}>
-                      Viewpoint · free
-                    </p>
-                    <Pill
-                      variant="white70"
-                      height={24}
-                      radius={12}
-                      className="text-caption font-medium"
-                      style={{ width: 106, paddingInline: 10, gap: 5 }}
-                    >
-                      <Icon name="walk" size={14} />
-                      12 min walk
-                    </Pill>
-                  </div>
-                  {/* Directions — only on the next item, never on done ones */}
-                  <button
-                    type="button"
-                    aria-label="Directions to Miradouro da Graça"
-                    onClick={comingSoon}
-                    className="absolute flex items-center justify-center rounded-pill"
-                    style={{
-                      bottom: 12,
-                      right: 12,
-                      width: 36,
-                      height: 36,
-                      filter: 'drop-shadow(0 4px 5px rgb(31 30 36 / 0.1))',
-                    }}
-                  >
-                    <Icon name="direction-right" size={24} />
-                  </button>
-                </div>
-              </TimelineRow>
-
-              <TimelineRow
-                time="20:30"
-                timeTone="violet"
-                timeOffset={16}
-                rowOffset={4}
-                node={decided ? 'filled' : 'open'}
+          {/* Nav — shared by both tabs, mounted once, never remounts */}
+          <div className="flex h-[40px] w-full shrink-0 items-center justify-between">
+            <IconButton label="Back to trips" size={40} onClick={back}>
+              <Icon name="arrow-left" size={20} />
+            </IconButton>
+            <div className="flex items-center" style={{ gap: 8 }}>
+              <motion.button
+                type="button"
+                aria-label="Buddies on this trip"
+                onClick={() => go('buddies')}
+                whileHover={HOVER_SMALL}
+                whileTap={TAP_SMALL}
+                transition={TAP_TRANSITION}
               >
-                {decided ? (
-                  <DinnerDecided
-                    place={winningPlace}
-                    onLogExpense={() => go('log-expense')}
-                    onMap={comingSoon}
-                  />
-                ) : (
-                  <div
-                    className="flex shrink-0 flex-col items-start overflow-hidden"
-                    style={{
-                      width: 280,
-                      gap: 12,
-                      padding: '14px 16px 16px',
-                      borderRadius: 'var(--radius-card)',
-                      background: 'var(--color-accent-violet-tint)',
-                      outline: '1.5px dashed rgb(91 79 232 / 0.55)',
-                      outlineOffset: '-1.5px',
-                    }}
-                  >
-                    <div className="flex flex-col items-start whitespace-nowrap" style={{ gap: 2 }}>
-                      <p className="text-headline font-semibold">Dinner</p>
-                      <p className="text-caption" style={{ color: 'var(--color-ink-secondary)' }}>
-                        Nothing booked yet · all 6 of you are free
-                      </p>
-                    </div>
-                    <Button
-                      variant="violet"
-                      height={38}
-                      icon={<Icon name="list" size={16} />}
-                      onClick={() => go('new-poll')}
-                      style={{
-                        width: 151,
-                        paddingInline: 14,
-                        justifyContent: 'flex-start',
-                        gap: 6,
-                        filter: 'drop-shadow(0 6px 7px rgb(91 79 232 / 0.35))',
-                      }}
-                    >
-                      Ask the group
-                    </Button>
-                  </div>
-                )}
-              </TimelineRow>
-            </Timeline>
+                <AvatarStack people={shownCrew} size={30} max={3} />
+              </motion.button>
+              <IconButton
+                label="Add a buddy"
+                size={30}
+                background="var(--color-accent-lime)"
+                ring="var(--color-surface-ground)"
+                style={{ filter: 'none' }}
+                onClick={() => go('add-a-buddy')}
+              >
+                <Icon name="plus-small" size={16} />
+              </IconButton>
+            </div>
           </div>
+
+          <AnimatePresence initial={false}>
+            {tab === 'itinerary' ? (
+              <motion.div
+                key="itinerary"
+                className="flex w-full shrink-0 flex-col items-start"
+                style={{ gap: 16 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: DUR_FAST }}
+              >
+                <Ticket destination={lisbon.destination} dates={lisbon.dates} shared={ticketShared} />
+                <DayStrip days={lisbon.days} />
+                <div className="flex w-full shrink-0 flex-col items-start" style={{ paddingTop: 8, gap: 12 }}>
+                  <SectionHeader label="Today’s plan" meta="2 of 4 done" />
+                  <Timeline>
+                    <TimelineRow time="10:00" node="done" timeOpacity={0.6}>
+                      <DoneCard title="Pastéis de Belém" line="Breakfast · Belém · €18" photo="pasteis" />
+                    </TimelineRow>
+
+                    <TimelineRow time="15:00" node="done" timeOpacity={0.6}>
+                      <DoneCard title="Tram 28 to Graça" line="Praça Martim Moniz" />
+                    </TimelineRow>
+
+                    <TimelineRow time="18:30" timeTone="ink" timeOffset={16} node="next">
+                      <div
+                        className="relative flex shrink-0 flex-col items-start justify-center overflow-hidden"
+                        style={{
+                          width: 280,
+                          height: 84,
+                          gap: 10,
+                          padding: '14px 14px 12px 16px',
+                          borderRadius: 'var(--radius-card)',
+                          background:
+                            'linear-gradient(158.199deg, rgb(247 221 211) 7.1429%, rgb(245 231 196) 78.571%)',
+                        }}
+                      >
+                        <div className="flex w-full flex-col items-start" style={{ gap: 4 }}>
+                          <p className="text-headline font-semibold">Sunset at Miradouro</p>
+                          <p className="text-caption" style={{ color: 'var(--color-ink-secondary)' }}>
+                            Viewpoint · free
+                          </p>
+                          <Pill
+                            variant="white70"
+                            height={24}
+                            radius={12}
+                            className="text-caption font-medium"
+                            style={{ width: 106, paddingInline: 10, gap: 5 }}
+                          >
+                            <Icon name="walk" size={14} />
+                            12 min walk
+                          </Pill>
+                        </div>
+                        {/* Directions — only on the next item, never on done ones */}
+                        <motion.button
+                          type="button"
+                          aria-label="Directions to Miradouro da Graça"
+                          onClick={comingSoon}
+                          whileHover={HOVER_SMALL}
+                          whileTap={TAP_SMALL}
+                          transition={TAP_TRANSITION}
+                          className="absolute flex items-center justify-center rounded-pill"
+                          style={{
+                            bottom: 12,
+                            right: 12,
+                            width: 36,
+                            height: 36,
+                            filter: 'drop-shadow(0 4px 5px rgb(31 30 36 / 0.1))',
+                          }}
+                        >
+                          <Icon name="direction-right" size={24} />
+                        </motion.button>
+                      </div>
+                    </TimelineRow>
+
+                    <TimelineRow
+                      time="20:30"
+                      timeTone="violet"
+                      timeOffset={16}
+                      rowOffset={4}
+                      node={decided ? 'filled' : 'open'}
+                    >
+                      {decided ? (
+                        <DinnerDecided place={winningPlace} onLogExpense={() => go('log-expense')} onMap={comingSoon} />
+                      ) : (
+                        <div
+                          className="flex shrink-0 flex-col items-start overflow-hidden"
+                          style={{
+                            width: 280,
+                            gap: 12,
+                            padding: '14px 16px 16px',
+                            borderRadius: 'var(--radius-card)',
+                            background: 'var(--color-accent-violet-tint)',
+                            outline: '1.5px dashed rgb(91 79 232 / 0.55)',
+                            outlineOffset: '-1.5px',
+                          }}
+                        >
+                          <div className="flex flex-col items-start whitespace-nowrap" style={{ gap: 2 }}>
+                            <p className="text-headline font-semibold">Dinner</p>
+                            <p className="text-caption" style={{ color: 'var(--color-ink-secondary)' }}>
+                              Nothing booked yet · all 6 of you are free
+                            </p>
+                          </div>
+                          <Button
+                            variant="violet"
+                            height={38}
+                            icon={<Icon name="list" size={16} />}
+                            onClick={() => go('new-poll')}
+                            style={{
+                              width: 151,
+                              paddingInline: 14,
+                              justifyContent: 'flex-start',
+                              gap: 6,
+                              filter: 'drop-shadow(0 6px 7px rgb(91 79 232 / 0.35))',
+                            }}
+                          >
+                            Ask the group
+                          </Button>
+                        </div>
+                      )}
+                    </TimelineRow>
+                  </Timeline>
+                </div>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="expenses"
+                className="w-full"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: DUR_FAST }}
+              >
+                <ExpensesBody
+                  animateEntrance={!expensesAnimatedRef.current}
+                  onShown={() => {
+                    expensesAnimatedRef.current = true
+                  }}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
 
@@ -201,13 +284,11 @@ export function TripLisbon({
           { id: 'itinerary', label: 'Itinerary', icon: 'calendar' },
           { id: 'expenses', label: 'Expenses', icon: 'wallet' },
         ]}
-        activeId="itinerary"
-        onTabChange={(id) => {
-          if (id === 'expenses') go('balances')
-        }}
-        onFabClick={() => go(decided ? 'log-expense' : 'new-poll')}
+        activeId={tab}
+        onTabChange={(id) => changeTab(id as Tab)}
+        onFabClick={tab === 'itinerary' ? () => go(decided ? 'log-expense' : 'new-poll') : undefined}
       />
-    </div>
+    </motion.div>
   )
 }
 
@@ -275,9 +356,12 @@ function DinnerDecided({
       </div>
 
       <div className="flex w-full items-start" style={{ gap: 8 }}>
-        <button
+        <motion.button
           type="button"
           onClick={onLogExpense}
+          whileHover={HOVER_SMALL}
+          whileTap={TAP_SMALL}
+          transition={TAP_TRANSITION}
           className="flex shrink-0 items-center justify-center rounded-pill text-footnote font-medium"
           style={{
             width: 201,
@@ -290,16 +374,19 @@ function DinnerDecided({
         >
           <Icon name="receipt" size={16} />
           Log expense
-        </button>
-        <button
+        </motion.button>
+        <motion.button
           type="button"
           aria-label="Map"
           onClick={onMap}
+          whileHover={HOVER_SMALL}
+          whileTap={TAP_SMALL}
+          transition={TAP_TRANSITION}
           className="flex shrink-0 items-center justify-center rounded-pill"
           style={{ width: 43, height: 40, paddingInline: 14 }}
         >
           <Icon name="direction-right" size={24} />
-        </button>
+        </motion.button>
       </div>
     </div>
   )

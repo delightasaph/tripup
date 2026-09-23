@@ -1,8 +1,10 @@
+import { motion } from 'framer-motion'
 import { Avatar } from '@/components/Avatar'
 import { Icon } from '@/components/Icon'
 import { Scrim, Sheet, SheetHeader } from '@/components/Sheet'
 import { buddySearch } from '@/data/trip'
 import { useScreenNav } from '@/lib/useScreenNav'
+import { HOVER_SMALL, TAP_SMALL, TAP_TRANSITION } from '@/styles/motion'
 import { selectBuddyPeople, useTripStore } from '@/store/tripStore'
 import { TripLisbon } from './TripLisbon'
 
@@ -19,17 +21,23 @@ export function AddABuddy() {
   const { go, back } = useScreenNav()
   const buddies = useTripStore(selectBuddyPeople)
   const addRen = useTripStore((s) => s.addRen)
+  const showToast = useTripStore((s) => s.showToast)
 
   const confirm = () => {
     addRen()
     go('new-poll')
   }
 
+  const tapResult = (name: string, selected: boolean) => {
+    if (selected) return
+    showToast({ title: 'Only Ren is joining tonight', detail: `${name} isn’t on this trip` })
+  }
+
   return (
     <div className="relative h-full">
-      <TripLisbon />
+      <TripLisbon scaleForSheet />
       <Scrim onClick={back} />
-      <Sheet>
+      <Sheet onDismiss={back}>
         <SheetHeader title="Add a buddy" meta={`${buddies.length} on this trip`} />
 
         {/* Search */}
@@ -54,9 +62,14 @@ export function AddABuddy() {
         {/* Results */}
         <div className="flex w-full shrink-0 flex-col items-start" style={{ gap: 8 }}>
           {buddySearch.results.map((r) => (
-            <div
+            <motion.button
               key={r.person.id}
-              className="flex w-full items-center"
+              type="button"
+              onClick={() => tapResult(r.name, r.selected)}
+              whileHover={HOVER_SMALL}
+              whileTap={TAP_SMALL}
+              transition={TAP_TRANSITION}
+              className="flex w-full items-center text-left"
               style={{
                 gap: 12,
                 padding: '10px 14px 10px 12px',
@@ -94,7 +107,7 @@ export function AddABuddy() {
                   }}
                 />
               )}
-            </div>
+            </motion.button>
           ))}
         </div>
 
@@ -135,9 +148,12 @@ export function AddABuddy() {
 
         {/* Actions — Cancel returns to 03a, as does dragging the sheet down */}
         <div className="flex w-full shrink-0 items-start" style={{ gap: 10 }}>
-          <button
+          <motion.button
             type="button"
             onClick={back}
+            whileHover={HOVER_SMALL}
+            whileTap={TAP_SMALL}
+            transition={TAP_TRANSITION}
             className="flex shrink-0 items-center justify-center rounded-pill text-body font-medium"
             style={{
               height: 54,
@@ -147,10 +163,13 @@ export function AddABuddy() {
             }}
           >
             Cancel
-          </button>
-          <button
+          </motion.button>
+          <motion.button
             type="button"
             onClick={confirm}
+            whileHover={HOVER_SMALL}
+            whileTap={TAP_SMALL}
+            transition={TAP_TRANSITION}
             className="flex min-w-0 flex-1 items-center justify-center rounded-pill text-body font-medium"
             style={{
               height: 54,
@@ -161,7 +180,7 @@ export function AddABuddy() {
             }}
           >
             Add Ren
-          </button>
+          </motion.button>
         </div>
       </Sheet>
     </div>

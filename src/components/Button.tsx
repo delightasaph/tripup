@@ -1,8 +1,15 @@
+import { motion } from 'framer-motion'
 import type { ButtonHTMLAttributes, ReactNode } from 'react'
+import { HOVER_SMALL, TAP_SMALL, TAP_TRANSITION } from '@/styles/motion'
 
 export type ButtonVariant = 'primary' | 'secondary' | 'violet' | 'lilac'
 
-type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
+type NativeButtonProps = Omit<
+  ButtonHTMLAttributes<HTMLButtonElement>,
+  'onDrag' | 'onDragStart' | 'onDragEnd' | 'onAnimationStart' | 'onAnimationEnd' | 'onAnimationIteration'
+>
+
+type ButtonProps = NativeButtonProps & {
   children: ReactNode
   variant?: ButtonVariant
   /** 54 for full-width actions, 40 for in-card, 38 where Figma says so. */
@@ -14,7 +21,8 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 /**
  * Primary is Ink/Primary with white Body/Medium; secondary is white with a
  * 1.5 px Line/Default inside border. Every variant keeps a 44 pt tap target
- * even when the drawn height is smaller.
+ * even when the drawn height is smaller. Every touch answers: `whileTap`
+ * scales to 0.97 over --dur-micro (docs/DESIGN_SYSTEM.md §6.0).
  */
 export function Button({
   children,
@@ -48,8 +56,11 @@ export function Button({
   }
 
   return (
-    <button
+    <motion.button
       type="button"
+      whileHover={rest.disabled ? undefined : HOVER_SMALL}
+      whileTap={rest.disabled ? undefined : TAP_SMALL}
+      transition={TAP_TRANSITION}
       className={`inline-flex items-center justify-center gap-[6px] rounded-pill text-body font-medium ${
         fullWidth ? 'w-full' : ''
       } ${className}`}
@@ -58,11 +69,11 @@ export function Button({
     >
       {icon}
       {children}
-    </button>
+    </motion.button>
   )
 }
 
-type IconButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
+type IconButtonProps = NativeButtonProps & {
   children: ReactNode
   size?: number
   /** White with a card shadow by default; pass a token for lime etc. */
@@ -83,9 +94,12 @@ export function IconButton({
   ...rest
 }: IconButtonProps) {
   return (
-    <button
+    <motion.button
       type="button"
       aria-label={label}
+      whileHover={rest.disabled ? undefined : HOVER_SMALL}
+      whileTap={rest.disabled ? undefined : TAP_SMALL}
+      transition={TAP_TRANSITION}
       className={`inline-flex shrink-0 items-center justify-center rounded-pill ${className}`}
       style={{
         width: size,
@@ -98,6 +112,6 @@ export function IconButton({
       {...rest}
     >
       {children}
-    </button>
+    </motion.button>
   )
 }

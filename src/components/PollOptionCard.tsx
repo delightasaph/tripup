@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import { placePhotos } from '@/data/assets'
+import { DUR_FAST, HOVER_LIFT, SPRING_POP, TAP_LARGE, TAP_TRANSITION } from '@/styles/motion'
 import { Avatar, type Person } from './Avatar'
 import { Icon, type IconName } from './Icon'
 
@@ -42,7 +43,7 @@ export function PollOptionCard({ option, fill, leading, yourVote, sharedElement,
   const votesRowTop = yourVote ? 20 : 16
 
   return (
-    <div
+    <motion.div
       role={onClick ? 'button' : undefined}
       tabIndex={onClick ? 0 : undefined}
       aria-label={onClick ? `Change vote to ${option.name}` : undefined}
@@ -57,6 +58,9 @@ export function PollOptionCard({ option, fill, leading, yourVote, sharedElement,
             }
           : undefined
       }
+      whileHover={onClick ? HOVER_LIFT : undefined}
+      whileTap={onClick ? TAP_LARGE : undefined}
+      transition={TAP_TRANSITION}
       className="relative"
       style={{
         width: 350,
@@ -65,7 +69,9 @@ export function PollOptionCard({ option, fill, leading, yourVote, sharedElement,
         borderRadius: 'var(--radius-card-lg)',
         background: leading ? 'var(--color-accent-lime)' : 'var(--color-surface-white)',
         // The frame gives these cards no shadow at all — the lime fill is the
-        // only thing marking the leader.
+        // only thing marking the leader. A plain CSS transition crossfades it
+        // on a lead change — framer-motion can't interpolate a var() colour.
+        transition: `background ${DUR_FAST}s ease-out`,
       }}
     >
       {/* Top row */}
@@ -126,12 +132,14 @@ export function PollOptionCard({ option, fill, leading, yourVote, sharedElement,
             overflow: 'hidden',
           }}
         >
-          <div
+          <motion.div
+            animate={{ width: `${fill * 100}%` }}
+            transition={{ duration: 0.4, ease: 'easeOut' }}
             style={{
-              width: `${fill * 100}%`,
               height: '100%',
               borderRadius: 'var(--radius-pill)',
               background: leading ? 'var(--color-ink-primary)' : 'var(--color-data-bar-muted)',
+              transition: `background ${DUR_FAST}s ease-out`,
             }}
           />
         </div>
@@ -142,13 +150,19 @@ export function PollOptionCard({ option, fill, leading, yourVote, sharedElement,
         >
           <div className="absolute flex items-center" style={{ left: 0, top: 0 }}>
             {option.voters.map((p) => (
-              <span key={p.id} style={{ marginRight: -4 }}>
+              <motion.span
+                key={p.id}
+                initial={{ scale: 0.6, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={SPRING_POP}
+                style={{ marginRight: -4 }}
+              >
                 <Avatar
                   person={p}
                   size={22}
                   ring={leading ? 'var(--color-accent-lime)' : 'var(--color-surface-white)'}
                 />
-              </span>
+              </motion.span>
             ))}
           </div>
           <span
@@ -180,6 +194,6 @@ export function PollOptionCard({ option, fill, leading, yourVote, sharedElement,
           )}
         </div>
       </div>
-    </div>
+    </motion.div>
   )
 }

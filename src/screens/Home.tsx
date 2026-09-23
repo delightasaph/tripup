@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion'
 import { Avatar, AvatarStack } from '@/components/Avatar'
 import { ComingUpCard } from '@/components/ComingUpCard'
 import { Icon } from '@/components/Icon'
@@ -5,6 +6,7 @@ import { Ticket } from '@/components/Ticket'
 import { homeStampsRow } from '@/data/assets'
 import { lisbon, people, upcomingTrips } from '@/data/trip'
 import { useScreenNav } from '@/lib/useScreenNav'
+import { HOVER_LIFT, HOVER_SMALL, TAP_LARGE, TAP_SMALL, TAP_TRANSITION } from '@/styles/motion'
 import { selectBuddyPeople, useTripStore } from '@/store/tripStore'
 
 /**
@@ -46,9 +48,13 @@ export function Home() {
           <div className="flex items-start" style={{ gap: 10 }}>
             {/* One exported asset: the button, its shadow and the unread dot,
                 drawn on an 80 canvas around a 44 button. */}
-            <button
+            <motion.button
               type="button"
               aria-label="Notifications, 1 unread"
+              onClick={() => showToast({ title: 'Notifications', detail: 'You’re all caught up' })}
+              whileHover={HOVER_SMALL}
+              whileTap={TAP_SMALL}
+              transition={TAP_TRANSITION}
               className="relative shrink-0"
               style={{ width: 44, height: 44 }}
             >
@@ -61,10 +67,14 @@ export function Home() {
                 className="absolute"
                 style={{ left: -18, top: -12, maxWidth: 'none' }}
               />
-            </button>
-            <button
+            </motion.button>
+            <motion.button
               type="button"
               aria-label="New trip"
+              onClick={() => showToast({ title: 'Coming soon', detail: 'Creating a new trip isn’t wired up yet' })}
+              whileHover={HOVER_SMALL}
+              whileTap={TAP_SMALL}
+              transition={TAP_TRANSITION}
               className="flex shrink-0 items-center justify-center rounded-pill"
               style={{
                 width: 44,
@@ -74,7 +84,7 @@ export function Home() {
               }}
             >
               <Icon name="plus-ink" size={20} />
-            </button>
+            </motion.button>
           </div>
         </div>
 
@@ -100,7 +110,7 @@ export function Home() {
             </span>
           </div>
 
-          <div
+          <motion.div
             role="button"
             tabIndex={0}
             aria-label="Open Lisbon"
@@ -111,9 +121,12 @@ export function Home() {
                 go('trip')
               }
             }}
+            whileHover={HOVER_LIFT}
+            whileTap={TAP_LARGE}
+            transition={TAP_TRANSITION}
             className="cursor-pointer"
           >
-          <Ticket destination={lisbon.destination} dates={lisbon.dates} variant="tall">
+          <Ticket destination={lisbon.destination} dates={lisbon.dates} variant="tall" shared>
             {/* Next up — a frosted panel inside the card */}
             <div
               className="absolute flex items-center"
@@ -154,12 +167,15 @@ export function Home() {
 
                 <div className="flex w-full items-center justify-between">
                   <AvatarStack people={crew} size={30} max={3} />
-                  <button
+                  <motion.button
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation()
                       go('new-poll')
                     }}
+                    whileHover={HOVER_SMALL}
+                    whileTap={TAP_SMALL}
+                    transition={TAP_TRANSITION}
                     className="flex shrink-0 items-center justify-center rounded-pill text-caption font-medium"
                     style={{
                       padding: '9px 14px',
@@ -168,24 +184,28 @@ export function Home() {
                     }}
                   >
                     Ask the group
-                  </button>
+                  </motion.button>
                 </div>
               </div>
             </div>
           </Ticket>
-          </div>
+          </motion.div>
         </div>
 
         {/* Coming up */}
         <div className="flex w-full shrink-0 flex-col items-start" style={{ gap: 10 }}>
           <div className="flex w-full items-center justify-between" style={{ height: 20 }}>
             <h2 className="text-headline font-semibold">Coming up</h2>
-            <span
+            <motion.button
+              type="button"
+              onClick={comingSoon}
+              whileTap={{ scale: 0.95 }}
+              transition={TAP_TRANSITION}
               className="text-footnote underline"
               style={{ color: 'var(--color-ink-secondary)' }}
             >
               See all
-            </span>
+            </motion.button>
           </div>
           <div className="flex w-full items-start" style={{ gap: 10 }}>
             {upcomingTrips.map((t) => (
@@ -238,9 +258,12 @@ export function Home() {
             />
           </div>
 
-          <button
+          <motion.button
             type="button"
             onClick={() => showToast({ title: 'Coming soon', detail: 'The stamps collection isn’t open yet' })}
+            whileHover={HOVER_SMALL}
+            whileTap={TAP_SMALL}
+            transition={TAP_TRANSITION}
             className="flex w-full items-center justify-center rounded-pill text-body font-medium"
             style={{
               height: 54,
@@ -253,7 +276,7 @@ export function Home() {
           >
             See your Stamps collection
             <Icon name="arrow-right" size={20} />
-          </button>
+          </motion.button>
         </div>
       </div>
     </div>

@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion'
 import { Avatar } from '@/components/Avatar'
 import { Icon } from '@/components/Icon'
 import { Scrim, Sheet } from '@/components/Sheet'
@@ -6,6 +7,7 @@ import { dinnerBill } from '@/data/expenses'
 import { people, tripBuddies } from '@/data/trip'
 import { useScreenNav } from '@/lib/useScreenNav'
 import { splitEuroCents } from '@/domain/money'
+import { HOVER_SMALL, TAP_SMALL, TAP_TRANSITION } from '@/styles/motion'
 import { useTripStore } from '@/store/tripStore'
 import { TripLisbon } from './TripLisbon'
 
@@ -38,16 +40,19 @@ export function LogExpense() {
 
   return (
     <div className="relative h-full">
-      <TripLisbon dinner="decided" crew={[...tripBuddies, people.ren]} />
+      <TripLisbon dinner="decided" crew={[...tripBuddies, people.ren]} scaleForSheet />
       <Scrim onClick={back} />
 
-      <Sheet gap={16}>
+      <Sheet gap={16} onDismiss={back}>
         {/* Header */}
         <div className="flex w-full shrink-0 items-center justify-between">
           <h2 className="text-heading font-semibold">New expense</h2>
-          <button
+          <motion.button
             type="button"
             onClick={() => showToast({ title: 'Coming soon', detail: 'Receipt scanning isn’t wired up yet' })}
+            whileHover={HOVER_SMALL}
+            whileTap={TAP_SMALL}
+            transition={TAP_TRANSITION}
             className="flex shrink-0 items-center rounded-pill text-footnote font-medium"
             style={{
               gap: 6,
@@ -57,7 +62,7 @@ export function LogExpense() {
           >
             <Icon name="scan" size={16} />
             Scan receipt
-          </button>
+          </motion.button>
         </div>
 
         {/* Linked plan */}
@@ -117,8 +122,13 @@ export function LogExpense() {
           className="flex w-full shrink-0 flex-col items-start"
           style={{ borderRadius: 'var(--radius-row-lg)', background: 'var(--color-surface-ground)' }}
         >
-          <div
-            className="flex w-full items-center"
+          <motion.button
+            type="button"
+            onClick={() => showToast({ title: 'You paid this one', detail: 'Only one payer per expense in this demo' })}
+            whileHover={HOVER_SMALL}
+            whileTap={TAP_SMALL}
+            transition={TAP_TRANSITION}
+            className="flex w-full items-center text-left"
             style={{ gap: 10, padding: '12px 14px 12px 16px' }}
           >
             <span className="text-body" style={{ color: 'var(--color-ink-secondary)' }}>
@@ -129,7 +139,7 @@ export function LogExpense() {
               <span className="text-body font-semibold">You</span>
             </div>
             <Icon name="chevron-right" size={16} color="var(--color-ink-primary)" />
-          </div>
+          </motion.button>
           <span
             aria-hidden="true"
             style={{ width: '100%', height: 1, background: 'var(--color-line-default)' }}
@@ -161,10 +171,13 @@ export function LogExpense() {
           ].map((row, i) => (
             <div key={i} className="flex w-full items-start" style={{ gap: 8 }}>
               {row.map((key) => (
-                <button
+                <motion.button
                   key={key}
                   type="button"
                   aria-label={key === '⌫' ? 'Delete' : key}
+                  whileHover={{ backgroundColor: 'rgba(31, 30, 36, 0.08)' }}
+                  whileTap={TAP_SMALL}
+                  transition={TAP_TRANSITION}
                   className="flex min-w-0 flex-1 items-center justify-center text-subheading font-medium"
                   style={{
                     height: 48,
@@ -173,16 +186,19 @@ export function LogExpense() {
                   }}
                 >
                   {key === '⌫' ? <Icon name="backspace" size={20} /> : key}
-                </button>
+                </motion.button>
               ))}
             </div>
           ))}
         </div>
 
         {/* Next */}
-        <button
+        <motion.button
           type="button"
           onClick={next}
+          whileHover={HOVER_SMALL}
+          whileTap={TAP_SMALL}
+          transition={TAP_TRANSITION}
           className="flex w-full shrink-0 items-center justify-center rounded-pill text-body font-medium"
           style={{
             height: 54,
@@ -194,7 +210,7 @@ export function LogExpense() {
         >
           <Icon name="arrow-right" size={18} />
           {split === 'by-item' ? 'Next: who had what' : 'Log expense'}
-        </button>
+        </motion.button>
       </Sheet>
     </div>
   )
@@ -210,10 +226,12 @@ function SegmentButton({
   onClick: () => void
 }) {
   return (
-    <button
+    <motion.button
       type="button"
       onClick={onClick}
       aria-pressed={active}
+      whileTap={TAP_SMALL}
+      transition={TAP_TRANSITION}
       className="flex items-center rounded-pill text-footnote font-medium"
       style={{
         padding: '8px 18px',
@@ -222,6 +240,6 @@ function SegmentButton({
       }}
     >
       {label}
-    </button>
+    </motion.button>
   )
 }

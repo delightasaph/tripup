@@ -1,6 +1,8 @@
+import { AnimatePresence, motion } from 'framer-motion'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { screens, type ScreenId } from '@/screens/registry'
+import { HOVER_SMALL, SPRING_SHEET, TAP_SMALL, TAP_TRANSITION } from '@/styles/motion'
 import { type Ending, type ViewAs, useTripStore } from '@/store/tripStore'
 
 /**
@@ -34,112 +36,135 @@ export function DemoPanel() {
     go(viewAsHome[who])
   }
 
-  if (!open) {
-    return (
-      <button
-        type="button"
-        onClick={() => setOpen(true)}
-        className="fixed rounded-pill font-medium"
-        style={{
-          right: 16,
-          bottom: 16,
-          zIndex: 50,
-          padding: '10px 16px',
-          fontSize: 13,
-          background: '#17161b',
-          color: '#f5f2ec',
-          boxShadow: '0 8px 20px rgb(0 0 0 / 0.25)',
-        }}
-      >
-        Demo
-      </button>
-    )
-  }
-
   return (
-    <div
-      className="fixed flex flex-col items-stretch"
-      style={{
-        right: 16,
-        bottom: 16,
-        zIndex: 50,
-        width: 260,
-        gap: 14,
-        padding: 16,
-        borderRadius: 20,
-        background: '#17161b',
-        color: '#f5f2ec',
-        boxShadow: '0 12px 30px rgb(0 0 0 / 0.35)',
-        fontSize: 13,
-      }}
-    >
-      <div className="flex items-center justify-between">
-        <span style={{ fontWeight: 600 }}>Demo controls</span>
-        <button type="button" onClick={() => setOpen(false)} aria-label="Close demo controls" style={{ opacity: 0.6 }}>
-          ✕
-        </button>
-      </div>
-
-      <Field label="View as">
-        <SegmentRow>
-          {(['ari', 'nic', 'ren'] as const).map((who) => (
-            <SegmentButton key={who} active={viewAs === who} onClick={() => selectViewAs(who)}>
-              {who === 'ari' ? 'Ari' : who === 'nic' ? 'Nic' : 'Ren'}
-            </SegmentButton>
-          ))}
-        </SegmentRow>
-      </Field>
-
-      <Field label="Jump to screen">
-        <select
-          onChange={(e) => e.target.value && go(e.target.value as ScreenId)}
-          value=""
-          className="w-full rounded-md"
-          style={{ padding: '8px 10px', background: '#2a2833', color: '#f5f2ec', border: 'none' }}
+    <AnimatePresence mode="wait" initial={false}>
+      {!open ? (
+        <motion.button
+          key="toggle"
+          type="button"
+          onClick={() => setOpen(true)}
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.8 }}
+          whileHover={HOVER_SMALL}
+          whileTap={TAP_SMALL}
+          transition={TAP_TRANSITION}
+          className="fixed rounded-pill font-medium"
+          style={{
+            right: 16,
+            bottom: 16,
+            zIndex: 50,
+            padding: '10px 16px',
+            fontSize: 13,
+            background: '#17161b',
+            color: '#f5f2ec',
+            boxShadow: '0 8px 20px rgb(0 0 0 / 0.25)',
+          }}
         >
-          <option value="" disabled>
-            Choose a screen…
-          </option>
-          {screens.map((s) => (
-            <option key={s.id} value={s.id}>
-              {s.no} · {s.title}
-            </option>
-          ))}
-        </select>
-      </Field>
+          Demo
+        </motion.button>
+      ) : (
+        <motion.div
+          key="panel"
+          initial={{ opacity: 0, scale: 0.9, y: 12 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.9, y: 12 }}
+          transition={SPRING_SHEET}
+          className="fixed flex flex-col items-stretch"
+          style={{
+            right: 16,
+            bottom: 16,
+            zIndex: 50,
+            width: 260,
+            gap: 14,
+            padding: 16,
+            borderRadius: 20,
+            background: '#17161b',
+            color: '#f5f2ec',
+            boxShadow: '0 12px 30px rgb(0 0 0 / 0.35)',
+            fontSize: 13,
+          }}
+        >
+          <div className="flex items-center justify-between">
+            <span style={{ fontWeight: 600 }}>Demo controls</span>
+            <motion.button
+              type="button"
+              onClick={() => setOpen(false)}
+              aria-label="Close demo controls"
+              whileHover={{ opacity: 1 }}
+              whileTap={TAP_SMALL}
+              transition={TAP_TRANSITION}
+              style={{ opacity: 0.6 }}
+            >
+              ✕
+            </motion.button>
+          </div>
 
-      <Field label="Ending">
-        <SegmentRow>
-          {(['A', 'B'] as const).map((e) => (
-            <SegmentButton key={e} active={ending === e} onClick={() => setEnding(e as Ending)}>
-              {e === 'A' ? '11 · Plain' : '11B · Stamp'}
-            </SegmentButton>
-          ))}
-        </SegmentRow>
-      </Field>
+          <Field label="View as">
+            <SegmentRow>
+              {(['ari', 'nic', 'ren'] as const).map((who) => (
+                <SegmentButton key={who} active={viewAs === who} onClick={() => selectViewAs(who)}>
+                  {who === 'ari' ? 'Ari' : who === 'nic' ? 'Nic' : 'Ren'}
+                </SegmentButton>
+              ))}
+            </SegmentRow>
+          </Field>
 
-      <Field label="Speed">
-        <SegmentRow>
-          {([1, 2, 4] as const).map((s) => (
-            <SegmentButton key={s} active={speed === s} onClick={() => setSpeed(s)}>
-              {s}×
-            </SegmentButton>
-          ))}
-        </SegmentRow>
-      </Field>
+          <Field label="Jump to screen">
+            <select
+              onChange={(e) => e.target.value && go(e.target.value as ScreenId)}
+              value=""
+              className="w-full rounded-md"
+              style={{ padding: '8px 10px', background: '#2a2833', color: '#f5f2ec', border: 'none' }}
+            >
+              <option value="" disabled>
+                Choose a screen…
+              </option>
+              {screens.map((s) => (
+                <option key={s.id} value={s.id}>
+                  {s.no} · {s.title}
+                </option>
+              ))}
+            </select>
+          </Field>
 
-      <button
-        type="button"
-        onClick={() => {
-          resetDemo()
-          go('home')
-        }}
-        className="rounded-pill font-medium"
-        style={{ padding: '10px 0', background: '#f5f2ec', color: '#17161b' }}
-      >
-        Reset demo
-      </button>
-    </div>
+          <Field label="Ending">
+            <SegmentRow>
+              {(['A', 'B'] as const).map((e) => (
+                <SegmentButton key={e} active={ending === e} onClick={() => setEnding(e as Ending)}>
+                  {e === 'A' ? '11 · Plain' : '11B · Stamp'}
+                </SegmentButton>
+              ))}
+            </SegmentRow>
+          </Field>
+
+          <Field label="Speed">
+            <SegmentRow>
+              {([1, 2, 4] as const).map((s) => (
+                <SegmentButton key={s} active={speed === s} onClick={() => setSpeed(s)}>
+                  {s}×
+                </SegmentButton>
+              ))}
+            </SegmentRow>
+          </Field>
+
+          <motion.button
+            type="button"
+            onClick={() => {
+              resetDemo()
+              go('home')
+            }}
+            whileHover={HOVER_SMALL}
+            whileTap={TAP_SMALL}
+            transition={TAP_TRANSITION}
+            className="rounded-pill font-medium"
+            style={{ padding: '10px 0', background: '#f5f2ec', color: '#17161b' }}
+          >
+            Reset demo
+          </motion.button>
+        </motion.div>
+      )}
+    </AnimatePresence>
   )
 }
 
@@ -170,9 +195,11 @@ function SegmentButton({
   children: React.ReactNode
 }) {
   return (
-    <button
+    <motion.button
       type="button"
       onClick={onClick}
+      whileTap={TAP_SMALL}
+      transition={TAP_TRANSITION}
       className="min-w-0 flex-1 rounded-md"
       style={{
         padding: '6px 4px',
@@ -182,6 +209,6 @@ function SegmentButton({
       }}
     >
       {children}
-    </button>
+    </motion.button>
   )
 }

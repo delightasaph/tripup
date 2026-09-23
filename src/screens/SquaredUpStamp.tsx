@@ -1,3 +1,4 @@
+import { motion, useReducedMotion } from 'framer-motion'
 import { Icon } from '@/components/Icon'
 import { Pill } from '@/components/Pill'
 import { SquaredUpActions } from '@/components/SquaredUpActions'
@@ -5,6 +6,7 @@ import { Stamp } from '@/components/Stamp'
 import { settledAt, tripSpend } from '@/data/expenses'
 import { useScreenNav } from '@/lib/useScreenNav'
 import { formatEuros } from '@/domain/money'
+import { HOVER_SMALL, SPRING_POP, TAP_SMALL, TAP_TRANSITION } from '@/styles/motion'
 import { selectSettleTransfers, useTripStore } from '@/store/tripStore'
 
 /**
@@ -20,6 +22,7 @@ export function SquaredUpStamp() {
   const { go } = useScreenNav()
   const transfers = useTripStore(selectSettleTransfers)
   const showToast = useTripStore((s) => s.showToast)
+  const reduceMotion = useReducedMotion()
   const times = Object.values(settledAt).sort()
 
   return (
@@ -39,7 +42,15 @@ export function SquaredUpStamp() {
         </Pill>
 
         <div className="flex w-full shrink-0 items-center justify-center" style={{ padding: '18px 0' }}>
-          <Stamp country="portugal" paperWidth={206} rotate={5} />
+          <motion.div
+            initial={reduceMotion ? { opacity: 0 } : { scale: 1.3, rotate: -10, opacity: 0 }}
+            animate={reduceMotion ? { opacity: 1 } : { scale: 1, rotate: 0, opacity: 1 }}
+            transition={
+              reduceMotion ? { duration: 0.12 } : { type: 'spring', stiffness: 280, damping: 16, mass: 0.9 }
+            }
+          >
+            <Stamp country="portugal" paperWidth={206} rotate={5} />
+          </motion.div>
         </div>
 
         <div className="flex w-full shrink-0 flex-col items-center text-center" style={{ gap: 8 }}>
@@ -61,8 +72,13 @@ export function SquaredUpStamp() {
           </Pill>
         </div>
 
-        <div
-          className="flex w-full shrink-0 items-center"
+        <motion.button
+          type="button"
+          onClick={() => go('balances')}
+          whileHover={HOVER_SMALL}
+          whileTap={TAP_SMALL}
+          transition={TAP_TRANSITION}
+          className="flex w-full shrink-0 items-center text-left"
           style={{
             gap: 10,
             padding: '14px 14px 14px 16px',
@@ -71,17 +87,20 @@ export function SquaredUpStamp() {
             boxShadow: 'var(--shadow-pop)',
           }}
         >
-          <span
+          <motion.span
+            initial={{ scale: 0.5, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={SPRING_POP}
             className="flex shrink-0 items-center justify-center rounded-pill"
             style={{ width: 22, height: 22, background: 'var(--color-status-positive)' }}
           >
             <Icon name="check-white" size={11} />
-          </span>
+          </motion.span>
           <span className="min-w-0 flex-1 text-body font-medium whitespace-nowrap">
             {transfers.length} transfers · {times[0]} – {times.at(-1)}
           </span>
           <Icon name="chevron-right" size={16} />
-        </div>
+        </motion.button>
       </div>
 
       <SquaredUpActions

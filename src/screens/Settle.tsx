@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
 import { Avatar } from '@/components/Avatar'
 import { IconButton } from '@/components/Button'
@@ -7,6 +8,7 @@ import { paymentMethods } from '@/data/expenses'
 import { people } from '@/data/trip'
 import { useScreenNav } from '@/lib/useScreenNav'
 import { formatEuros, splitEuroCents } from '@/domain/money'
+import { HOVER_SMALL, SPRING_POP, TAP_SMALL, TAP_TRANSITION } from '@/styles/motion'
 import { selectSettleTransfers, useTripStore } from '@/store/tripStore'
 
 /**
@@ -87,11 +89,14 @@ export function Settle() {
           {paymentMethods.map((m) => {
             const selected = m.id === methodId
             return (
-              <button
+              <motion.button
                 key={m.id}
                 type="button"
                 onClick={() => setMethodId(m.id)}
                 aria-pressed={selected}
+                whileHover={HOVER_SMALL}
+                whileTap={TAP_SMALL}
+                transition={TAP_TRANSITION}
                 className="flex w-full items-center text-left"
                 style={{
                   gap: 12,
@@ -118,19 +123,22 @@ export function Settle() {
                   </p>
                 </div>
                 {selected ? (
-                  <span
+                  <motion.span
+                    initial={{ scale: 0.5, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={SPRING_POP}
                     className="flex shrink-0 items-center justify-center rounded-pill"
                     style={{ width: 24, height: 24, background: 'var(--color-ink-primary)' }}
                   >
                     <Icon name="check-white" size={13} />
-                  </span>
+                  </motion.span>
                 ) : (
                   <span
                     className="shrink-0 rounded-pill"
                     style={{ width: 24, height: 24, outline: '1.5px solid rgb(31 30 36 / 0.25)', outlineOffset: '-1.5px' }}
                   />
                 )}
-              </button>
+              </motion.button>
             )
           })}
         </div>
@@ -141,10 +149,13 @@ export function Settle() {
         <p className="text-caption whitespace-nowrap" style={{ color: 'var(--color-ink-secondary)' }}>
           Nic is told the moment it’s sent
         </p>
-        <button
+        <motion.button
           type="button"
           onClick={paySettlement}
           disabled={renPaying}
+          whileHover={renPaying ? undefined : HOVER_SMALL}
+          whileTap={renPaying ? undefined : TAP_SMALL}
+          transition={TAP_TRANSITION}
           className="flex w-full items-center justify-center rounded-pill text-body font-medium"
           style={{
             height: 54,
@@ -163,7 +174,7 @@ export function Settle() {
               Pay Nic {formatEuros(renToNic.cents)}
             </>
           )}
-        </button>
+        </motion.button>
       </div>
     </div>
   )

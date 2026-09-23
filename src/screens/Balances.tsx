@@ -1,14 +1,14 @@
-import { useEffect } from 'react'
-import { AvatarStack, Avatar } from '@/components/Avatar'
-import { BottomBar } from '@/components/BottomBar'
-import { IconButton } from '@/components/Button'
+import { motion } from 'framer-motion'
+import { useEffect, useRef } from 'react'
+import { Avatar } from '@/components/Avatar'
 import { Icon } from '@/components/Icon'
 import { Pill } from '@/components/Pill'
 import { dinnerBill, expenseLedger, openingBalanceCents, tripSpend, type LedgerEntry } from '@/data/expenses'
-import { people, tripBuddies } from '@/data/trip'
+import { people } from '@/data/trip'
 import { useScreenNav } from '@/lib/useScreenNav'
 import { formatEuros, formatEurosAuto } from '@/domain/money'
 import type { Transfer } from '@/domain/netting'
+import { SPRING_POP } from '@/styles/motion'
 import {
   selectAllSettled,
   selectBalancesAfterDinner,
@@ -35,22 +35,34 @@ function owedBySentence(transfers: Transfer[]): string {
 }
 
 /**
- * 09 · Balances (Expenses tab) — Figma `4048:16899`.
+ * 09 · Balances — the Expenses tab's own body inside the trip shell
+ * (`TripLisbon.tsx` owns the nav row and the tab bar now; see
+ * docs/INTERACTION_EXECUTION_BRIEF.md §0). The "you're owed" card, the
+ * netted settle-up list, and the full expense ledger. The €130, the
+ * transfers and their split are read live off the store —
+ * `src/domain/split.ts` and `src/domain/netting.ts` run on whatever split
+ * mode the demo is currently in, not a fixed copy.
  *
- * Same trip-screen chrome as 02 (nav, buddy stack), but the Expenses tab's
- * own content: the "you're owed" card, the netted settle-up list, and the
- * full expense ledger. The €130, the transfers and their split are read live
- * off the store — `src/domain/split.ts` and `src/domain/netting.ts` run on
- * whatever split mode the demo is currently in, not a fixed copy.
+ * `animateEntrance` gates the settle-up rows' stagger-in: true only the
+ * first time this body is ever shown in the session, so flipping back to
+ * this tab later doesn't replay it. The shell tracks that via a ref and
+ * flips it after the first mount, through `onShown`.
  */
-export function Balances() {
-  const { go, back, replace } = useScreenNav()
+export function ExpensesBody({
+  animateEntrance = true,
+  onShown,
+}: {
+  animateEntrance?: boolean
+  onShown?: () => void
+}) {
+  const { replace } = useScreenNav()
   const ending = useTripStore((s) => s.ending)
   const settledIds = useTripStore((s) => s.settledIds)
   const allSettled = useTripStore(selectAllSettled)
   const balances = useTripStore(selectBalancesAfterDinner)
   const shares = useTripStore(selectDinnerShares)
   const transfers = useTripStore(selectSettleTransfers)
+  const shownOnce = useRef(false)
 
   const you = balances.find((b) => b.personId === 'ari')?.cents ?? 0
   const wasBefore = openingBalanceCents.ari
@@ -72,181 +84,154 @@ export function Balances() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allSettled])
 
+  useEffect(() => {
+    if (!shownOnce.current) {
+      shownOnce.current = true
+      onShown?.()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   return (
-    <div className="relative h-full overflow-hidden">
-      <div className="no-scrollbar h-full overflow-y-auto" style={{ overflowX: 'hidden' }}>
-        <div
-          className="flex flex-col items-start"
-          style={{ paddingTop: 14, paddingInline: 'var(--screen-padding)', paddingBottom: 110, gap: 16 }}
-        >
-          {/* Nav */}
-          <div className="flex h-[40px] w-full shrink-0 items-center justify-between">
-            <IconButton label="Back to trips" onClick={back}>
-              <Icon name="arrow-left" size={20} />
-            </IconButton>
-            <div className="flex items-center" style={{ gap: 8 }}>
-              <button type="button" aria-label="Buddies on this trip" onClick={() => go('buddies')}>
-                <AvatarStack people={[...tripBuddies, people.ren]} size={30} max={3} />
-              </button>
-              <IconButton
-                label="Add a buddy"
-                size={30}
-                background="var(--color-accent-lime)"
-                ring="var(--color-surface-ground)"
-                style={{ filter: 'none' }}
-                onClick={() => go('add-a-buddy')}
+    <div className="flex w-full shrink-0 flex-col items-start" style={{ gap: 16 }}>
+      {/* Title */}
+      <div className="flex w-full shrink-0 flex-col items-start" style={{ gap: 4 }}>
+        <h1 className="text-title1 font-semibold whitespace-nowrap">Lisbon</h1>
+        <p className="text-footnote whitespace-nowrap" style={{ color: 'var(--color-ink-secondary)' }}>
+          {formatEuros(tripSpend.totalCents)} spent in total
+        </p>
+      </div>
+
+      {/* You're owed */}
+      <div
+        className="flex w-full shrink-0 flex-col items-start"
+        style={{ gap: 6, padding: 18, borderRadius: 'var(--radius-card-lg)', background: 'var(--color-accent-lilac)' }}
+      >
+        <div className="flex w-full items-center justify-between">
+          <span className="text-footnote font-medium" style={{ color: 'var(--color-ink-secondary)' }}>
+            You’re owed
+          </span>
+          <Pill variant="white70" height={22} className="text-caption2 font-medium" style={{ color: 'var(--color-ink-secondary)' }}>
+            was {formatEuros(wasBefore)} before dinner
+          </Pill>
+        </div>
+        <p className="font-semibold" style={{ fontSize: 48, lineHeight: 1, letterSpacing: '-1.4px' }}>
+          {formatEuros(you)}
+        </p>
+        <p className="text-footnote w-full" style={{ color: 'var(--color-ink-secondary)' }}>
+          {owedBySentence(transfers)}
+        </p>
+      </div>
+
+      {/* Settle up */}
+      <div className="flex w-full shrink-0 flex-col items-start" style={{ gap: 10 }}>
+        <div className="flex w-full items-center justify-between">
+          <h2 className="text-headline font-semibold whitespace-nowrap">Settle up</h2>
+          <span className="text-footnote whitespace-nowrap" style={{ color: 'var(--color-ink-secondary)' }}>
+            {transfers.length} transfers, netted
+          </span>
+        </div>
+        <div className="flex w-full shrink-0 flex-col items-start" style={{ gap: 6 }}>
+          {transfers.map((t, i) => {
+            const toYou = t.toId === 'ari'
+            const settled = settledIds.includes(t.fromId)
+            return (
+              <motion.div
+                key={`${t.fromId}-${t.toId}`}
+                className="flex w-full items-center"
+                initial={animateEntrance ? { opacity: 0, y: 8 } : false}
+                animate={{ opacity: settled ? 0.55 : 1, y: 0 }}
+                transition={{ duration: 0.25, delay: animateEntrance ? i * 0.04 : 0 }}
+                style={{
+                  gap: 8,
+                  padding: '9px 16px 9px 10px',
+                  borderRadius: 'var(--radius-row)',
+                  background: toYou ? 'var(--color-status-positive-tint)' : 'var(--color-surface-white)',
+                }}
               >
-                <Icon name="plus-small" size={16} />
-              </IconButton>
-            </div>
-          </div>
-
-          {/* Title */}
-          <div className="flex w-full shrink-0 flex-col items-start" style={{ gap: 4 }}>
-            <h1 className="text-title1 font-semibold whitespace-nowrap">Lisbon</h1>
-            <p className="text-footnote whitespace-nowrap" style={{ color: 'var(--color-ink-secondary)' }}>
-              {formatEuros(tripSpend.totalCents)} spent in total
-            </p>
-          </div>
-
-          {/* You're owed */}
-          <div
-            className="flex w-full shrink-0 flex-col items-start"
-            style={{ gap: 6, padding: 18, borderRadius: 'var(--radius-card-lg)', background: 'var(--color-accent-lilac)' }}
-          >
-            <div className="flex w-full items-center justify-between">
-              <span className="text-footnote font-medium" style={{ color: 'var(--color-ink-secondary)' }}>
-                You’re owed
-              </span>
-              <Pill variant="white70" height={22} className="text-caption2 font-medium" style={{ color: 'var(--color-ink-secondary)' }}>
-                was {formatEuros(wasBefore)} before dinner
-              </Pill>
-            </div>
-            <p className="font-semibold" style={{ fontSize: 48, lineHeight: 1, letterSpacing: '-1.4px' }}>
-              {formatEuros(you)}
-            </p>
-            <p className="text-footnote w-full" style={{ color: 'var(--color-ink-secondary)' }}>
-              {owedBySentence(transfers)}
-            </p>
-          </div>
-
-          {/* Settle up */}
-          <div className="flex w-full shrink-0 flex-col items-start" style={{ gap: 10 }}>
-            <div className="flex w-full items-center justify-between">
-              <h2 className="text-headline font-semibold whitespace-nowrap">Settle up</h2>
-              <span className="text-footnote whitespace-nowrap" style={{ color: 'var(--color-ink-secondary)' }}>
-                {transfers.length} transfers, netted
-              </span>
-            </div>
-            <div className="flex w-full shrink-0 flex-col items-start" style={{ gap: 6 }}>
-              {transfers.map((t) => {
-                const toYou = t.toId === 'ari'
-                const settled = settledIds.includes(t.fromId)
-                return (
-                  <div
-                    key={`${t.fromId}-${t.toId}`}
-                    className="flex w-full items-center"
-                    style={{
-                      gap: 8,
-                      padding: '9px 16px 9px 10px',
-                      borderRadius: 'var(--radius-row)',
-                      background: toYou ? 'var(--color-status-positive-tint)' : 'var(--color-surface-white)',
-                      opacity: settled ? 0.55 : 1,
-                    }}
-                  >
-                    <Avatar person={people[t.fromId]} size={30} />
-                    <span className="text-body font-medium whitespace-nowrap">{people[t.fromId].label}</span>
-                    <Icon name="arrow-right" size={14} color="var(--color-ink-secondary)" />
-                    <Avatar person={people[t.toId]} size={30} />
-                    <span className="min-w-0 flex-1 text-body font-medium">
-                      {toYou ? 'You' : people[t.toId].label}
-                    </span>
-                    {settled ? (
-                      <span
-                        className="flex shrink-0 items-center justify-center rounded-pill"
-                        style={{ width: 22, height: 22, background: 'var(--color-status-positive)' }}
-                      >
-                        <Icon name="check-white" size={11} />
-                      </span>
-                    ) : (
-                      <span
-                        className="text-headline font-semibold shrink-0"
-                        style={{ color: toYou ? 'var(--color-status-positive)' : 'var(--color-ink-primary)' }}
-                      >
-                        {formatEuros(t.cents)}
-                      </span>
-                    )}
-                  </div>
-                )
-              })}
-            </div>
-          </div>
-
-          {/* All expenses */}
-          <div className="flex w-full shrink-0 flex-col items-start" style={{ paddingTop: 16, gap: 20 }}>
-            <h2 className="text-headline font-semibold whitespace-nowrap">All Expenses</h2>
-            {ledger.map((day) => (
-              <div key={day.label} className="flex w-full shrink-0 flex-col items-start" style={{ gap: 8 }}>
-                <span className="text-caption2 font-medium whitespace-nowrap" style={{ color: 'var(--color-ink-secondary)' }}>
-                  {day.label}
+                <Avatar person={people[t.fromId]} size={30} />
+                <span className="text-body font-medium whitespace-nowrap">{people[t.fromId].label}</span>
+                <Icon name="arrow-right" size={14} color="var(--color-ink-secondary)" />
+                <Avatar person={people[t.toId]} size={30} />
+                <span className="min-w-0 flex-1 text-body font-medium">
+                  {toYou ? 'You' : people[t.toId].label}
                 </span>
-                <div
-                  className="flex w-full flex-col items-start overflow-hidden"
-                  style={{ borderRadius: 'var(--radius-row-lg)', background: 'var(--color-surface-white)', boxShadow: 'var(--shadow-list)' }}
-                >
-                  {day.entries.map((entry, i) => (
-                    <div key={entry.id} className="flex w-full flex-col items-start">
-                      {i > 0 && (
-                        <span aria-hidden="true" style={{ width: '100%', height: 1, background: 'var(--color-line-default)' }} />
-                      )}
-                      <div className="flex w-full items-center justify-between" style={{ padding: '13px 16px' }}>
-                        <div className="min-w-0 flex-1" style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                          <p className="text-body font-semibold whitespace-nowrap">{entry.title}</p>
-                          <p className="text-caption whitespace-nowrap" style={{ color: 'var(--color-ink-secondary)' }}>
-                            {entry.sub}
-                          </p>
-                        </div>
-                        <div className="flex shrink-0 flex-col items-end" style={{ gap: 2 }}>
-                          <p
-                            className="text-headline font-semibold whitespace-nowrap"
-                            style={{
-                              color: entry.youPaid
-                                ? 'var(--color-status-positive)'
-                                : entry.notIncluded
-                                  ? 'var(--color-ink-secondary)'
-                                  : 'var(--color-ink-primary)',
-                              opacity: entry.notIncluded ? 0.65 : 1,
-                            }}
-                          >
-                            {entry.youPaid ? '+ ' : ''}
-                            {formatEuros(entry.amountCents)}
-                          </p>
-                          <p className="text-caption2 whitespace-nowrap" style={{ color: 'var(--color-ink-secondary)' }}>
-                            {entry.notIncluded
-                              ? 'you were not in this one'
-                              : `your share ${formatEurosAuto(entry.shareCents!)}`}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
+                {settled ? (
+                  <motion.span
+                    initial={{ scale: 0.5, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={SPRING_POP}
+                    className="flex shrink-0 items-center justify-center rounded-pill"
+                    style={{ width: 22, height: 22, background: 'var(--color-status-positive)' }}
+                  >
+                    <Icon name="check-white" size={11} />
+                  </motion.span>
+                ) : (
+                  <span
+                    className="text-headline font-semibold shrink-0"
+                    style={{ color: toYou ? 'var(--color-status-positive)' : 'var(--color-ink-primary)' }}
+                  >
+                    {formatEuros(t.cents)}
+                  </span>
+                )}
+              </motion.div>
+            )
+          })}
         </div>
       </div>
 
-      <BottomBar
-        tabs={[
-          { id: 'itinerary', label: 'Itinerary', icon: 'calendar' },
-          { id: 'expenses', label: 'Expenses', icon: 'wallet' },
-        ]}
-        activeId="expenses"
-        onTabChange={(id) => {
-          if (id === 'itinerary') go('trip')
-        }}
-      />
+      {/* All expenses */}
+      <div className="flex w-full shrink-0 flex-col items-start" style={{ paddingTop: 16, gap: 20 }}>
+        <h2 className="text-headline font-semibold whitespace-nowrap">All Expenses</h2>
+        {ledger.map((day) => (
+          <div key={day.label} className="flex w-full shrink-0 flex-col items-start" style={{ gap: 8 }}>
+            <span className="text-caption2 font-medium whitespace-nowrap" style={{ color: 'var(--color-ink-secondary)' }}>
+              {day.label}
+            </span>
+            <div
+              className="flex w-full flex-col items-start overflow-hidden"
+              style={{ borderRadius: 'var(--radius-row-lg)', background: 'var(--color-surface-white)', boxShadow: 'var(--shadow-list)' }}
+            >
+              {day.entries.map((entry, i) => (
+                <div key={entry.id} className="flex w-full flex-col items-start">
+                  {i > 0 && (
+                    <span aria-hidden="true" style={{ width: '100%', height: 1, background: 'var(--color-line-default)' }} />
+                  )}
+                  <div className="flex w-full items-center justify-between" style={{ padding: '13px 16px' }}>
+                    <div className="min-w-0 flex-1" style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                      <p className="text-body font-semibold whitespace-nowrap">{entry.title}</p>
+                      <p className="text-caption whitespace-nowrap" style={{ color: 'var(--color-ink-secondary)' }}>
+                        {entry.sub}
+                      </p>
+                    </div>
+                    <div className="flex shrink-0 flex-col items-end" style={{ gap: 2 }}>
+                      <p
+                        className="text-headline font-semibold whitespace-nowrap"
+                        style={{
+                          color: entry.youPaid
+                            ? 'var(--color-status-positive)'
+                            : entry.notIncluded
+                              ? 'var(--color-ink-secondary)'
+                              : 'var(--color-ink-primary)',
+                          opacity: entry.notIncluded ? 0.65 : 1,
+                        }}
+                      >
+                        {entry.youPaid ? '+ ' : ''}
+                        {formatEuros(entry.amountCents)}
+                      </p>
+                      <p className="text-caption2 whitespace-nowrap" style={{ color: 'var(--color-ink-secondary)' }}>
+                        {entry.notIncluded
+                          ? 'you were not in this one'
+                          : `your share ${formatEurosAuto(entry.shareCents!)}`}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }

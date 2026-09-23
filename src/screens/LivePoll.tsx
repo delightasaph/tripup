@@ -23,9 +23,10 @@ import {
  * +154 with cards at 0 / 140 / 268, "Waiting on Sven" at +562, actions at 756.
  */
 export function LivePoll() {
-  const { question, askedLine } = dinnerPoll
+  const { askedLine } = dinnerPoll
   const { back, replace } = useScreenNav()
 
+  const question = useTripStore((s) => s.pollQuestion)
   const closesInSeconds = useTripStore((s) => s.closesInSeconds)
   const pollClosed = useTripStore((s) => s.pollClosed)
   const winnerId = useTripStore((s) => s.winnerId)

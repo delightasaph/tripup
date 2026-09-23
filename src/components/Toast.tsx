@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion'
 import { Icon, type IconName } from './Icon'
 
 type ToastProps = {
@@ -12,14 +13,19 @@ type ToastProps = {
 /**
  * Ink pill-card, 350 wide, sitting at y 56 in frame coordinates. Lime 28
  * circle, title in white Footnote/Medium over a lime Caption/Regular detail.
- * Auto-dismiss is 3 s once the flow is wired.
+ * Drops in from −20px with a fade, 250ms (§6.1); auto-dismiss is 3s, timed by
+ * the store.
  */
 export function Toast({ title, detail, icon = 'check', iconSize = 13 }: ToastProps) {
   return (
-    <div
+    <motion.div
       role="status"
       aria-live="polite"
       className="absolute flex items-center"
+      initial={{ y: -20, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      exit={{ y: -20, opacity: 0 }}
+      transition={{ duration: 0.25, ease: 'easeOut' }}
       style={{
         left: 20,
         top: 'calc(56px - var(--status-bar-height))',
@@ -51,6 +57,6 @@ export function Toast({ title, detail, icon = 'check', iconSize = 13 }: ToastPro
           {detail}
         </span>
       </span>
-    </div>
+    </motion.div>
   )
 }

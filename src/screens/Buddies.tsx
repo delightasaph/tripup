@@ -1,7 +1,9 @@
+import { motion } from 'framer-motion'
 import { Avatar } from '@/components/Avatar'
 import { Icon } from '@/components/Icon'
 import { Scrim, Sheet, SheetHeader } from '@/components/Sheet'
 import { useScreenNav } from '@/lib/useScreenNav'
+import { HOVER_SMALL, TAP_SMALL, TAP_TRANSITION } from '@/styles/motion'
 import { selectBuddyPeople, useTripStore } from '@/store/tripStore'
 import { TripLisbon } from './TripLisbon'
 
@@ -25,9 +27,9 @@ export function Buddies() {
 
   return (
     <div className="relative h-full">
-      <TripLisbon />
+      <TripLisbon scaleForSheet />
       <Scrim onClick={back} />
-      <Sheet frameTop={532}>
+      <Sheet frameTop={532} onDismiss={back}>
         <SheetHeader title="Buddies" meta={`${buddies.length} on this trip`} />
 
         {/* On this trip — six or seven columns spread across the full width */}
@@ -43,9 +45,12 @@ export function Buddies() {
         </div>
 
         {/* Add a buddy → 03b. The subtitle states assumption A1 on screen. */}
-        <button
+        <motion.button
           type="button"
           onClick={() => go('add-a-buddy')}
+          whileHover={HOVER_SMALL}
+          whileTap={TAP_SMALL}
+          transition={TAP_TRANSITION}
           className="flex w-full shrink-0 items-center text-left"
           style={{
             gap: 12,
@@ -67,7 +72,7 @@ export function Buddies() {
             </span>
           </span>
           <Icon name="chevron-right-16" size={16} className="shrink-0" />
-        </button>
+        </motion.button>
       </Sheet>
     </div>
   )

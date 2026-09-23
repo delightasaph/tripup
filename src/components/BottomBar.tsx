@@ -1,3 +1,5 @@
+import { motion } from 'framer-motion'
+import { HOVER_SMALL, TAP_SMALL, TAP_TRANSITION } from '@/styles/motion'
 import { Icon, type IconName } from './Icon'
 
 export type Tab = { id: string; label: string; icon: IconName }
@@ -15,6 +17,11 @@ type BottomBarProps = {
  * The floating bar: a 264 × 60 white tab bar plus a 60 × 60 dark FAB at
  * y = 756, over a 150 pt fade from Surface/Ground transparent to opaque so
  * the timeline scrolls away behind it.
+ *
+ * The active tab's ink pill carries `layoutId="tab-pill"` — Itinerary ↔
+ * Expenses is really one tab bar, so switching slides the same pill across
+ * instead of cutting between two flat colours, even though the two tabs live
+ * on separate screens/routes.
  */
 export function BottomBar({ tabs, activeId, fabLabel = 'Add to trip', onTabChange, onFabClick }: BottomBarProps) {
   return (
@@ -43,33 +50,47 @@ export function BottomBar({ tabs, activeId, fabLabel = 'Add to trip', onTabChang
           {tabs.map((t) => {
             const active = t.id === activeId
             return (
-              <button
+              <motion.button
                 key={t.id}
                 type="button"
                 role="tab"
                 aria-selected={active}
                 onClick={() => onTabChange?.(t.id)}
-                className="flex h-[48px] items-center gap-[8px] rounded-pill"
+                whileHover={active ? undefined : HOVER_SMALL}
+                whileTap={TAP_SMALL}
+                transition={TAP_TRANSITION}
+                className="relative flex h-[48px] items-center gap-[8px] rounded-pill"
                 style={{
                   paddingInline: active ? 18 : 17,
-                  background: active ? 'var(--color-ink-primary)' : 'transparent',
                   color: active ? 'var(--color-surface-white)' : 'var(--color-ink-secondary)',
                 }}
               >
+                {active && (
+                  <motion.div
+                    layoutId="tab-pill"
+                    className="absolute inset-0 rounded-pill"
+                    style={{ background: 'var(--color-ink-primary)' }}
+                    transition={{ type: 'spring', stiffness: 500, damping: 40 }}
+                  />
+                )}
                 <Icon
                   name={t.icon}
                   size={18}
                   color={active ? 'var(--color-surface-white)' : 'var(--color-ink-secondary)'}
+                  className="relative"
                 />
-                <span className="text-body font-medium">{t.label}</span>
-              </button>
+                <span className="relative text-body font-medium">{t.label}</span>
+              </motion.button>
             )
           })}
         </div>
-        <button
+        <motion.button
           type="button"
           aria-label={fabLabel}
           onClick={onFabClick}
+          whileHover={HOVER_SMALL}
+          whileTap={TAP_SMALL}
+          transition={TAP_TRANSITION}
           className="flex items-center justify-center rounded-pill"
           style={{
             width: 60,
@@ -79,7 +100,7 @@ export function BottomBar({ tabs, activeId, fabLabel = 'Add to trip', onTabChang
           }}
         >
           <Icon name="plus-white" size={20} />
-        </button>
+        </motion.button>
       </div>
     </>
   )

@@ -1,4 +1,6 @@
+import { motion, useReducedMotion, type PanInfo } from 'framer-motion'
 import type { ReactNode } from 'react'
+import { DUR_FAST, SPRING_SHEET } from '@/styles/motion'
 
 type SheetProps = {
   children: ReactNode
@@ -13,16 +15,29 @@ type SheetProps = {
   frameTop?: number
   /** Vertical gap between the sheet's sections. */
   gap?: number
+  /** Dragging the grabber down past a distance or velocity threshold calls
+   *  this — the same way Cancel or the scrim tap does. */
+  onDismiss?: () => void
 }
 
 /**
  * A bottom sheet over a scrim: full width, top corners 28, padding 10 / 20 /
  * 34, and a 40 × 5 grabber. The scrim is drawn by `Scrim` so a screen can
  * decide what sits behind it.
+ *
+ * Comes up with spring/sheet (docs/DESIGN_SYSTEM.md §6.0) and is draggable
+ * down, dismissing on distance **or** velocity, not distance alone.
  */
-export function Sheet({ children, frameTop, gap = 16 }: SheetProps) {
+export function Sheet({ children, frameTop, gap = 16, onDismiss }: SheetProps) {
+  const reduceMotion = useReducedMotion()
+
+  const handleDragEnd = (_: unknown, info: PanInfo) => {
+    if (!onDismiss) return
+    if (info.offset.y > 120 || info.velocity.y > 700) onDismiss()
+  }
+
   return (
-    <div
+    <motion.div
       className="absolute inset-x-0 bottom-0 flex flex-col items-start"
       style={{
         top:
@@ -36,6 +51,15 @@ export function Sheet({ children, frameTop, gap = 16 }: SheetProps) {
         padding: '10px 20px 34px',
         gap,
       }}
+      initial={reduceMotion ? { opacity: 0 } : { y: '100%' }}
+      animate={reduceMotion ? { opacity: 1 } : { y: 0 }}
+      exit={reduceMotion ? { opacity: 0 } : { y: '100%' }}
+      transition={reduceMotion ? { duration: DUR_FAST } : SPRING_SHEET}
+      drag={onDismiss ? 'y' : false}
+      dragDirectionLock
+      dragConstraints={{ top: 0, bottom: 0 }}
+      dragElastic={{ top: 0, bottom: 0.4 }}
+      onDragEnd={handleDragEnd}
       role="dialog"
       aria-modal="true"
     >
@@ -51,7 +75,7 @@ export function Sheet({ children, frameTop, gap = 16 }: SheetProps) {
         />
       </div>
       {children}
-    </div>
+    </motion.div>
   )
 }
 
@@ -67,7 +91,7 @@ export function Sheet({ children, frameTop, gap = 16 }: SheetProps) {
  */
 export function Scrim({ onClick }: { onClick?: () => void }) {
   return (
-    <div
+    <motion.div
       aria-hidden="true"
       onClick={onClick}
       className="absolute right-0 bottom-0 left-0"
@@ -75,6 +99,10 @@ export function Scrim({ onClick }: { onClick?: () => void }) {
         top: 'calc(-1 * var(--status-bar-height))',
         background: 'var(--color-overlay-scrim)',
       }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: DUR_FAST }}
     />
   )
 }

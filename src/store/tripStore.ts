@@ -10,7 +10,15 @@ import { billTotal, splitByItems, splitEqually, type BillItem } from '@/domain/s
 /** Everyone on the trip once Ren has joined, Ari included — the voting body
  *  and the settle-up roster. */
 const allSevenIds = ['ari', 'nic', 'bea', 'kofi', 'sven', 'mira', 'ren']
-const pollOptionIds = dinnerPoll.places.map((p) => p.id)
+/** Every place Ari could put on the poll — "Add a place" toggles among these
+ *  three, since they're the only ones with real photography. */
+const catalogPlaceIds = dinnerPoll.places.map((p) => p.id)
+/** Where a simulated voter's preferred pick lands if Ari removed it from the
+ *  poll before sending — falls back to whichever catalog place is still in. */
+function resolveOptionId(preferred: string, included: string[]): string {
+  if (included.includes(preferred)) return preferred
+  return included[0] ?? preferred
+}
 /** The order the four non-Ren transfers auto-complete in, once Ren pays —
  *  same order `settledAt` (docs/PRODUCT_SPEC.md §3) gives their clock times. */
 const autoSettleOrder = ['sven', 'bea', 'kofi', 'mira']
@@ -24,6 +32,11 @@ export type ToastPayload = { title: string; detail: string; icon?: IconName; ico
 interface StoryState {
   renJoined: boolean
 
+  pollQuestion: string
+  /** Which catalog places are on the poll right now — Ari can drop one
+   *  ("remove") or bring it back ("Add a place") before sending. */
+  pollOptionIds: string[]
+  pollDeadlineMinutes: number
   pollSent: boolean
   pollClosed: boolean
   votes: Vote[]
@@ -50,6 +63,9 @@ interface DemoMeta {
 
 interface TripStore extends StoryState, DemoMeta {
   addRen: () => void
+  setPollQuestion: (question: string) => void
+  togglePollOption: (placeId: string) => void
+  setPollDeadline: (minutes: number) => void
   sendPoll: () => void
   castVote: (personId: string, optionId: string, options?: { allowChange?: boolean }) => void
   requestChangeVote: () => void
@@ -72,6 +88,9 @@ const initialWineSharedBy = dinnerBillItems.find((i) => i.id === 'wine')!.shared
 
 const initialStory: StoryState = {
   renJoined: false,
+  pollQuestion: dinnerPoll.question,
+  pollOptionIds: catalogPlaceIds,
+  pollDeadlineMinutes: 20,
   pollSent: false,
   pollClosed: false,
   votes: [],
@@ -111,7 +130,7 @@ export const useTripStore = create<TripStore>((set, get) => {
   function closePoll() {
     const state = get()
     if (state.pollClosed) return
-    const outcome = tallyPoll(pollOptionIds, state.votes)
+    const outcome = tallyPoll(state.pollOptionIds, state.votes)
     set({ pollClosed: true, winnerId: outcome.winnerId })
     if (countdownInterval) {
       clearInterval(countdownInterval)
@@ -161,16 +180,38 @@ export const useTripStore = create<TripStore>((set, get) => {
       get().showToast({ title: 'Ren joined the trip', detail: 'Everyone was told' })
     },
 
+    setPollQuestion: (question) => set({ pollQuestion: question }),
+
+    togglePollOption: (placeId) =>
+      set((state) => {
+        const included = state.pollOptionIds.includes(placeId)
+        // Always leave at least two places on the poll — one option isn't a vote.
+        if (included && state.pollOptionIds.length <= 2) return state
+        return {
+          pollOptionIds: included
+            ? state.pollOptionIds.filter((id) => id !== placeId)
+            : catalogPlaceIds.filter((id) => id === placeId || state.pollOptionIds.includes(id)),
+        }
+      }),
+
+    setPollDeadline: (minutes) => set({ pollDeadlineMinutes: minutes }),
+
     sendPoll: () => {
       const state = get()
       if (state.pollSent) return
-      set({ pollSent: true, votes: [{ personId: 'ari', optionId: 'taberna', order: 0 }], closesInSeconds: 1200 })
+      const included = state.pollOptionIds
+      const first = included[0] ?? 'taberna'
+      set({
+        pollSent: true,
+        votes: [{ personId: 'ari', optionId: first, order: 0 }],
+        closesInSeconds: state.pollDeadlineMinutes * 60,
+      })
       const speed = state.speed
-      schedule(() => get().castVote('bea', 'taberna'), 1200 / speed)
-      schedule(() => get().castVote('kofi', 'taberna'), 2400 / speed)
-      schedule(() => get().castVote('mira', 'ramiro'), 3600 / speed)
-      schedule(() => get().castVote('ren', 'timeout'), 4800 / speed)
-      schedule(() => get().castVote('nic', 'timeout'), 6000 / speed)
+      schedule(() => get().castVote('bea', resolveOptionId('taberna', included)), 1200 / speed)
+      schedule(() => get().castVote('kofi', resolveOptionId('taberna', included)), 2400 / speed)
+      schedule(() => get().castVote('mira', resolveOptionId('ramiro', included)), 3600 / speed)
+      schedule(() => get().castVote('ren', resolveOptionId('timeout', included)), 4800 / speed)
+      schedule(() => get().castVote('nic', resolveOptionId('timeout', included)), 6000 / speed)
       startCountdown()
     },
 
@@ -308,7 +349,7 @@ export const selectBuddies = memoize((state) =>
 
 export const selectBuddyPeople = memoize((state) => selectBuddies(state).map((id) => people[id]))
 
-export const selectPollOutcome = memoize((state) => tallyPoll(pollOptionIds, state.votes))
+export const selectPollOutcome = memoize((state) => tallyPoll(state.pollOptionIds, state.votes))
 
 export function selectTotalVoters(state: StoryState): number {
   return state.renJoined ? 7 : 6
@@ -329,7 +370,7 @@ export function selectYourVote(state: StoryState, personId: string): string | nu
 export const selectPollOptionsView = memoize((state) => {
   const outcome = selectPollOutcome(state)
   const total = selectTotalVoters(state)
-  return dinnerPoll.places.map((place) => {
+  return dinnerPoll.places.filter((place) => state.pollOptionIds.includes(place.id)).map((place) => {
     const count = outcome.counts[place.id] ?? 0
     return {
       ...place,

@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion'
 import { useState } from 'react'
 import { Avatar } from '@/components/Avatar'
 import { IconButton } from '@/components/Button'
@@ -9,6 +10,7 @@ import { Ticker } from '@/components/Ticker'
 import { placePhotos } from '@/data/assets'
 import { dinnerPoll, people } from '@/data/trip'
 import { useScreenNav } from '@/lib/useScreenNav'
+import { HOVER_LIFT, HOVER_SMALL, TAP_LARGE, TAP_SMALL, TAP_TRANSITION } from '@/styles/motion'
 import {
   formatCountdown,
   selectPendingVoters,
@@ -28,6 +30,7 @@ import {
 export function Vote() {
   const { back } = useScreenNav()
   const [selected, setSelected] = useState('timeout')
+  const question = useTripStore((s) => s.pollQuestion)
   const votes = useTripStore((s) => s.votes)
   const closesInSeconds = useTripStore((s) => s.closesInSeconds)
   const nudged = useTripStore((s) => s.nudged)
@@ -36,7 +39,7 @@ export function Vote() {
   const nicsVote = useTripStore((s) => selectYourVote(s, 'nic'))
   const castVote = useTripStore((s) => s.castVote)
 
-  const option = dinnerPoll.places.find((p) => p.id === selected)!
+  const option = optionsView.find((p) => p.id === selected) ?? optionsView[0]
 
   if (nicsVote) {
     const waitingOnId = pendingVoters.length === 1 ? pendingVoters[0] : null
@@ -65,7 +68,7 @@ export function Vote() {
             </span>
           </div>
           <h1 className="text-title2 font-semibold" style={{ marginTop: 8, width: 330 }}>
-            {dinnerPoll.question}
+            {question}
           </h1>
 
           <div style={{ height: 16 }} />
@@ -125,7 +128,7 @@ export function Vote() {
           </span>
         </div>
         <h1 className="text-title2 font-semibold" style={{ marginTop: 8, width: 330 }}>
-          {dinnerPoll.question}
+          {question}
         </h1>
 
         <div style={{ height: 16 }} />
@@ -139,14 +142,17 @@ export function Vote() {
 
         {/* Options — selectable, no results shown yet */}
         <div className="flex w-full flex-col items-start" style={{ marginTop: 16, gap: 8 }}>
-          {dinnerPoll.places.map((p) => {
+          {optionsView.map((p) => {
             const isSelected = p.id === selected
             return (
-              <button
+              <motion.button
                 key={p.id}
                 type="button"
                 onClick={() => setSelected(p.id)}
                 aria-pressed={isSelected}
+                whileHover={HOVER_LIFT}
+                whileTap={TAP_LARGE}
+                transition={TAP_TRANSITION}
                 className="flex w-full items-center text-left"
                 style={{
                   gap: 14,
@@ -213,7 +219,7 @@ export function Vote() {
                     }}
                   />
                 )}
-              </button>
+              </motion.button>
             )
           })}
         </div>
@@ -233,9 +239,12 @@ export function Vote() {
         style={{ height: 130, background: 'var(--gradient-bottom-fade)' }}
       />
       <div className="absolute flex items-center" style={{ left: 20, right: 20, bottom: 34 }}>
-        <button
+        <motion.button
           type="button"
           onClick={() => castVote('nic', selected)}
+          whileHover={HOVER_SMALL}
+          whileTap={TAP_SMALL}
+          transition={TAP_TRANSITION}
           className="flex w-full items-center justify-center rounded-pill text-body font-medium"
           style={{
             height: 54,
@@ -244,8 +253,8 @@ export function Vote() {
             filter: 'drop-shadow(0 10px 10px rgb(31 30 36 / 0.25))',
           }}
         >
-          Vote for {option.name}
-        </button>
+          Vote for {option?.name}
+        </motion.button>
       </div>
     </div>
   )
