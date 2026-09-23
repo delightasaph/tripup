@@ -13,10 +13,14 @@ import { TripLisbon } from './TripLisbon'
  *
  * The sheet is a fixed 312 tall and its content only fills 255 of that, so
  * there is 57 of deliberate slack below the last row.
+ *
+ * The root must not clip: the scrim reaches up over the status bar, and
+ * `overflow: hidden` here would cut that overhang off. TripLisbon clips
+ * itself, and the device frame clips the screen.
  */
 export function Buddies() {
   return (
-    <div className="relative h-full overflow-hidden">
+    <div className="relative h-full">
       <TripLisbon />
       <Scrim />
       <Sheet frameTop={532}>

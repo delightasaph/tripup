@@ -49,13 +49,25 @@ export function Sheet({ children, frameTop, gap = 16 }: SheetProps) {
   )
 }
 
-/** The scrim behind a sheet. */
+/**
+ * The scrim behind a sheet.
+ *
+ * It covers the **whole frame, status bar included** — the frames put it at
+ * inset 0 on the 390 × 844 root. Screens render below the status bar, so the
+ * scrim is pulled up by its height to reach over it.
+ *
+ * The screen wrapping this must not set `overflow: hidden`, or the overhang is
+ * clipped and the status bar stays undimmed.
+ */
 export function Scrim() {
   return (
     <div
       aria-hidden="true"
-      className="absolute inset-0"
-      style={{ background: 'var(--color-overlay-scrim)' }}
+      className="absolute right-0 bottom-0 left-0"
+      style={{
+        top: 'calc(-1 * var(--status-bar-height))',
+        background: 'var(--color-overlay-scrim)',
+      }}
     />
   )
 }
