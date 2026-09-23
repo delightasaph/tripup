@@ -13,6 +13,7 @@ export const avatarPhotos = {
 } as const
 
 export const placePhotos = {
+  pasteis: '/assets/places/pasteis.jpg',
   taberna: '/assets/places/taberna.webp',
   timeout: '/assets/places/timeout.webp',
   ramiro: '/assets/places/ramiro.webp',

@@ -14,7 +14,7 @@ export type Day = {
  */
 export function DayStrip({ days }: { days: Day[] }) {
   return (
-    <div className="flex shrink-0 gap-[8px]" style={{ height: 58 }}>
+    <div className="flex w-full shrink-0 gap-[8px]" style={{ height: 58 }}>
       {days.map((d) => (
         <div
           key={d.date}

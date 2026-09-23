@@ -5,75 +5,77 @@ type StatusBarProps = {
   tone?: 'dark' | 'light'
 }
 
-/** iOS-style status bar, 50 pt tall, matching the Figma frames. */
+/**
+ * The iOS status bar, built the way the frames build it: 50 tall, 24 side
+ * padding, two equal columns 154 apart, each centring its contents. That puts
+ * the clock's glyphs at x 49 and the battery tip at ~353, which is where the
+ * frames have them.
+ *
+ * The glyphs are the exported system vectors, not hand-drawn, and the clock is
+ * SF Pro 16 / 590 — the system face, so it resolves to the real thing on iOS
+ * and falls back to the UI font elsewhere.
+ */
 export function StatusBar({ time, tone = 'dark' }: StatusBarProps) {
-  const color = tone === 'light' ? 'var(--color-surface-white)' : 'var(--color-ink-primary)'
+  const light = tone === 'light'
 
-  // Positions measured off the Figma frames: the clock's glyphs start at x 49
-  // and the battery tip lands at x 352, both sitting on a baseline at y 32.
   return (
     <div
-      className="relative shrink-0 select-none"
-      style={{ height: 'var(--status-bar-height)', color }}
+      className="flex shrink-0 items-center justify-center"
+      style={{
+        height: 'var(--status-bar-height)',
+        gap: 154,
+        padding: '21px 24px 19px',
+        color: light ? 'var(--color-surface-white)' : '#000000',
+      }}
       aria-hidden="true"
     >
-      <span
-        className="absolute text-headline font-semibold tracking-[0.01em] tabular-nums"
-        style={{ left: 49, top: 15, lineHeight: '22px' }}
+      <div className="flex min-w-0 flex-1 items-center justify-center" style={{ height: 22 }}>
+        <span
+          style={{
+            paddingTop: 1.5,
+            fontFamily: '-apple-system, "SF Pro Text", "SF Pro", system-ui, sans-serif',
+            fontSize: 16,
+            fontWeight: 590,
+            lineHeight: '22px',
+            fontVariationSettings: '"wdth" 100',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          {time}
+        </span>
+      </div>
+      <div
+        className="flex min-w-0 flex-1 items-center justify-center"
+        style={{ height: 22, gap: 7, paddingRight: 1, paddingTop: 1 }}
       >
-        {time}
-      </span>
-      <span
-        className="absolute flex items-end gap-[6px]"
-        style={{ right: 38, top: 19, height: 13 }}
-      >
-        <CellularIcon />
-        <WifiIcon />
-        <BatteryIcon />
-      </span>
+        <Glyph src="/assets/statusbar/cellular.svg" w={19.2} h={12.226} light={light} />
+        <Glyph src="/assets/statusbar/wifi.svg" w={17.142} h={12.328} light={light} />
+        <Glyph src="/assets/statusbar/battery.svg" w={27.328} h={13} light={light} />
+      </div>
     </div>
   )
 }
 
-function CellularIcon() {
-  return (
-    <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor">
-      {[0, 1, 2, 3].map((i) => (
-        <rect key={i} x={i * 4.6} y={9 - i * 3} width="3" height={3 + i * 3} rx="1" />
-      ))}
-    </svg>
-  )
-}
-
-function WifiIcon() {
-  return (
-    <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor">
-      <path d="M1 4.2a10.5 10.5 0 0 1 14 0" strokeWidth="1.7" strokeLinecap="round" />
-      <path d="M3.7 7a6.7 6.7 0 0 1 8.6 0" strokeWidth="1.7" strokeLinecap="round" />
-      <circle cx="8" cy="10" r="1.3" fill="currentColor" />
-    </svg>
-  )
-}
-
-function BatteryIcon() {
-  return (
-    <svg width="26" height="13" viewBox="0 0 26 13" fill="none">
-      <rect
-        x="0.75"
-        y="0.75"
-        width="21"
-        height="11.5"
-        rx="3.5"
-        stroke="currentColor"
-        strokeOpacity="0.4"
-        strokeWidth="1"
+/** The exported glyphs are black; the lock screen needs them white, which an
+ *  <img> cannot do — so tint through a mask there. */
+function Glyph({ src, w, h, light }: { src: string; w: number; h: number; light: boolean }) {
+  if (light) {
+    return (
+      <span
+        style={{
+          display: 'block',
+          width: w,
+          height: h,
+          backgroundColor: 'var(--color-surface-white)',
+          maskImage: `url(${src})`,
+          WebkitMaskImage: `url(${src})`,
+          maskSize: 'contain',
+          WebkitMaskSize: 'contain',
+          maskRepeat: 'no-repeat',
+          WebkitMaskRepeat: 'no-repeat',
+        }}
       />
-      <rect x="2.5" y="2.5" width="15" height="8" rx="2" fill="currentColor" />
-      <path
-        d="M23.5 4.5c1 .4 1.5 1 1.5 2s-.5 1.6-1.5 2v-4Z"
-        fill="currentColor"
-        fillOpacity="0.4"
-      />
-    </svg>
-  )
+    )
+  }
+  return <img src={src} alt="" width={w} height={h} className="block" style={{ maxWidth: 'none' }} />
 }

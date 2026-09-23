@@ -34,6 +34,7 @@ export type IconName =
   | 'map'
   | 'receipt'
   | 'calendar-check'
+  | 'direction-right'
 
 /**
  * Each file is the exact vector from Figma. Some carry a baked stroke colour
@@ -73,6 +74,7 @@ const exported: Record<IconName, string> = {
   map: '/assets/icons/map.svg',
   receipt: '/assets/icons/receipt.svg',
   'calendar-check': '/assets/icons/calendar-check.svg',
+  'direction-right': '/assets/icons/direction-right.svg',
 }
 
 type IconProps = {

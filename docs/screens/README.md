@@ -22,7 +22,7 @@ Conventions in these files:
 | Screen | Record | Figma node | Built |
 |---|---|---|---|
 | 01 Home | [01-home.md](01-home.md) | `162:429` | yes |
-| 02 Trip · Lisbon | [02-trip-lisbon.md](02-trip-lisbon.md) | `4064:17467` | yes |
+| 02 Trip · Lisbon | [02-trip-lisbon.md](02-trip-lisbon.md) | `4064:17467` | yes — **rebuilt** |
 | 03a Buddies | _to write_ | `4058:3678` | no — **new** |
 | 03b Add a buddy | _to write_ | `4058:3935` | no — **new** |
 | ~~03 Add Ren~~ | [03-add-ren.md](03-add-ren.md) | ~~`163:2180`~~ | superseded |

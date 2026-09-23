@@ -9,7 +9,17 @@ import { TripLisbon } from './TripLisbon'
 
 type Mode = 'side' | 'overlay' | 'difference'
 
-const builds = [
+const builds: {
+  id: string
+  no: string
+  title: string
+  node: string
+  time: string
+  reference: string
+  render: React.ReactNode
+  gaps: string[]
+  referenceStale?: boolean
+}[] = [
   {
     id: 'home',
     no: '01',
@@ -29,6 +39,7 @@ const builds = [
     reference: '/reference/02-trip-lisbon.png',
     render: <TripLisbon />,
     gaps: [],
+    referenceStale: true,
   },
   {
     id: 'add-buddy',
@@ -181,6 +192,16 @@ export function Compare() {
               </Labelled>
             )}
 
+            {b.referenceStale && (
+              <p
+                className="mt-3 max-w-[62ch] text-caption"
+                style={{ color: 'var(--color-status-alert)' }}
+              >
+                The stored reference is the <strong>old</strong> frame — this screen was reworked
+                in Figma and the build follows the new one. Compare against Figma directly until
+                the reference is re-exported.
+              </p>
+            )}
             {b.gaps.length > 0 && (
               <p className="mt-3 max-w-[62ch] text-caption text-ink-secondary">
                 Not yet matched: {b.gaps.join(', ')}.

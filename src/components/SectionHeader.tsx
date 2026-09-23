@@ -1,7 +1,7 @@
 /** "TODAY'S PLAN" on the left, "2 of 4 done" on the right. */
 export function SectionHeader({ label, meta }: { label: string; meta?: string }) {
   return (
-    <div className="flex items-baseline justify-between" style={{ height: 15 }}>
+    <div className="flex w-full items-start justify-between" style={{ height: 15 }}>
       <h2
         className="text-footnote font-medium uppercase"
         style={{ color: 'var(--color-ink-secondary)' }}

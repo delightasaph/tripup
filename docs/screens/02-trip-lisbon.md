@@ -1,115 +1,101 @@
 # 02 · Trip · Lisbon (Itinerary)
 
-> ## ⚠️ STALE — re-fetch this screen
-> The Figma frame changed on 23 Sep after this record was written. **This record's
-> "do not re-fetch" instruction does not apply any more.** Re-pull the frame with one
-> `get_design_context` call, rewrite this record from what comes back, then rebuild the screen.
->
-> **The node id also changed** — it is now `4064:17467`.
->
-> What changed: the trip **ticket card** was reworked (new stamp/postmark treatment), and the Sunset "Next" card gained a 36 pt white round **directions** button at its bottom-right. Done items get no such button.
+Figma node **`4064:17467`**. Built in `src/screens/TripLisbon.tsx`. **Do not re-fetch this screen**
+unless a STALE banner says otherwise.
 
-Figma node `4064:17467`. Reference render: `design/screens/02-trip-lisbon.png` (native 390 × 844).
-Built in `src/screens/TripLisbon.tsx`. **Do not re-fetch this screen.**
+Reference render: `design/screens/02-trip-lisbon.png` is the **old** frame and is stale. The build
+follows the current frame; `/compare` flags this.
 
-## Frame skeleton
-| Part | Screen coords |
+This is one of the two reference screens. Everything else inherits its spacing, type, colour and
+component behaviour from here and from 05.
+
+## The frame scrolls
+The frame is **922 tall with a fold marked at 844**, so this screen scrolls. Layout is flow, not
+absolute: root `padding-top 64, padding-inline 20`, Content a column at **gap 16**.
+
+Chrome is docked to the **viewport**, never to the end of the content: bottom fade 150 tall ending
+at 844, tab bar at 756, FAB at 756. In Figma these are expressed as offsets from the 922 frame
+bottom (fade `bottom 78`, bar `bottom 106`, and the home indicator `bottom 87`), which lands them
+exactly where they sat when the frame was 844. Don't copy those offsets — dock to the viewport.
+
+The scrolling column gets **110 pt** of ground below its last item, per `PRODUCT_SPEC.md`. Content
+ends at frame y 739, so the column runs to 849 and the screen scrolls by ~5 pt. Note the Figma
+frame itself leaves 183 below the last item, not 110; the spec's number wins.
+
+## Positions (screen coords, verified)
+| Part | y |
 |---|---|
-| Status bar | 0, 0 · 390 × 50 |
-| Content column | 20, 64 · 350 × 658 |
-| Nav | 20, 65 · 350 × 40 |
-| Ticket | 20, 115 · 350 × 150 |
-| Day strip | 20, 281 · 350 × 58 |
-| Today's plan | 20, 355 · 350 × 366 |
-| — section header | 20, 363 · 350 × 15 |
-| — timeline | 20, 390 · 350 × 331 |
-| Bottom fade | 0, 694 · 390 × 150 |
-| Bottom bar | 20, 756 · 350 × 60 |
-| Home indicator | 128, 830 · 134 × 5 |
+| Nav | 64 |
+| Ticket | 114 |
+| Day strip | 280 |
+| Section header | 362 |
+| Timeline row 10:00 · time | 404 |
+| row 15:00 · time | 488 |
+| row 18:30 · time | 543 |
+| row 20:30 · time | 639 |
+| Tab bar / FAB | 756 |
 
-Vertical rhythm: nav → 10 → ticket → 16 → day strip → 16 → Today's plan (header 8 in, timeline
-35 in).
+## Ticket — one component, used on 01, 02, 03a, 03b, 04, 06, 07, 08
+350 × 150, radius 24, `overflow: hidden`. `assets/ticket.svg` carries the shape, its two notches and
+the sky gradient (only the gradient's internal id changed in the rework; the path is untouched).
 
-## Nav
-- Back button 40 × 40, white, full pill radius, `drop-shadow(0 6px 9px rgb(31 30 36 / .08))`.
-  Icon `arrow-left` at 20, inset 10.
-- Buddy stack, right-aligned, gap 8 to the add button. Avatars 30 × 30, overlap −6, 2 px ring in
-  `Surface/Ground`. Three faces (Ari, Nic, Bea) then a white "+3" chip, Rubik SemiBold 11,
-  letter-spacing 0.2.
-- Add-a-buddy button 30 × 30, `Accent/Lime`, 2 px `Surface/Ground` ring, **no shadow**. Icon
-  `plus-small` at 16.
+**The art is no longer a single stamp PNG.** It is four layers over the shape, each with its own
+rotation, all clipped by the ticket edge:
 
-## Ticket
-- `assets/ticket.svg` (Figma `141:12831`), 350 × 150, sky gradient baked in, notches centred at
-  x ≈ 175 top and bottom, corner radius 16.
-- Title block at 16, 40 inside the ticket: Anton 56/58, letter-spacing 0.56, `Stamp/Title Navy`;
-  under it "12 – 16 Sep" in Footnote/Medium, same colour.
-- Stamp: container at 194, 11 · 183.83 × 188.25 inside the ticket, stamp centred in it, paper
-  width **140.897**, rotated **−20.42°**, clipped by the ticket's overflow.
+| Layer | Placement |
+|---|---|
+| Belém painting | 181, −21.04 · 169 × 227.856, behind `ticket/belem-mask.svg` — an alpha gradient that fades the art in from the left (0 at x 0, opaque from 45%). Inner image `left -17.8%`, `width 135.59%`. |
+| Round postmark | 239.95, 1.95 · 107.622 box, rotated **−16.74°**; an 86.402 circle, 2.348 stroke `rgb(31 30 36 / .82)`, radius 43.201. Inside: the ring at 2.75/2.49, rotated 0.59°, plus the plane built from **ten** separate vectors at fixed insets (`ticket/plane-0…9.svg`). |
+| Cancel waves | 208, 19 · 61.88 × 38.143 box, rotated **−12.42°**, art 57.552 × 26.378 |
+| VISITED cancel | 209, 55 · 51.48 × 31.18 box, rotated **−20.42°**; 1.174 stroke, radius 1.409, padding 0.939/4.697, Rubik SemiBold 10.332/1.3, tracking −0.0939 |
+
+Title at 16, 40: Anton 56/58, tracking 0.56 — **`Ink/Primary`, not Stamp/Title Navy**. The navy
+title was the old treatment. Dates below in Footnote/Medium, same colour.
 
 ## Day strip
-Five cells, 63.6 wide, 58 tall, gap 8, radius 18, padding-block 10, gap 2, contents centred.
-Unselected white; "Today" is `Ink/Primary` and sets white on the cell so both lines inherit it.
-- Label — **Caption/Regular 12 at 70% opacity**, `Ink/Secondary` when unselected. The 70% applies
-  in both states; it is the only thing separating label from number.
-- Number — **Subheading/SemiBold 20**, `Ink/Primary`. (`DESIGN_SYSTEM.md` lists Subheading as
-  Medium *or* SemiBold; day numbers are SemiBold.)
+Unchanged: five 63.6 × 58 cells, gap 8, radius 18, padding-block 10, gap 2. Label Caption/Regular
+at **70% opacity**, number Subheading/SemiBold. "Today" is `Ink/Primary` with white inherited by
+both lines.
 
 ## Timeline
-Columns: time 49 · node 21 · card 280 (card starts at x 70 within the column, i.e. screen x 90).
+Rows stack in flow at **gap 8**. Columns: time 49 · node 21 · card 280. Rail at left 53, `top 14`
+to `bottom 32`, 2 wide — ink to 45%, spiking to `rgb(91 79 232 / .5)` at 50%, fading to nothing.
 
-Rail: x 73 (2 wide), inset 14 from the timeline top and 18 from its bottom, radius 1. The gradient
-is not a simple fade — it holds ink, spikes violet at the open slot, then fades out:
-`linear-gradient(180deg, rgb(31 30 36 / .1) 0%, rgb(31 30 36 / .12) 45%, rgb(91 79 232 / .5) 50%, rgb(91 79 232 / 0) 100%)`.
+Nodes are 10 × 10 from the frame's own graphics: done 28-tall column with the dot at 18; next
+34-tall, dot at 19, ring `0 0 0 5px rgb(31 30 36 / .12)`; open and filled 29-tall, dot at 19.
 
-Rows, by offset from the timeline top (390):
+| Row | Time | Node | Card |
+|---|---|---|---|
+| 10:00 | pt 15, `Ink/Secondary` at **60%** | done | 280 wide, padding `10 16 10 10`, gap 12, radius 16, `Surface/White 70%` — **with a 56 photo** at radius 12 and **65% opacity**, text gap 3, no opacity on the sub-line |
+| 15:00 | pt 15, 60% | done | 280 × 46, padding `10 14`, radius 16, no photo, text gap **1**, sub-line at **80%** |
+| 18:30 | pt 16, `Ink/Primary` | next | 280 × **84**, `justify-center`, gap 10, padding `14 14 12 16`, radius 20, gradient **158.199°** `rgb(247 221 211) 7.14% → rgb(245 231 196) 78.57%` |
+| 20:30 | pt 16, `Accent/Violet`; row itself `padding-top 4` | open | 280, padding `14 16 16`, gap 12, radius 20, `Accent/Violet Tint`, 1.5 dashed `rgb(91 79 232 / .55)` |
 
-| Row | Top | Card h | Time offset | Node offset | Node |
-|---|---|---|---|---|---|
-| 10:00 Pastéis de Belém | 0 | 46 | 15 | 18 | done |
-| 15:00 Tram 28 to Graça | 54 | 46 | 15 | 18 | done |
-| 18:30 Sunset at Miradouro | 108 | 95 | 16 | 18 | next |
-| 20:30 Dinner (open slot) | 211 | 116 (card starts 4 down) | 20 | 23 | open |
+The two done cards are **not** the same card: only 10:00 carries a photo, and their text gaps and
+sub-line opacities differ. Don't collapse them into one variant.
 
-Nodes are 10 × 10 (from the frame's own SVGs): done = r5 `Line/Default`; next = r5 `Ink/Primary`
-with an r7.5 stroke at **12%**; open = r4 `Surface/Ground` with a 2 px `Accent/Violet` stroke.
-Kept as CSS rather than the exported SVGs so the open node can fill violet when the poll closes.
+### The Sunset card's directions button
+New in this rework, and **only on the next item — done items never carry one**. Absolute at
+`bottom 12, right 12`, 36 × 36, `border-radius: 999`, `drop-shadow(0 4px 5px rgb(31 30 36 / .1))`,
+holding `direction-right` at 24. The button has **no background** — the glyph is a filled dark
+arrow and the shadow sits under it.
 
-Cards:
-- **Done** — `Surface/White 70%`, radius 16, padding-inline 14, contents vertically centred.
-  Title Body 15 **Medium** and line Caption 12 Regular at 80% opacity, both `Ink/Secondary`. The
-  time label is `Ink/Secondary` at **60%**. **No shadow** on any itinerary card.
-- **Next (sunset)** — radius **20**, padding `14 14 12 16`, gap 10. Gradient is
-  `linear-gradient(155.66deg, rgb(247 221 211) 7.14%, rgb(245 231 196) 78.57%)`. Title Headline 17
-  SemiBold ink, line Caption 12 `Ink/Secondary`. Chip "12 min walk" 106 × 24, `Surface/White 70%`,
-  radius **12 — not a pill**, icon `walk` 14 at inset 10/5, label Caption 12.
-  The "Next" pill is **hidden** in this frame — do not add it.
-- **Open slot** — `Accent/Violet Tint`, radius **20**, border `1.5px dashed rgb(91 79 232 / .55)`,
-  padding `14 16 16`, gap 12. Title Headline 17 SemiBold, line Caption 12 `Ink/Secondary`. Button
-  151 × 38, `Accent/Violet`, radius 19, white Body/Medium, icon `list` 16, and its own
-  `drop-shadow(0 6px 7px rgb(91 79 232 / .35))`.
+Inside the card the text block is one column at gap 4: title, sub-line, then the "12 min walk"
+chip (106 × 24, radius **12**, `Surface/White 70%`, `walk` 14 at inset 10/5).
 
-## Bottom bar
-Tab bar 264 × 60, white, radius 30, `drop-shadow(0 10px 12px rgb(31 30 36 / .1))`, 6 padding. Active tab is an ink pill 48 tall with
-white icon + Body/Medium label; inactive is `Ink/Secondary` on transparent. Icons 18
-(`calendar`, `wallet`). FAB 60 × 60 at x 310, `Ink/Primary`,
-`drop-shadow(0 10px 10px rgb(31 30 36 / .25))`, `plus` at 20 (already white). Behind it, a 150 tall `--gradient-bottom-fade`.
+## Status bar
+Rebuilt from the frame: 50 tall, padding `21 24 19`, two equal flex columns **154 apart**, each
+centring its contents. That puts the clock's glyphs at x 49 and the battery tip near 353 — the
+numbers measured off the old render, now arrived at structurally.
 
-## Icons on this screen
-All exported into `public/assets/icons/`: `arrow-left`, `plus-small`, `walk` (14), `list` (16,
-baked white), `calendar` (18, baked white), `wallet` (18, baked `Ink/Secondary`), `plus` (20, baked
-white). Tint via `Icon`'s `color` prop where a surface needs a different one — the tab-bar pair is
-drawn in both ink-on-white and white-on-ink.
+The clock is **SF Pro 16 / weight 590**, not Rubik — it is system chrome. The three glyphs are the
+exported system vectors in `assets/statusbar/`; they were hand-drawn before, which was wrong.
 
-## Gotchas found while building
-- The status bar is **not** symmetrically padded: the clock's glyphs start at x 49 and the battery
-  tip lands at x 352, glyph baseline y 32. Same on every screen.
-- Figma reports a stamp's width as the paper's **visual** extent (scalloped edge included), not the
-  inner rectangle. Reading it as the inner rect put this ticket's stamp 8 px out.
-- Done-row titles are Body 15, but the live rows use Headline 17. The sizes really do differ.
-- Several cards are radius **20**, not the 18 the design-system doc implies, and the "12 min walk"
-  chip is radius 12 rather than a pill. Measure, don't assume the scale.
-- Done rows are stepped back with **opacity**, not different colours: time at 60%, sub-line at 80%.
-- "TODAY'S PLAN" is Footnote/Medium with **tracking 0**. Added letter-spacing ran it 5 px long.
-- The open slot's dashed stroke must be an **`outline` with a negative offset**, never a `border`:
-  a border eats 1.5 px out of the padding box and shifts every child inside the card.
+## Icons
+`arrow-left` 20 · `plus-small` 16 · `walk` 14 · `direction-right` 24 · `list` 16 · `calendar` 18 ·
+`wallet` 18 · `plus-white` 20.
+
+## Gotchas
+- Moving to a flow layout collapsed the day strip and the section header to hug width — both need
+  `w-full`, because the column is `items-start`.
+- No home indicator; the frame draws one, the build leaves it out.
