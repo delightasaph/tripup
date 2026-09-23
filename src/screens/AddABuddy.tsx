@@ -1,7 +1,9 @@
 import { Avatar } from '@/components/Avatar'
 import { Icon } from '@/components/Icon'
 import { Scrim, Sheet, SheetHeader } from '@/components/Sheet'
-import { buddySearch, tripBuddies } from '@/data/trip'
+import { buddySearch } from '@/data/trip'
+import { useScreenNav } from '@/lib/useScreenNav'
+import { selectBuddyPeople, useTripStore } from '@/store/tripStore'
 import { TripLisbon } from './TripLisbon'
 
 /**
@@ -14,12 +16,21 @@ import { TripLisbon } from './TripLisbon'
  * The root must not clip: the scrim reaches up over the status bar.
  */
 export function AddABuddy() {
+  const { go, back } = useScreenNav()
+  const buddies = useTripStore(selectBuddyPeople)
+  const addRen = useTripStore((s) => s.addRen)
+
+  const confirm = () => {
+    addRen()
+    go('new-poll')
+  }
+
   return (
     <div className="relative h-full">
       <TripLisbon />
-      <Scrim />
+      <Scrim onClick={back} />
       <Sheet>
-        <SheetHeader title="Add a buddy" meta={`${tripBuddies.length} on this trip`} />
+        <SheetHeader title="Add a buddy" meta={`${buddies.length} on this trip`} />
 
         {/* Search */}
         <div
@@ -126,6 +137,7 @@ export function AddABuddy() {
         <div className="flex w-full shrink-0 items-start" style={{ gap: 10 }}>
           <button
             type="button"
+            onClick={back}
             className="flex shrink-0 items-center justify-center rounded-pill text-body font-medium"
             style={{
               height: 54,
@@ -138,6 +150,7 @@ export function AddABuddy() {
           </button>
           <button
             type="button"
+            onClick={confirm}
             className="flex min-w-0 flex-1 items-center justify-center rounded-pill text-body font-medium"
             style={{
               height: 54,

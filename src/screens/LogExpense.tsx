@@ -1,14 +1,13 @@
-import { useState } from 'react'
 import { Avatar } from '@/components/Avatar'
 import { Icon } from '@/components/Icon'
 import { Scrim, Sheet } from '@/components/Sheet'
 import { placePhotos } from '@/data/assets'
 import { dinnerBill } from '@/data/expenses'
 import { people, tripBuddies } from '@/data/trip'
+import { useScreenNav } from '@/lib/useScreenNav'
 import { splitEuroCents } from '@/domain/money'
+import { useTripStore } from '@/store/tripStore'
 import { TripLisbon } from './TripLisbon'
-
-type Split = 'equally' | 'by-item'
 
 /**
  * 07 · Log the dinner — Figma `168:2777`, sheet `168:2922`.
@@ -21,13 +20,26 @@ type Split = 'equally' | 'by-item'
  * (→ 08).
  */
 export function LogExpense() {
-  const [split, setSplit] = useState<Split>('by-item')
+  const { go, back } = useScreenNav()
+  const split = useTripStore((s) => s.splitMode)
+  const setSplitMode = useTripStore((s) => s.setSplitMode)
+  const logExpense = useTripStore((s) => s.logExpense)
+  const showToast = useTripStore((s) => s.showToast)
   const { euros, decimals } = splitEuroCents(dinnerBill.totalCents)
+
+  const next = () => {
+    if (split === 'by-item') {
+      go('split-by-item')
+    } else {
+      logExpense()
+      go('balances')
+    }
+  }
 
   return (
     <div className="relative h-full">
       <TripLisbon dinner="decided" crew={[...tripBuddies, people.ren]} />
-      <Scrim />
+      <Scrim onClick={back} />
 
       <Sheet gap={16}>
         {/* Header */}
@@ -35,6 +47,7 @@ export function LogExpense() {
           <h2 className="text-heading font-semibold">New expense</h2>
           <button
             type="button"
+            onClick={() => showToast({ title: 'Coming soon', detail: 'Receipt scanning isn’t wired up yet' })}
             className="flex shrink-0 items-center rounded-pill text-footnote font-medium"
             style={{
               gap: 6,
@@ -132,8 +145,8 @@ export function LogExpense() {
               className="flex shrink-0 items-start rounded-pill"
               style={{ gap: 2, padding: 3, background: 'var(--color-surface-white)' }}
             >
-              <SegmentButton label="Equally" active={split === 'equally'} onClick={() => setSplit('equally')} />
-              <SegmentButton label="By item" active={split === 'by-item'} onClick={() => setSplit('by-item')} />
+              <SegmentButton label="Equally" active={split === 'equally'} onClick={() => setSplitMode('equally')} />
+              <SegmentButton label="By item" active={split === 'by-item'} onClick={() => setSplitMode('by-item')} />
             </div>
           </div>
         </div>
@@ -169,6 +182,7 @@ export function LogExpense() {
         {/* Next */}
         <button
           type="button"
+          onClick={next}
           className="flex w-full shrink-0 items-center justify-center rounded-pill text-body font-medium"
           style={{
             height: 54,

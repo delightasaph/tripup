@@ -4,22 +4,97 @@ import { IconButton } from '@/components/Button'
 import { Icon } from '@/components/Icon'
 import { LivePill } from '@/components/LivePill'
 import { Pill } from '@/components/Pill'
+import { PollOptionCard } from '@/components/PollOptionCard'
 import { Ticker } from '@/components/Ticker'
 import { placePhotos } from '@/data/assets'
 import { dinnerPoll, people } from '@/data/trip'
+import { useScreenNav } from '@/lib/useScreenNav'
+import {
+  formatCountdown,
+  selectPendingVoters,
+  selectPollOptionsView,
+  selectYourVote,
+  useTripStore,
+} from '@/store/tripStore'
 
 /**
  * 04c · Vote, Nic's view — Figma `166:2631`.
  *
  * Results are hidden until you vote (avoids herd voting) — so this is a plain
- * radio list, not `PollOptionCard`. Nic's default pick is Time Out Market, per
- * the spec's vote table; tapping another option moves the selection and
- * relabels the vote button, purely as local state (no cross-screen wiring
- * yet).
+ * radio list, not `PollOptionCard`. If the simulation already cast Nic's vote
+ * (he wasn't watched in time), this opens straight into the results view —
+ * "same layout as 05 without the asker controls".
  */
 export function Vote() {
+  const { back } = useScreenNav()
   const [selected, setSelected] = useState('timeout')
+  const votes = useTripStore((s) => s.votes)
+  const closesInSeconds = useTripStore((s) => s.closesInSeconds)
+  const nudged = useTripStore((s) => s.nudged)
+  const optionsView = useTripStore(selectPollOptionsView)
+  const pendingVoters = useTripStore(selectPendingVoters)
+  const nicsVote = useTripStore((s) => selectYourVote(s, 'nic'))
+  const castVote = useTripStore((s) => s.castVote)
+
   const option = dinnerPoll.places.find((p) => p.id === selected)!
+
+  if (nicsVote) {
+    const waitingOnId = pendingVoters.length === 1 ? pendingVoters[0] : null
+    const waitingOn = waitingOnId ? people[waitingOnId] : null
+
+    return (
+      <div className="relative h-full overflow-hidden">
+        <div className="absolute" style={{ left: 'var(--screen-padding)', top: 14, width: 350 }}>
+          <div className="flex h-[40px] items-center justify-between">
+            <div className="flex items-center" style={{ gap: 10 }}>
+              <IconButton label="Close" onClick={back}>
+                <Icon name="close" size={20} />
+              </IconButton>
+              <Pill variant="lime" height={27} className="font-medium">
+                On Nic’s phone
+              </Pill>
+            </div>
+            <LivePill countdown={formatCountdown(closesInSeconds)} />
+          </div>
+
+          <div style={{ height: 20 }} />
+          <div className="flex items-center" style={{ height: 22 }}>
+            <Avatar person={dinnerPoll.askedBy} size={22} />
+            <span className="text-footnote" style={{ marginLeft: 8, color: 'var(--color-ink-secondary)' }}>
+              {dinnerPoll.askedLine}
+            </span>
+          </div>
+          <h1 className="text-title2 font-semibold" style={{ marginTop: 8, width: 330 }}>
+            {dinnerPoll.question}
+          </h1>
+
+          <div style={{ height: 16 }} />
+          <Ticker
+            person={people[votes.at(-1)!.personId]}
+            event={`voted ${dinnerPoll.places.find((p) => p.id === votes.at(-1)!.optionId)?.name ?? ''}`}
+            when="just now"
+          />
+
+          <div className="relative" style={{ marginTop: 16, height: 388 }}>
+            {optionsView.map((o, i) => (
+              <div key={o.id} className="absolute left-0" style={{ top: [0, 140, 268][i] }}>
+                <PollOptionCard option={o} fill={o.fill} leading={o.leading} yourVote={o.id === nicsVote} />
+              </div>
+            ))}
+          </div>
+
+          {waitingOn && (
+            <div
+              className="flex w-full items-center justify-center text-footnote"
+              style={{ marginTop: 20, color: 'var(--color-ink-secondary)' }}
+            >
+              {votes.length} of 7 voted · {nudged ? `${waitingOn.label} was nudged` : `waiting on ${waitingOn.label}`}
+            </div>
+          )}
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="relative h-full overflow-hidden">
@@ -27,14 +102,14 @@ export function Vote() {
         {/* Nav */}
         <div className="flex h-[40px] items-center justify-between">
           <div className="flex items-center" style={{ gap: 10 }}>
-            <IconButton label="Close">
+            <IconButton label="Close" onClick={back}>
               <Icon name="close" size={20} />
             </IconButton>
             <Pill variant="lime" height={27} className="font-medium">
               On Nic’s phone
             </Pill>
           </div>
-          <LivePill countdown={dinnerPoll.closesIn} />
+          <LivePill countdown={formatCountdown(closesInSeconds)} />
         </div>
 
         <div style={{ height: 20 }} />
@@ -54,7 +129,13 @@ export function Vote() {
         </h1>
 
         <div style={{ height: 16 }} />
-        <Ticker person={people.bea} event="voted" when="1 min ago" />
+        {votes.length > 0 && (
+          <Ticker
+            person={people[votes.at(-1)!.personId]}
+            event={`voted ${dinnerPoll.places.find((p) => p.id === votes.at(-1)!.optionId)?.name ?? ''}`}
+            when="just now"
+          />
+        )}
 
         {/* Options — selectable, no results shown yet */}
         <div className="flex w-full flex-col items-start" style={{ marginTop: 16, gap: 8 }}>
@@ -141,7 +222,7 @@ export function Vote() {
           className="flex w-full items-center justify-center text-footnote"
           style={{ marginTop: 20, color: 'var(--color-ink-secondary)' }}
         >
-          5 of 7 have voted · results show once you vote
+          {votes.length} of 7 have voted · results show once you vote
         </div>
       </div>
 
@@ -154,6 +235,7 @@ export function Vote() {
       <div className="absolute flex items-center" style={{ left: 20, right: 20, bottom: 34 }}>
         <button
           type="button"
+          onClick={() => castVote('nic', selected)}
           className="flex w-full items-center justify-center rounded-pill text-body font-medium"
           style={{
             height: 54,

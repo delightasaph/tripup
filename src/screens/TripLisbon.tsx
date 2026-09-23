@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion'
 import { AvatarStack, type Person } from '@/components/Avatar'
 import { BottomBar } from '@/components/BottomBar'
 import { Button, IconButton } from '@/components/Button'
@@ -8,7 +9,9 @@ import { SectionHeader } from '@/components/SectionHeader'
 import { Timeline, TimelineRow } from '@/components/Timeline'
 import { Ticket } from '@/components/Ticket'
 import { placePhotos } from '@/data/assets'
-import { lisbon, tripBuddies } from '@/data/trip'
+import { dinnerPoll, lisbon } from '@/data/trip'
+import { useScreenNav } from '@/lib/useScreenNav'
+import { selectBuddyPeople, useTripStore } from '@/store/tripStore'
 
 /**
  * 02 · Trip · Lisbon (Itinerary) — Figma 4064:17467, and the same screen with
@@ -19,10 +22,20 @@ import { lisbon, tripBuddies } from '@/data/trip'
  * end of the content, and never moves below the fold.
  */
 export function TripLisbon({
-  dinner = 'open',
-  crew = tripBuddies,
+  dinner,
+  crew,
 }: { dinner?: 'open' | 'decided'; crew?: Person[] } = {}) {
-  const decided = dinner === 'decided'
+  const { go, back } = useScreenNav()
+  const pollClosed = useTripStore((s) => s.pollClosed)
+  const winnerId = useTripStore((s) => s.winnerId)
+  const liveCrew = useTripStore(selectBuddyPeople)
+  const showToast = useTripStore((s) => s.showToast)
+
+  const decided = (dinner ?? (pollClosed ? 'decided' : 'open')) === 'decided'
+  const shownCrew = crew ?? liveCrew
+  const winningPlace = dinnerPoll.places.find((p) => p.id === winnerId) ?? dinnerPoll.places[0]
+
+  const comingSoon = () => showToast({ title: 'Coming soon', detail: 'Maps aren’t wired up in this prototype' })
 
   return (
     <div className="relative h-full overflow-hidden">
@@ -40,17 +53,20 @@ export function TripLisbon({
           {/* Top: nav + ticket */}
           <div className="flex w-full shrink-0 flex-col items-start" style={{ gap: 10 }}>
             <div className="flex h-[40px] w-full items-center justify-between">
-              <IconButton label="Back to trips" size={40}>
+              <IconButton label="Back to trips" size={40} onClick={back}>
                 <Icon name="arrow-left" size={20} />
               </IconButton>
               <div className="flex items-center" style={{ gap: 8 }}>
-                <AvatarStack people={crew} size={30} max={3} />
+                <button type="button" aria-label="Buddies on this trip" onClick={() => go('buddies')}>
+                  <AvatarStack people={shownCrew} size={30} max={3} />
+                </button>
                 <IconButton
                   label="Add a buddy"
                   size={30}
                   background="var(--color-accent-lime)"
                   ring="var(--color-surface-ground)"
                   style={{ filter: 'none' }}
+                  onClick={() => go('add-a-buddy')}
                 >
                   <Icon name="plus-small" size={16} />
                 </IconButton>
@@ -110,6 +126,7 @@ export function TripLisbon({
                   <button
                     type="button"
                     aria-label="Directions to Miradouro da Graça"
+                    onClick={comingSoon}
                     className="absolute flex items-center justify-center rounded-pill"
                     style={{
                       bottom: 12,
@@ -132,7 +149,11 @@ export function TripLisbon({
                 node={decided ? 'filled' : 'open'}
               >
                 {decided ? (
-                  <DinnerDecided />
+                  <DinnerDecided
+                    place={winningPlace}
+                    onLogExpense={() => go('log-expense')}
+                    onMap={comingSoon}
+                  />
                 ) : (
                   <div
                     className="flex shrink-0 flex-col items-start overflow-hidden"
@@ -156,6 +177,7 @@ export function TripLisbon({
                       variant="violet"
                       height={38}
                       icon={<Icon name="list" size={16} />}
+                      onClick={() => go('new-poll')}
                       style={{
                         width: 151,
                         paddingInline: 14,
@@ -180,6 +202,10 @@ export function TripLisbon({
           { id: 'expenses', label: 'Expenses', icon: 'wallet' },
         ]}
         activeId="itinerary"
+        onTabChange={(id) => {
+          if (id === 'expenses') go('balances')
+        }}
+        onFabClick={() => go(decided ? 'log-expense' : 'new-poll')}
       />
     </div>
   )
@@ -189,12 +215,23 @@ export function TripLisbon({
  * The dinner slot once the poll has resolved (06) — Figma 4064:18230.
  *
  * Lime with an ink stroke and a green-cast shadow, hugging its content. The
- * photo is the **same 48 tile as the poll option card on 05**, which is what
- * makes the shared-element transition from the poll into the slot possible.
+ * photo is the **same 48 tile as the poll option card on 05** and shares its
+ * `layoutId` — Framer Motion travels it into this slot rather than swapping
+ * it, the one shared-element transition the spec calls out by name.
  *
  * There is no "Won 4 · 2 · 1" pill any more, and Map is an icon-only button.
  */
-function DinnerDecided() {
+function DinnerDecided({
+  place,
+  onLogExpense,
+  onMap,
+}: {
+  place: (typeof dinnerPoll.places)[number]
+  onLogExpense: () => void
+  onMap: () => void
+}) {
+  const travelDetail = place.line.split('·').at(-1)!.trim()
+
   return (
     <div
       className="flex shrink-0 flex-col items-start"
@@ -213,15 +250,16 @@ function DinnerDecided() {
           className="shrink-0 overflow-hidden"
           style={{ width: 48, height: 48, borderRadius: 'var(--radius-tile)' }}
         >
-          <img
-            src={placePhotos.taberna}
+          <motion.img
+            layoutId="dinner-photo"
+            src={placePhotos[place.photo]}
             alt=""
             aria-hidden="true"
             className="h-full w-full object-cover"
           />
         </div>
         <div className="flex min-w-0 flex-1 flex-col items-start" style={{ gap: 5 }}>
-          <p className="w-full text-headline font-semibold">Taberna da Rua das Flores</p>
+          <p className="w-full text-headline font-semibold">{place.name}</p>
           <div className="flex items-center" style={{ gap: 4 }}>
             <span className="text-caption" style={{ color: 'var(--color-ink-secondary)' }}>
               Dinner ·
@@ -229,7 +267,7 @@ function DinnerDecided() {
             <span className="flex items-center" style={{ gap: 2 }}>
               <Icon name="walk-sm" size={14} />
               <span className="text-caption" style={{ color: 'var(--color-ink-secondary)' }}>
-                6 min walk
+                {travelDetail}
               </span>
             </span>
           </div>
@@ -239,6 +277,7 @@ function DinnerDecided() {
       <div className="flex w-full items-start" style={{ gap: 8 }}>
         <button
           type="button"
+          onClick={onLogExpense}
           className="flex shrink-0 items-center justify-center rounded-pill text-footnote font-medium"
           style={{
             width: 201,
@@ -255,6 +294,7 @@ function DinnerDecided() {
         <button
           type="button"
           aria-label="Map"
+          onClick={onMap}
           className="flex shrink-0 items-center justify-center rounded-pill"
           style={{ width: 43, height: 40, paddingInline: 14 }}
         >

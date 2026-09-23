@@ -65,10 +65,11 @@ export function Sheet({ children, frameTop, gap = 16 }: SheetProps) {
  * The screen wrapping this must not set `overflow: hidden`, or the overhang is
  * clipped and the status bar stays undimmed.
  */
-export function Scrim() {
+export function Scrim({ onClick }: { onClick?: () => void }) {
   return (
     <div
       aria-hidden="true"
+      onClick={onClick}
       className="absolute right-0 bottom-0 left-0"
       style={{
         top: 'calc(-1 * var(--status-bar-height))',

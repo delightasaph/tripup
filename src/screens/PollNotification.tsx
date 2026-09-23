@@ -1,6 +1,7 @@
 import { Icon } from '@/components/Icon'
 import { Pill } from '@/components/Pill'
 import { lockScreenWallpaper, lockScreenWallpaperPosition } from '@/data/assets'
+import { useScreenNav } from '@/lib/useScreenNav'
 
 /**
  * 04b · Poll notification, Nic's lock screen — Figma `166:2578`.
@@ -10,8 +11,15 @@ import { lockScreenWallpaper, lockScreenWallpaperPosition } from '@/data/assets'
  * Tap → 04c.
  */
 export function PollNotification() {
+  const { go } = useScreenNav()
+
   return (
-    <div className="relative flex h-full flex-col items-center overflow-hidden" style={{ paddingTop: 70, paddingInline: 12 }}>
+    <button
+      type="button"
+      onClick={() => go('vote')}
+      className="relative flex h-full w-full flex-col items-center overflow-hidden text-left"
+      style={{ paddingTop: 70, paddingInline: 12 }}
+    >
       <img
         src={lockScreenWallpaper}
         alt=""
@@ -69,7 +77,7 @@ export function PollNotification() {
         <QuickAction label="Torch" icon="torch" />
         <QuickAction label="Camera" icon="camera" />
       </div>
-    </div>
+    </button>
   )
 }
 

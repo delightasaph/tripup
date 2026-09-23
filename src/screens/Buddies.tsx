@@ -1,7 +1,8 @@
 import { Avatar } from '@/components/Avatar'
 import { Icon } from '@/components/Icon'
 import { Scrim, Sheet, SheetHeader } from '@/components/Sheet'
-import { tripBuddies } from '@/data/trip'
+import { useScreenNav } from '@/lib/useScreenNav'
+import { selectBuddyPeople, useTripStore } from '@/store/tripStore'
 import { TripLisbon } from './TripLisbon'
 
 /**
@@ -19,16 +20,19 @@ import { TripLisbon } from './TripLisbon'
  * itself, and the device frame clips the screen.
  */
 export function Buddies() {
+  const { go, back } = useScreenNav()
+  const buddies = useTripStore(selectBuddyPeople)
+
   return (
     <div className="relative h-full">
       <TripLisbon />
-      <Scrim />
+      <Scrim onClick={back} />
       <Sheet frameTop={532}>
-        <SheetHeader title="Buddies" meta={`${tripBuddies.length} on this trip`} />
+        <SheetHeader title="Buddies" meta={`${buddies.length} on this trip`} />
 
-        {/* On this trip — six columns spread across the full width */}
+        {/* On this trip — six or seven columns spread across the full width */}
         <div className="flex w-full shrink-0 items-start justify-between">
-          {tripBuddies.map((p) => (
+          {buddies.map((p) => (
             <div key={p.id} className="flex flex-col items-center" style={{ gap: 6 }}>
               <Avatar person={p} size={46} />
               <span className="text-caption2" style={{ color: 'var(--color-ink-secondary)' }}>
@@ -41,6 +45,7 @@ export function Buddies() {
         {/* Add a buddy → 03b. The subtitle states assumption A1 on screen. */}
         <button
           type="button"
+          onClick={() => go('add-a-buddy')}
           className="flex w-full shrink-0 items-center text-left"
           style={{
             gap: 12,

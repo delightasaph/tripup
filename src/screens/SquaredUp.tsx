@@ -1,24 +1,26 @@
 import { AvatarStack } from '@/components/Avatar'
 import { Icon } from '@/components/Icon'
 import { SquaredUpActions } from '@/components/SquaredUpActions'
-import { settledAt, settleTransfers, tripSpend } from '@/data/expenses'
+import { settledAt, tripSpend } from '@/data/expenses'
 import { people, tripBuddies } from '@/data/trip'
+import { useScreenNav } from '@/lib/useScreenNav'
 import { formatEuros } from '@/domain/money'
+import { selectSettleTransfers, useTripStore } from '@/store/tripStore'
 
 /**
  * 11 · Squared up — Figma `172:3175`.
  *
- * The transfer list and totals are the same `settleTransfers`/`tripSpend`
- * that drive 09 and 10 — nothing here is re-typed. See 11B
- * (`SquaredUpStamp.tsx`) for the alternative ending, shipped behind the demo
- * toggle per the spec.
+ * The transfer list and totals are the same live transfers/`tripSpend` that
+ * drive 09 and 10 — nothing here is re-typed. See 11B (`SquaredUpStamp.tsx`)
+ * for the alternative ending, shipped behind the demo toggle per the spec.
  */
-/** Settled order (by `settledAt`), not netting order — Ren pays first at 22:14. */
-const inSettledOrder = [...settleTransfers].sort((a, b) =>
-  settledAt[a.fromId].localeCompare(settledAt[b.fromId]),
-)
-
 export function SquaredUp() {
+  const { go } = useScreenNav()
+  const transfers = useTripStore(selectSettleTransfers)
+  const showToast = useTripStore((s) => s.showToast)
+  // Settled order (by `settledAt`), not netting order — Ren pays first at 22:14.
+  const inSettledOrder = [...transfers].sort((a, b) => settledAt[a.fromId].localeCompare(settledAt[b.fromId]))
+
   return (
     <div className="relative h-full overflow-hidden">
       <div
@@ -103,7 +105,10 @@ export function SquaredUp() {
         </div>
       </div>
 
-      <SquaredUpActions />
+      <SquaredUpActions
+        onShare={() => showToast({ title: 'Recap shared', detail: 'Everyone can see the final numbers' })}
+        onBackToTrip={() => go('trip')}
+      />
     </div>
   )
 }

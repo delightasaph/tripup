@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion'
 import { placePhotos } from '@/data/assets'
 import { Avatar, type Person } from './Avatar'
 import { Icon, type IconName } from './Icon'
@@ -20,6 +21,10 @@ type PollOptionCardProps = {
   leading?: boolean
   /** Shows the "Your vote" chip on the viewer's own pick. */
   yourVote?: boolean
+  /** This is the option that won — carries `layoutId="dinner-photo"` so its
+   *  photo travels into the dinner slot on 06 instead of being swapped. */
+  sharedElement?: boolean
+  onClick?: () => void
 }
 
 /**
@@ -29,7 +34,7 @@ type PollOptionCardProps = {
  * rest are white with a muted bar. The leader is 132 tall to make room for the
  * "Your vote" chip; the others are 120.
  */
-export function PollOptionCard({ option, fill, leading, yourVote }: PollOptionCardProps) {
+export function PollOptionCard({ option, fill, leading, yourVote, sharedElement, onClick }: PollOptionCardProps) {
   const count = option.voters.length
   const height = yourVote ? 132 : 120
   // The count sits just past the overlapping faces: 22 wide, then 18 per extra.
@@ -37,11 +42,26 @@ export function PollOptionCard({ option, fill, leading, yourVote }: PollOptionCa
   const votesRowTop = yourVote ? 20 : 16
 
   return (
-    <article
+    <div
+      role={onClick ? 'button' : undefined}
+      tabIndex={onClick ? 0 : undefined}
+      aria-label={onClick ? `Change vote to ${option.name}` : undefined}
+      onClick={onClick}
+      onKeyDown={
+        onClick
+          ? (e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault()
+                onClick()
+              }
+            }
+          : undefined
+      }
       className="relative"
       style={{
         width: 350,
         height,
+        cursor: onClick ? 'pointer' : undefined,
         borderRadius: 'var(--radius-card-lg)',
         background: leading ? 'var(--color-accent-lime)' : 'var(--color-surface-white)',
         // The frame gives these cards no shadow at all — the lime fill is the
@@ -51,7 +71,8 @@ export function PollOptionCard({ option, fill, leading, yourVote }: PollOptionCa
       {/* Top row */}
       <div className="absolute" style={{ left: 14, top: 14, width: 320, height: 52 }}>
         <div className="absolute" style={{ left: 0, top: 0, width: 52, height: 52 }}>
-          <img
+          <motion.img
+            layoutId={sharedElement ? 'dinner-photo' : undefined}
             src={placePhotos[option.photo]}
             alt=""
             aria-hidden="true"
@@ -159,6 +180,6 @@ export function PollOptionCard({ option, fill, leading, yourVote }: PollOptionCa
           )}
         </div>
       </div>
-    </article>
+    </div>
   )
 }

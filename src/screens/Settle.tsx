@@ -1,31 +1,45 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Avatar } from '@/components/Avatar'
 import { IconButton } from '@/components/Button'
 import { Icon, type IconName } from '@/components/Icon'
 import { Pill } from '@/components/Pill'
-import { paymentMethods, settleTransfers } from '@/data/expenses'
+import { paymentMethods } from '@/data/expenses'
 import { people } from '@/data/trip'
+import { useScreenNav } from '@/lib/useScreenNav'
 import { formatEuros, splitEuroCents } from '@/domain/money'
-
-const renToNic = settleTransfers.find((t) => t.fromId === 'ren')!
+import { selectSettleTransfers, useTripStore } from '@/store/tripStore'
 
 /**
  * 10 · Ren settles — Figma `171:3175`.
  *
- * Ren's own phone: the amount he owes Nic (from `settleTransfers`, the same
- * netted list 09 shows), his choice of payment method, and the pay button.
- * Selection is local `useState`, defaulting to Apple Pay per the spec.
+ * Ren's own phone: the amount he owes Nic (from the same netted transfers 09
+ * shows), his choice of payment method, and the pay button. Method selection
+ * is local UI state, defaulting to Apple Pay; the payment itself goes through
+ * the store so it's visible back on Ari's Balances the moment it lands.
  */
 export function Settle() {
+  const { back, replace } = useScreenNav()
   const [methodId, setMethodId] = useState('apple-pay')
+  const transfers = useTripStore(selectSettleTransfers)
+  const renPaying = useTripStore((s) => s.renPaying)
+  const settledIds = useTripStore((s) => s.settledIds)
+  const paySettlement = useTripStore((s) => s.paySettlement)
+  const renToNic = transfers.find((t) => t.fromId === 'ren')!
   const { euros, decimals } = splitEuroCents(renToNic.cents)
+
+  // Once the payment lands, this is Ari's phone's problem again — the rest
+  // of the transfers auto-settle while she's looking at Balances.
+  useEffect(() => {
+    if (settledIds.includes('ren')) replace('balances')
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [settledIds])
 
   return (
     <div className="relative h-full overflow-hidden">
       <div className="flex h-full flex-col items-start" style={{ paddingTop: 14, paddingInline: 'var(--screen-padding)', gap: 20 }}>
         {/* Nav */}
         <div className="flex h-[40px] w-full shrink-0 items-center justify-between">
-          <IconButton label="Close">
+          <IconButton label="Close" onClick={back}>
             <Icon name="close" size={20} />
           </IconButton>
           <Pill variant="lime" height={27} className="font-medium">
@@ -129,6 +143,8 @@ export function Settle() {
         </p>
         <button
           type="button"
+          onClick={paySettlement}
+          disabled={renPaying}
           className="flex w-full items-center justify-center rounded-pill text-body font-medium"
           style={{
             height: 54,
@@ -136,10 +152,17 @@ export function Settle() {
             background: 'var(--color-ink-primary)',
             color: 'var(--color-surface-white)',
             filter: 'drop-shadow(0 10px 10px rgb(31 30 36 / 0.25))',
+            opacity: renPaying ? 0.7 : 1,
           }}
         >
-          <Icon name="phone" size={18} color="var(--color-surface-white)" />
-          Pay Nic {formatEuros(renToNic.cents)}
+          {renPaying ? (
+            'Sending…'
+          ) : (
+            <>
+              <Icon name="phone" size={18} color="var(--color-surface-white)" />
+              Pay Nic {formatEuros(renToNic.cents)}
+            </>
+          )}
         </button>
       </div>
     </div>

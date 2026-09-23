@@ -3,7 +3,9 @@ import { ComingUpCard } from '@/components/ComingUpCard'
 import { Icon } from '@/components/Icon'
 import { Ticket } from '@/components/Ticket'
 import { homeStampsRow } from '@/data/assets'
-import { lisbon, people, tripBuddies, upcomingTrips } from '@/data/trip'
+import { lisbon, people, upcomingTrips } from '@/data/trip'
+import { useScreenNav } from '@/lib/useScreenNav'
+import { selectBuddyPeople, useTripStore } from '@/store/tripStore'
 
 /**
  * 01 · Home — Figma 162:429.
@@ -13,6 +15,12 @@ import { lisbon, people, tripBuddies, upcomingTrips } from '@/data/trip'
  * sections stack at gap 20.
  */
 export function Home() {
+  const { go } = useScreenNav()
+  const crew = useTripStore(selectBuddyPeople)
+  const showToast = useTripStore((s) => s.showToast)
+
+  const comingSoon = () => showToast({ title: 'Coming soon', detail: 'Porto and Berlin aren’t open yet' })
+
   return (
     <div className="no-scrollbar h-full overflow-y-auto" style={{ overflowX: 'hidden' }}>
       <div
@@ -92,6 +100,19 @@ export function Home() {
             </span>
           </div>
 
+          <div
+            role="button"
+            tabIndex={0}
+            aria-label="Open Lisbon"
+            onClick={() => go('trip')}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault()
+                go('trip')
+              }
+            }}
+            className="cursor-pointer"
+          >
           <Ticket destination={lisbon.destination} dates={lisbon.dates} variant="tall">
             {/* Next up — a frosted panel inside the card */}
             <div
@@ -132,9 +153,13 @@ export function Home() {
                 </div>
 
                 <div className="flex w-full items-center justify-between">
-                  <AvatarStack people={tripBuddies} size={30} max={3} />
+                  <AvatarStack people={crew} size={30} max={3} />
                   <button
                     type="button"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      go('new-poll')
+                    }}
                     className="flex shrink-0 items-center justify-center rounded-pill text-caption font-medium"
                     style={{
                       padding: '9px 14px',
@@ -148,6 +173,7 @@ export function Home() {
               </div>
             </div>
           </Ticket>
+          </div>
         </div>
 
         {/* Coming up */}
@@ -163,7 +189,7 @@ export function Home() {
           </div>
           <div className="flex w-full items-start" style={{ gap: 10 }}>
             {upcomingTrips.map((t) => (
-              <ComingUpCard key={t.id} trip={t} />
+              <ComingUpCard key={t.id} trip={t} onClick={comingSoon} />
             ))}
           </div>
         </div>
@@ -214,6 +240,7 @@ export function Home() {
 
           <button
             type="button"
+            onClick={() => showToast({ title: 'Coming soon', detail: 'The stamps collection isn’t open yet' })}
             className="flex w-full items-center justify-center rounded-pill text-body font-medium"
             style={{
               height: 54,

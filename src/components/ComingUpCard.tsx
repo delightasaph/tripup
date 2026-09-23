@@ -20,12 +20,22 @@ export type UpcomingTrip = {
  * pill and a "more" button at the top, the name pinned to the bottom by a
  * spacer, and the crew as a 22 stack underneath.
  */
-export function ComingUpCard({ trip }: { trip: UpcomingTrip }) {
+export function ComingUpCard({ trip, onClick }: { trip: UpcomingTrip; onClick?: () => void }) {
   const white70 = 'var(--color-surface-white-70)'
 
   return (
     <div
-      className="flex min-w-0 flex-1 flex-col items-start"
+      role="button"
+      tabIndex={0}
+      aria-label={`Open ${trip.name}`}
+      onClick={onClick}
+      onKeyDown={(e) => {
+        if (onClick && (e.key === 'Enter' || e.key === ' ')) {
+          e.preventDefault()
+          onClick()
+        }
+      }}
+      className="flex min-w-0 flex-1 cursor-pointer flex-col items-start text-left"
       style={{
         height: 138,
         borderRadius: 'var(--radius-card-lg)',
@@ -40,7 +50,15 @@ export function ComingUpCard({ trip }: { trip: UpcomingTrip }) {
         >
           {trip.when}
         </span>
-        <button type="button" aria-label={`More about ${trip.name}`} className="shrink-0">
+        <button
+          type="button"
+          aria-label={`More about ${trip.name}`}
+          className="shrink-0"
+          onClick={(e) => {
+            e.stopPropagation()
+            onClick?.()
+          }}
+        >
           <Icon name="more" size={28} />
         </button>
       </div>

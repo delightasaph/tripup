@@ -1,5 +1,7 @@
 import { BrowserRouter, Route, Routes, useSearchParams } from 'react-router-dom'
 import { DeviceFrame } from '@/components/DeviceFrame'
+import { Toast } from '@/components/Toast'
+import { useTripStore } from '@/store/tripStore'
 import { Placeholder } from '@/screens/Placeholder'
 import { TripLisbon } from '@/screens/TripLisbon'
 import { LivePoll } from '@/screens/LivePoll'
@@ -24,6 +26,13 @@ import { screenById } from '@/screens/registry'
 function Prototype() {
   const [params] = useSearchParams()
   const active = screenById(params.get('screen') ?? '')
+  const toast = useTripStore((s) => s.toast)
+
+  // Toasts are demo-global, not per-screen state, so they render once here —
+  // every screen's content sits in the same status-bar-relative container,
+  // which is what Toast positions itself against. The lock screen (04b)
+  // draws its own notifications and never the app's toast.
+  const showToast = toast && active?.id !== 'poll-notification'
 
   return (
     <DeviceFrame time={active?.time ?? '18:05'} chrome={active?.chrome ?? true}>
@@ -60,6 +69,7 @@ function Prototype() {
       ) : (
         <Placeholder active={active} />
       )}
+      {showToast && <Toast title={toast.title} detail={toast.detail} icon={toast.icon} iconSize={toast.iconSize} />}
     </DeviceFrame>
   )
 }

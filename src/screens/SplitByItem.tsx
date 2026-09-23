@@ -1,11 +1,10 @@
-import { useMemo, useState } from 'react'
 import { Avatar } from '@/components/Avatar'
 import { Icon } from '@/components/Icon'
 import { Scrim, Sheet } from '@/components/Sheet'
-import { dinnerBillItems } from '@/data/expenses'
 import { people, tripBuddies } from '@/data/trip'
+import { useScreenNav } from '@/lib/useScreenNav'
 import { formatEuros } from '@/domain/money'
-import { billTotal, splitByItems, type BillItem } from '@/domain/split'
+import { selectBillItems, selectDinnerShares, selectDinnerTotal, useTripStore } from '@/store/tripStore'
 import { TripLisbon } from './TripLisbon'
 
 const allBuddies = ['ari', 'nic', 'bea', 'kofi', 'sven', 'mira', 'ren']
@@ -31,27 +30,19 @@ const itemIcon: Record<string, 'bowl' | 'bread' | 'wine'> = {
  * summary amounts are always the real computed numbers, not copy.
  */
 export function SplitByItem() {
-  const [wineSharedBy, setWineSharedBy] = useState<string[]>(
-    () => dinnerBillItems.find((i) => i.id === 'wine')!.sharedBy,
-  )
+  const { go, back } = useScreenNav()
+  const wineSharedBy = useTripStore((s) => s.wineSharedBy)
+  const toggleWineShare = useTripStore((s) => s.toggleWineShare)
+  const logExpense = useTripStore((s) => s.logExpense)
+  const items = useTripStore(selectBillItems)
+  const shares = useTripStore(selectDinnerShares)
+  const total = useTripStore(selectDinnerTotal)
 
-  const items: BillItem[] = useMemo(
-    () =>
-      dinnerBillItems.map((item) =>
-        item.id === 'wine' ? { ...item, sharedBy: wineSharedBy } : item,
-      ),
-    [wineSharedBy],
-  )
+  const toggle = toggleWineShare
 
-  const shares = useMemo(() => splitByItems(items), [items])
-  const total = billTotal(items)
-
-  const toggle = (personId: string) => {
-    setWineSharedBy((current) =>
-      current.includes(personId)
-        ? current.filter((id) => id !== personId)
-        : [...current, personId],
-    )
+  const logAndContinue = () => {
+    logExpense()
+    go('balances')
   }
 
   const amounts = Object.values(shares)
@@ -66,7 +57,7 @@ export function SplitByItem() {
   return (
     <div className="relative h-full">
       <TripLisbon dinner="decided" crew={[...tripBuddies, people.ren]} />
-      <Scrim />
+      <Scrim onClick={back} />
 
       <Sheet gap={14}>
         {/* Summary sentence */}
@@ -196,6 +187,7 @@ export function SplitByItem() {
         <div className="flex w-full shrink-0 items-start" style={{ gap: 10 }}>
           <button
             type="button"
+            onClick={back}
             className="flex shrink-0 items-center justify-center rounded-pill text-body font-medium"
             style={{
               height: 54,
@@ -208,6 +200,7 @@ export function SplitByItem() {
           </button>
           <button
             type="button"
+            onClick={logAndContinue}
             className="flex min-w-0 flex-1 items-center justify-center rounded-pill text-body font-medium"
             style={{
               height: 54,

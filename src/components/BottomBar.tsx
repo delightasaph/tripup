@@ -7,6 +7,8 @@ type BottomBarProps = {
   activeId: string
   /** Label for the FAB, which adds to the trip. */
   fabLabel?: string
+  onTabChange?: (id: string) => void
+  onFabClick?: () => void
 }
 
 /**
@@ -14,7 +16,7 @@ type BottomBarProps = {
  * y = 756, over a 150 pt fade from Surface/Ground transparent to opaque so
  * the timeline scrolls away behind it.
  */
-export function BottomBar({ tabs, activeId, fabLabel = 'Add to trip' }: BottomBarProps) {
+export function BottomBar({ tabs, activeId, fabLabel = 'Add to trip', onTabChange, onFabClick }: BottomBarProps) {
   return (
     <>
       <div
@@ -46,6 +48,7 @@ export function BottomBar({ tabs, activeId, fabLabel = 'Add to trip' }: BottomBa
                 type="button"
                 role="tab"
                 aria-selected={active}
+                onClick={() => onTabChange?.(t.id)}
                 className="flex h-[48px] items-center gap-[8px] rounded-pill"
                 style={{
                   paddingInline: active ? 18 : 17,
@@ -66,6 +69,7 @@ export function BottomBar({ tabs, activeId, fabLabel = 'Add to trip' }: BottomBa
         <button
           type="button"
           aria-label={fabLabel}
+          onClick={onFabClick}
           className="flex items-center justify-center rounded-pill"
           style={{
             width: 60,

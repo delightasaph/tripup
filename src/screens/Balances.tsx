@@ -1,29 +1,26 @@
+import { useEffect } from 'react'
 import { AvatarStack, Avatar } from '@/components/Avatar'
 import { BottomBar } from '@/components/BottomBar'
 import { IconButton } from '@/components/Button'
 import { Icon } from '@/components/Icon'
 import { Pill } from '@/components/Pill'
-import { Toast } from '@/components/Toast'
-import {
-  balanceAfterDinnerById,
-  dinnerBill,
-  dinnerShares,
-  expenseLedger,
-  openingBalanceCents,
-  settleTransfers,
-  tripSpend,
-} from '@/data/expenses'
+import { dinnerBill, expenseLedger, openingBalanceCents, tripSpend, type LedgerEntry } from '@/data/expenses'
 import { people, tripBuddies } from '@/data/trip'
+import { useScreenNav } from '@/lib/useScreenNav'
 import { formatEuros, formatEurosAuto } from '@/domain/money'
+import type { Transfer } from '@/domain/netting'
+import {
+  selectAllSettled,
+  selectBalancesAfterDinner,
+  selectDinnerShares,
+  selectSettleTransfers,
+  useTripStore,
+} from '@/store/tripStore'
 
-const you = balanceAfterDinnerById.ari
-const wasBefore = openingBalanceCents.ari
-const paidIn = dinnerBill.totalCents - dinnerShares.ari
-
-/** "Sven, Bea and Kofi pay you. Ren and Mira pay Nic." — grouped straight off `settleTransfers`. */
-function owedBySentence(): string {
+/** "Sven, Bea and Kofi pay you. Ren and Mira pay Nic." — grouped straight off the transfers. */
+function owedBySentence(transfers: Transfer[]): string {
   const byCreditor = new Map<string, string[]>()
-  for (const t of settleTransfers) {
+  for (const t of transfers) {
     byCreditor.set(t.toId, [...(byCreditor.get(t.toId) ?? []), t.fromId])
   }
   return [...byCreditor.entries()]
@@ -42,11 +39,39 @@ function owedBySentence(): string {
  *
  * Same trip-screen chrome as 02 (nav, buddy stack), but the Expenses tab's
  * own content: the "you're owed" card, the netted settle-up list, and the
- * full expense ledger. All amounts come from `src/data/expenses.ts`, which
- * is itself built on `src/domain/split.ts` and `src/domain/netting.ts` — the
- * €130, the 5 transfers and their split are computed, not copied in.
+ * full expense ledger. The €130, the transfers and their split are read live
+ * off the store — `src/domain/split.ts` and `src/domain/netting.ts` run on
+ * whatever split mode the demo is currently in, not a fixed copy.
  */
 export function Balances() {
+  const { go, back, replace } = useScreenNav()
+  const ending = useTripStore((s) => s.ending)
+  const settledIds = useTripStore((s) => s.settledIds)
+  const allSettled = useTripStore(selectAllSettled)
+  const balances = useTripStore(selectBalancesAfterDinner)
+  const shares = useTripStore(selectDinnerShares)
+  const transfers = useTripStore(selectSettleTransfers)
+
+  const you = balances.find((b) => b.personId === 'ari')?.cents ?? 0
+  const wasBefore = openingBalanceCents.ari
+
+  const dinnerEntry: LedgerEntry = {
+    id: 'dinner',
+    title: `Dinner · ${dinnerBill.restaurant}`,
+    sub: 'You paid',
+    amountCents: dinnerBill.totalCents,
+    youPaid: true,
+    shareCents: shares.ari ?? 0,
+  }
+  const ledger = [{ ...expenseLedger[0], entries: [dinnerEntry, ...expenseLedger[0].entries] }, ...expenseLedger.slice(1)]
+
+  // Every transfer settles (via 10, then the auto-settle chain) → the trip
+  // is squared up. Follow it there, ending A or B per the demo toggle.
+  useEffect(() => {
+    if (allSettled) replace(ending === 'A' ? 'squared-up' : 'squared-up-stamp')
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allSettled])
+
   return (
     <div className="relative h-full overflow-hidden">
       <div className="no-scrollbar h-full overflow-y-auto" style={{ overflowX: 'hidden' }}>
@@ -56,17 +81,20 @@ export function Balances() {
         >
           {/* Nav */}
           <div className="flex h-[40px] w-full shrink-0 items-center justify-between">
-            <IconButton label="Back to trips">
+            <IconButton label="Back to trips" onClick={back}>
               <Icon name="arrow-left" size={20} />
             </IconButton>
             <div className="flex items-center" style={{ gap: 8 }}>
-              <AvatarStack people={[...tripBuddies, people.ren]} size={30} max={3} />
+              <button type="button" aria-label="Buddies on this trip" onClick={() => go('buddies')}>
+                <AvatarStack people={[...tripBuddies, people.ren]} size={30} max={3} />
+              </button>
               <IconButton
                 label="Add a buddy"
                 size={30}
                 background="var(--color-accent-lime)"
                 ring="var(--color-surface-ground)"
                 style={{ filter: 'none' }}
+                onClick={() => go('add-a-buddy')}
               >
                 <Icon name="plus-small" size={16} />
               </IconButton>
@@ -98,7 +126,7 @@ export function Balances() {
               {formatEuros(you)}
             </p>
             <p className="text-footnote w-full" style={{ color: 'var(--color-ink-secondary)' }}>
-              {owedBySentence()}
+              {owedBySentence(transfers)}
             </p>
           </div>
 
@@ -107,12 +135,13 @@ export function Balances() {
             <div className="flex w-full items-center justify-between">
               <h2 className="text-headline font-semibold whitespace-nowrap">Settle up</h2>
               <span className="text-footnote whitespace-nowrap" style={{ color: 'var(--color-ink-secondary)' }}>
-                {settleTransfers.length} transfers, netted
+                {transfers.length} transfers, netted
               </span>
             </div>
             <div className="flex w-full shrink-0 flex-col items-start" style={{ gap: 6 }}>
-              {settleTransfers.map((t) => {
+              {transfers.map((t) => {
                 const toYou = t.toId === 'ari'
+                const settled = settledIds.includes(t.fromId)
                 return (
                   <div
                     key={`${t.fromId}-${t.toId}`}
@@ -122,6 +151,7 @@ export function Balances() {
                       padding: '9px 16px 9px 10px',
                       borderRadius: 'var(--radius-row)',
                       background: toYou ? 'var(--color-status-positive-tint)' : 'var(--color-surface-white)',
+                      opacity: settled ? 0.55 : 1,
                     }}
                   >
                     <Avatar person={people[t.fromId]} size={30} />
@@ -131,12 +161,21 @@ export function Balances() {
                     <span className="min-w-0 flex-1 text-body font-medium">
                       {toYou ? 'You' : people[t.toId].label}
                     </span>
-                    <span
-                      className="text-headline font-semibold shrink-0"
-                      style={{ color: toYou ? 'var(--color-status-positive)' : 'var(--color-ink-primary)' }}
-                    >
-                      {formatEuros(t.cents)}
-                    </span>
+                    {settled ? (
+                      <span
+                        className="flex shrink-0 items-center justify-center rounded-pill"
+                        style={{ width: 22, height: 22, background: 'var(--color-status-positive)' }}
+                      >
+                        <Icon name="check-white" size={11} />
+                      </span>
+                    ) : (
+                      <span
+                        className="text-headline font-semibold shrink-0"
+                        style={{ color: toYou ? 'var(--color-status-positive)' : 'var(--color-ink-primary)' }}
+                      >
+                        {formatEuros(t.cents)}
+                      </span>
+                    )}
                   </div>
                 )
               })}
@@ -146,7 +185,7 @@ export function Balances() {
           {/* All expenses */}
           <div className="flex w-full shrink-0 flex-col items-start" style={{ paddingTop: 16, gap: 20 }}>
             <h2 className="text-headline font-semibold whitespace-nowrap">All Expenses</h2>
-            {expenseLedger.map((day) => (
+            {ledger.map((day) => (
               <div key={day.label} className="flex w-full shrink-0 flex-col items-start" style={{ gap: 8 }}>
                 <span className="text-caption2 font-medium whitespace-nowrap" style={{ color: 'var(--color-ink-secondary)' }}>
                   {day.label}
@@ -198,17 +237,15 @@ export function Balances() {
         </div>
       </div>
 
-      <Toast
-        title={`Dinner logged · ${formatEuros(dinnerBill.totalCents)}`}
-        detail={`You paid, so +${formatEuros(paidIn)} to you. Everyone’s updated.`}
-      />
-
       <BottomBar
         tabs={[
           { id: 'itinerary', label: 'Itinerary', icon: 'calendar' },
           { id: 'expenses', label: 'Expenses', icon: 'wallet' },
         ]}
         activeId="expenses"
+        onTabChange={(id) => {
+          if (id === 'itinerary') go('trip')
+        }}
       />
     </div>
   )

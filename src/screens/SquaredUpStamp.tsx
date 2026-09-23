@@ -2,8 +2,10 @@ import { Icon } from '@/components/Icon'
 import { Pill } from '@/components/Pill'
 import { SquaredUpActions } from '@/components/SquaredUpActions'
 import { Stamp } from '@/components/Stamp'
-import { settledAt, settleTransfers, tripSpend } from '@/data/expenses'
+import { settledAt, tripSpend } from '@/data/expenses'
+import { useScreenNav } from '@/lib/useScreenNav'
 import { formatEuros } from '@/domain/money'
+import { selectSettleTransfers, useTripStore } from '@/store/tripStore'
 
 /**
  * 11B · Squared up + stamp collected — Figma `172:3255`.
@@ -15,6 +17,9 @@ import { formatEuros } from '@/domain/money'
  * same `stamps.portugal` PNG, just at a bigger size and a different tilt.
  */
 export function SquaredUpStamp() {
+  const { go } = useScreenNav()
+  const transfers = useTripStore(selectSettleTransfers)
+  const showToast = useTripStore((s) => s.showToast)
   const times = Object.values(settledAt).sort()
 
   return (
@@ -73,13 +78,16 @@ export function SquaredUpStamp() {
             <Icon name="check-white" size={11} />
           </span>
           <span className="min-w-0 flex-1 text-body font-medium whitespace-nowrap">
-            {settleTransfers.length} transfers · {times[0]} – {times.at(-1)}
+            {transfers.length} transfers · {times[0]} – {times.at(-1)}
           </span>
           <Icon name="chevron-right" size={16} />
         </div>
       </div>
 
-      <SquaredUpActions />
+      <SquaredUpActions
+        onShare={() => showToast({ title: 'Recap shared', detail: 'Everyone can see the final numbers' })}
+        onBackToTrip={() => go('trip')}
+      />
     </div>
   )
 }

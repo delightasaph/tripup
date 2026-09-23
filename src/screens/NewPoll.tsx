@@ -1,8 +1,9 @@
 import { Icon } from '@/components/Icon'
 import { Scrim, Sheet } from '@/components/Sheet'
-import { Toast } from '@/components/Toast'
 import { placePhotos } from '@/data/assets'
 import { dinnerPoll } from '@/data/trip'
+import { useScreenNav } from '@/lib/useScreenNav'
+import { useTripStore } from '@/store/tripStore'
 import { TripLisbon } from './TripLisbon'
 
 /**
@@ -15,11 +16,18 @@ import { TripLisbon } from './TripLisbon'
  * scrim's overhang over the status bar is cut off.
  */
 export function NewPoll() {
+  const { go, back } = useScreenNav()
+  const sendPoll = useTripStore((s) => s.sendPoll)
+
+  const send = () => {
+    sendPoll()
+    go('live-poll')
+  }
+
   return (
     <div className="relative h-full">
       <TripLisbon />
-      <Scrim />
-      <Toast title="Ren joined the trip" detail="Everyone was told" />
+      <Scrim onClick={back} />
 
       <Sheet frameTop={235.5} gap={18}>
         <div className="flex w-full shrink-0 items-center justify-between">
@@ -143,6 +151,7 @@ export function NewPoll() {
         {/* Send */}
         <button
           type="button"
+          onClick={send}
           className="flex w-full shrink-0 items-center justify-center rounded-pill text-body font-medium"
           style={{
             height: 54,
