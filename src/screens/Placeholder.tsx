@@ -13,7 +13,7 @@ export function Placeholder({ active }: { active?: ScreenEntry }) {
     >
       <div style={{ height: 'calc(var(--content-top) - var(--status-bar-height))' }} />
       <p className="text-footnote font-medium uppercase tracking-[0.08em] text-ink-secondary">
-        Scaffold ready
+        Screen index
       </p>
       <h1 className="mt-2 text-title1 font-semibold">
         {active ? active.title : 'TripUp'}
@@ -21,7 +21,7 @@ export function Placeholder({ active }: { active?: ScreenEntry }) {
       <p className="mt-2 text-body text-ink-secondary">
         {active
           ? `Frame ${active.no} · on ${active.phone}’s phone · Figma ${active.figmaNode}. Not built yet.`
-          : 'Tokens, fonts and the 390 × 844 frame are in place. Screens come next, in this order.'}
+          : 'Every screen in the journey, in flow order. Internal — the app opens on Home.'}
       </p>
 
       <ol className="mt-6 space-y-[6px]">

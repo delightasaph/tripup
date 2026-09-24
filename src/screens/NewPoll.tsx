@@ -210,9 +210,11 @@ export function NewPoll() {
               // option, which isn't a vote.
               const locked = included && options.length <= 2
               return (
-                <motion.div
+                <div
                   key={p.id}
-                  layout
+                  // No `layout` here: the list swaps wholesale between the
+                  // poll's places and search results, and animating rows
+                  // between two unrelated lists reads as the sheet shaking.
                   className="flex w-full shrink-0 items-center"
                   style={{
                     gap: 12,
@@ -268,7 +270,7 @@ export function NewPoll() {
                       <Icon name="remove" size={16} />
                     )}
                   </motion.button>
-                </motion.div>
+                </div>
               )
             })
           )}

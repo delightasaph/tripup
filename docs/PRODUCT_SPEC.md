@@ -274,14 +274,14 @@ before this opens.
 - "Nic is told the moment it's sent" + "Pay Nic €20" (dark, with method icon). Tap → short processing (Apple Pay-like sheet or spinner ~1 s) → success → back to Ari's phone; the Ren → Nic row flips to done.
 - Demo: remaining transfers complete automatically one by one (~0.8 s apart) → 11.
 
-### 11 Squared up
-- Lime card: dark check, all 7 faces, "Lisbon is squared up." "All 5 transfers are done and everyone got the news. Nobody owes anybody."
-- Receipt list with green checks and times; footer "€1,284 over 5 days · 7 buddies".
-- "Share recap" (outline; native share sheet or toast) and "Back to trip".
-
-### 11B Squared up + stamp collected (alternative ending)
-- "All squared up" lime badge; `stamps/portugal.png` (the titled "PORTUGAL" stamp) **stamps down** (scale 1.3 → 1, slight rotation, soft shadow settles); "Lisbon is squared up." "All 5 transfers are done. Your Portugal stamp is now in your collection."; stat pills; "5 transfers · 22:14 – 22:22" row; same actions.
-- Ship both endings behind a demo toggle so the team can compare. Home's "Your stamps" updates to 5 countries after 11B — Portugal joins England, Spain, Italy and France.
+### 11 Squared up + stamp collected — **the ending**
+- "All squared up" lime badge; `stamps/portugal.png` (the titled "PORTUGAL" stamp) **stamps down** (scale 1.3 → 1, slight rotation, soft shadow settles); "Lisbon is squared up." "All 5 transfers are done. Your Portugal stamp is now in your collection."; stat pills; "5 transfers · 22:14 – 22:22" row; "Share recap" and "Back to trip".
+- **There is one ending.** A plainer version without the stamp used to ship alongside it behind a
+  demo toggle; two endings made the finish ambiguous, and a finished trip earns the stamp. Its
+  receipt — the per-transfer list with green checks and times, footer "€1,284 over 5 days ·
+  7 buddies" — is now what the **"5 transfers · 22:14 – 22:22" row opens**, as a sheet.
+- Home's "Your stamps" updates to 5 countries after this — Portugal joins England, Spain, Italy
+  and France.
 
 
 ### 12 Quick add (sheet over 02)
@@ -352,7 +352,10 @@ Tapping any ledger row on 09 opens it, read-only.
 - One dark **Done**. Per-person amounts come from the split logic in `src/domain/`, never hard-coded.
 
 ## 5. Real-time simulation and demo controls
-- A small **demo panel** (collapsible, outside the phone frame on desktop; long-press the status bar on mobile) with: "View as: Ari / Nic / Ren", "Jump to screen", "Reset demo", "Ending: A / B", speed.
+- A small **demo panel** (collapsible, outside the phone frame on desktop; long-press the status bar on mobile) with: "View as: Ari / Nic / Ren", "Jump to screen", "Reset demo", speed.
+- **The link opens the app, on Home.** No `?screen=` means Home — a shared production link has to
+  behave like an app, not like a contents page. The screen index is still there for the team at
+  `?screen=index`, and the demo panel reaches every screen directly.
 - Simulated events: after "Send to 6 buddies", votes from the other buddies arrive over ~6 s (Bea, Kofi, Mira, Ren, Nic), leaving Sven pending; the ticker and bars update on each. Nudge triggers Sven's vote.
 - When the demo switches phones, the state is shared: Nic's vote in 04c shows up on Ari's 05.
 
