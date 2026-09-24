@@ -23,6 +23,7 @@ export function Home() {
   const showToast = useTripStore((s) => s.showToast)
   const notificationsSeen = useTripStore((s) => s.notificationsSeen)
   const seeNotifications = useTripStore((s) => s.seeNotifications)
+  const startPollForSlot = useTripStore((s) => s.startPollForSlot)
 
   const comingSoon = () => showToast({ title: 'Coming soon', detail: 'Porto and Berlin aren’t open yet' })
 
@@ -177,18 +178,26 @@ export function Home() {
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation()
-                      go('new-poll')
+                      // The same two steps as the slot on the trip screen:
+                      // the question first, then the places. Starting the
+                      // draft from the dinner slot is what fills it in.
+                      startPollForSlot('dinner')
+                      go('poll-question')
                     }}
                     whileHover={HOVER_SMALL}
                     whileTap={TAP_SMALL}
                     transition={TAP_TRANSITION}
                     className="flex shrink-0 items-center justify-center rounded-pill text-caption font-medium"
                     style={{
+                      gap: 6,
                       padding: '9px 14px',
                       background: 'var(--color-accent-violet)',
                       color: 'var(--color-surface-white)',
                     }}
                   >
+                    {/* Same bars glyph the trip screen's button carries, so
+                        it reads as "this opens a poll" in both places. */}
+                    <Icon name="list" size={14} className="shrink-0" />
                     Ask the group
                   </motion.button>
                 </div>

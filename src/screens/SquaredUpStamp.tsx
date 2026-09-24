@@ -36,8 +36,12 @@ export function SquaredUpStamp() {
   const times = Object.values(settledAt).sort()
   const [receiptsOpen, setReceiptsOpen] = useState(false)
 
+  // The root must not clip: the scrim reaches up over the status bar (it is
+  // drawn at a negative top), and `overflow-hidden` here cut it off at the
+  // status bar's lower edge — the one sheet in the app whose scrim stopped
+  // short of covering it.
   return (
-    <div className="relative h-full overflow-hidden">
+    <div className="relative h-full">
       <div
         className="flex flex-col items-center"
         style={{ paddingTop: 40, paddingInline: 'var(--screen-padding)', gap: 18 }}
