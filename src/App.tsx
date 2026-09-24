@@ -17,7 +17,6 @@ import { Vote } from '@/screens/Vote'
 import { LogExpense } from '@/screens/LogExpense'
 import { SplitByItem } from '@/screens/SplitByItem'
 import { Settle } from '@/screens/Settle'
-import { SquaredUp } from '@/screens/SquaredUp'
 import { SquaredUpStamp } from '@/screens/SquaredUpStamp'
 import { PlanUpdated } from '@/screens/PlanUpdated'
 import { ExpenseDetail } from '@/screens/ExpenseDetail'
@@ -62,7 +61,9 @@ function screenFor(id: string | undefined, tab: 'itinerary' | 'expenses') {
     case 'settle':
       return <Settle />
     case 'squared-up':
-      return <SquaredUp />
+      // 11 is no longer an ending — anything still pointing here (an old
+      // bookmark, the demo panel's list) lands on the one ending there is.
+      return <SquaredUpStamp />
     case 'squared-up-stamp':
       return <SquaredUpStamp />
     case 'live-poll':
@@ -75,6 +76,8 @@ function screenFor(id: string | undefined, tab: 'itinerary' | 'expenses') {
       return <Notifications />
     case 'expense-detail':
       return <ExpenseDetail />
+    case 'index':
+      return <Placeholder />
     default:
       return <Placeholder active={screenById(id ?? '')} />
   }
@@ -83,7 +86,11 @@ function screenFor(id: string | undefined, tab: 'itinerary' | 'expenses') {
 /** Every screen is deep-linkable for demos: /?screen=live-poll */
 function Prototype() {
   const [params] = useSearchParams()
-  const rawId = params.get('screen') ?? ''
+  // No `?screen=` means someone just opened the link — so open the app, on
+  // its home screen, the way an app opens. The scaffold's screen list is an
+  // internal tool and lives at `?screen=index`; the demo panel still reaches
+  // every screen directly.
+  const rawId = params.get('screen') || 'home'
   // `balances` collapses onto the same mounted screen as `trip` — see
   // `screenFor` above — so the two share one AnimatePresence key and one
   // React instance. Tapping the tab bar (TripLisbon's `changeTab`) only ever

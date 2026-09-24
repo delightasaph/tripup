@@ -1,29 +1,40 @@
-import { motion, useReducedMotion } from 'framer-motion'
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
+import { useState } from 'react'
+import { Button } from '@/components/Button'
 import { Icon } from '@/components/Icon'
 import { Pill } from '@/components/Pill'
+import { Scrim, Sheet } from '@/components/Sheet'
 import { SquaredUpActions } from '@/components/SquaredUpActions'
+import { TransferReceipts } from '@/components/TransferReceipts'
 import { Stamp } from '@/components/Stamp'
 import { settledAt, tripSpend } from '@/data/expenses'
 import { useScreenNav } from '@/lib/useScreenNav'
 import { formatEuros } from '@/domain/money'
 import { HOVER_SMALL, SPRING_POP, TAP_SMALL, TAP_TRANSITION } from '@/styles/motion'
-import { selectSettleTransfers, useTripStore } from '@/store/tripStore'
+import { selectBuddies, selectSettleTransfers, useTripStore } from '@/store/tripStore'
 
 /**
- * 11B · Squared up + stamp collected — Figma `172:3255`.
+ * 11B · Squared up + stamp collected — Figma `172:3255`. **The ending.**
  *
- * The alternative ending (spec §4, shipped behind a demo toggle — not wired
- * yet, this component is the "B" state on its own). Reuses the existing
- * `Stamp` component (built for the ticket/Home rows) rather than
- * reconstructing the postmark artwork from Figma's raw primitives — it's the
- * same `stamps.portugal` PNG, just at a bigger size and a different tilt.
+ * There used to be two endings behind a demo toggle: this one and a plainer
+ * one (11) that listed the transfers. Two endings made the finish ambiguous
+ * — the trip either earns the stamp or it doesn't — so this is the only one
+ * now, and 11's receipt list became the detail behind the transfers row:
+ * tap "5 transfers · 22:14 – 22:22" and it opens.
+ *
+ * Reuses the existing `Stamp` component (built for the ticket/Home rows)
+ * rather than reconstructing the postmark artwork from Figma's raw
+ * primitives — it's the same `stamps.portugal` PNG, at a bigger size and a
+ * different tilt.
  */
 export function SquaredUpStamp() {
   const { go } = useScreenNav()
   const transfers = useTripStore(selectSettleTransfers)
+  const buddies = useTripStore(selectBuddies)
   const showToast = useTripStore((s) => s.showToast)
   const reduceMotion = useReducedMotion()
   const times = Object.values(settledAt).sort()
+  const [receiptsOpen, setReceiptsOpen] = useState(false)
 
   return (
     <div className="relative h-full overflow-hidden">
@@ -68,13 +79,14 @@ export function SquaredUpStamp() {
             {tripSpend.days} days
           </Pill>
           <Pill variant="lilac" height={30} className="font-medium">
-            7 buddies
+            {buddies.length} buddies
           </Pill>
         </div>
 
         <motion.button
           type="button"
-          onClick={() => go('balances')}
+          onClick={() => setReceiptsOpen(true)}
+          aria-haspopup="dialog"
           whileHover={HOVER_SMALL}
           whileTap={TAP_SMALL}
           transition={TAP_TRANSITION}
@@ -107,6 +119,27 @@ export function SquaredUpStamp() {
         onShare={() => showToast({ title: 'Recap shared', detail: 'Everyone can see the final numbers' })}
         onBackToTrip={() => go('trip')}
       />
+
+      {/* The old ending's receipt, as the detail behind the transfers row */}
+      <AnimatePresence>
+        {receiptsOpen && (
+          <>
+            <Scrim onClick={() => setReceiptsOpen(false)} />
+            <Sheet gap={16} onDismiss={() => setReceiptsOpen(false)}>
+              <div className="flex w-full shrink-0 flex-col items-start" style={{ gap: 3 }}>
+                <h2 className="text-heading font-semibold">All settled</h2>
+                <p className="text-caption" style={{ color: 'var(--color-ink-secondary)' }}>
+                  {transfers.length} transfers · {times[0]} – {times.at(-1)}
+                </p>
+              </div>
+              <TransferReceipts transfers={transfers} buddyCount={buddies.length} />
+              <Button fullWidth onClick={() => setReceiptsOpen(false)}>
+                Done
+              </Button>
+            </Sheet>
+          </>
+        )}
+      </AnimatePresence>
     </div>
   )
 }

@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { screens, type ScreenId } from '@/screens/registry'
 import { HOVER_SMALL, SPRING_SHEET, TAP_SMALL, TAP_TRANSITION } from '@/styles/motion'
-import { type Ending, type ViewAs, useTripStore } from '@/store/tripStore'
+import { type ViewAs, useTripStore } from '@/store/tripStore'
 
 /**
  * The presenter's remote (docs/PRODUCT_SPEC.md §5) — never part of the
@@ -16,10 +16,8 @@ export function DemoPanel() {
   const navigate = useNavigate()
 
   const viewAs = useTripStore((s) => s.viewAs)
-  const ending = useTripStore((s) => s.ending)
   const speed = useTripStore((s) => s.speed)
   const setViewAs = useTripStore((s) => s.setViewAs)
-  const setEnding = useTripStore((s) => s.setEnding)
   const setSpeed = useTripStore((s) => s.setSpeed)
   const resetDemo = useTripStore((s) => s.resetDemo)
 
@@ -126,16 +124,6 @@ export function DemoPanel() {
                 </option>
               ))}
             </select>
-          </Field>
-
-          <Field label="Ending">
-            <SegmentRow>
-              {(['A', 'B'] as const).map((e) => (
-                <SegmentButton key={e} active={ending === e} onClick={() => setEnding(e as Ending)}>
-                  {e === 'A' ? '11 · Plain' : '11B · Stamp'}
-                </SegmentButton>
-              ))}
-            </SegmentRow>
           </Field>
 
           <Field label="Speed">

@@ -203,7 +203,12 @@ export function TripLisbon({
                         >
                           {resolved ? (
                             <DinnerDecided
-                              place={placesCatalog.find((p) => p.id === poll!.winnerId) ?? winningPlace}
+                              // `dinner="decided"` can force this row before
+                              // a poll object exists (06, 07 and 08 compose
+                              // this screen, and a deep link starts with no
+                              // polls at all) — so read the winner off the
+                              // poll only if there is one.
+                              place={placesCatalog.find((p) => p.id === poll?.winnerId) ?? winningPlace}
                               label={row.kind === 'slot' ? row.item.title : 'Decided'}
                               shared={row.kind === 'slot'}
                               onLogExpense={() => go('log-expense')}
@@ -381,9 +386,13 @@ function DinnerDecided({
           whileTap={TAP_SMALL}
           transition={TAP_TRANSITION}
           className="flex shrink-0 items-center justify-center rounded-pill"
-          style={{ width: 43, height: 40, paddingInline: 14 }}
+          // No horizontal padding: 43 wide less 14 either side leaves 15px,
+          // and the icon — which can shrink inside a flex row — was being
+          // squeezed from 24 to 15. It's the same glyph at the same size as
+          // the directions button on the next-item card; it should look it.
+          style={{ width: 43, height: 40 }}
         >
-          <Icon name="direction-right" size={24} />
+          <Icon name="direction-right" size={24} className="shrink-0" />
         </motion.button>
       </div>
     </div>

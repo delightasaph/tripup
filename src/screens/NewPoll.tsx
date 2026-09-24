@@ -83,7 +83,13 @@ export function NewPoll() {
       <TripLisbon scaleForSheet />
       <Scrim onClick={back} />
 
-      <Sheet frameTop={235.5} gap={18} onDismiss={back}>
+      {/* No `frameTop`: the sheet hugs its content and grows upward from the
+          bottom. The frame pins it at y 235.5, which was right for the frame's
+          own content — adding the search field made the content taller than
+          that box and pushed Send off the bottom of the phone. Hugging can't
+          do that: the button is always the last thing above the safe area,
+          whatever the list is showing. */}
+      <Sheet gap={18} onDismiss={back}>
         <div className="flex w-full shrink-0 items-center justify-between">
           <h2 className="text-heading font-semibold">New poll</h2>
           {/* The slot this poll fills */}

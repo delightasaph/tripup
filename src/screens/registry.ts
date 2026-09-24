@@ -55,8 +55,9 @@ export const screens: ScreenEntry[] = [
   { id: 'split-by-item', no: '08', title: 'Split by item', phone: 'Ari', time: '22:10', figmaNode: '169:2976', sheet: true },
   { id: 'balances', no: '09', title: 'Balances', phone: 'Ari', time: '22:12', figmaNode: '4048:16899' },
   { id: 'settle', no: '10', title: 'Ren settles', phone: 'Ren', time: '22:14', figmaNode: '171:3175' },
-  { id: 'squared-up', no: '11', title: 'Squared up', phone: 'Ari', time: '22:25', figmaNode: '172:3175' },
-  { id: 'squared-up-stamp', no: '11B', title: 'Squared up + stamp', phone: 'Ari', time: '22:25', figmaNode: '172:3255' },
+  // The ending. 11 (the plain version) was removed — its receipt list opens
+  // from this screen's transfers row instead.
+  { id: 'squared-up-stamp', no: '11', title: 'Squared up', phone: 'Ari', time: '22:25', figmaNode: '172:3255' },
   { id: 'quick-add', no: '12', title: 'Quick add', phone: 'Ari', time: '18:05', figmaNode: '4093:2356', sheet: true },
   // 18 and 13 are one sheet in two states — empty, then filled — so they are
   // one screen id. 13b/13c (the wheel picker) are a layer inside it, not

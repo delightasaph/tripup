@@ -58,7 +58,6 @@ export function ExpensesBody({
 }) {
   const { replace } = useScreenNav()
   const navigate = useNavigate()
-  const ending = useTripStore((s) => s.ending)
   const settledIds = useTripStore((s) => s.settledIds)
   const allSettled = useTripStore(selectAllSettled)
   const balances = useTripStore(selectBalancesAfterDinner)
@@ -71,9 +70,12 @@ export function ExpensesBody({
   const ledger = useTripStore(selectFullLedger)
 
   // Every transfer settles (via 10, then the auto-settle chain) → the trip
-  // is squared up. Follow it there, ending A or B per the demo toggle.
+  // is squared up, and the stamp lands. There is one ending: a finished trip
+  // earns the stamp, so offering a version without it made the finish
+  // ambiguous. 11's receipt list is still there, as the detail behind 11B's
+  // transfers row.
   useEffect(() => {
-    if (allSettled) replace(ending === 'A' ? 'squared-up' : 'squared-up-stamp')
+    if (allSettled) replace('squared-up-stamp')
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allSettled])
 

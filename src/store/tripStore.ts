@@ -39,7 +39,6 @@ const autoSettleOrder = ['sven', 'bea', 'kofi', 'mira']
 
 export type SplitMode = 'equally' | 'by-item'
 export type ViewAs = 'ari' | 'nic' | 'ren'
-export type Ending = 'A' | 'B'
 
 export type ToastPayload = { title: string; detail: string; icon?: IconName; iconSize?: number }
 
@@ -115,7 +114,6 @@ interface StoryState {
 
 interface DemoMeta {
   viewAs: ViewAs
-  ending: Ending
   speed: 1 | 2 | 4
 }
 
@@ -147,7 +145,6 @@ interface TripStore extends StoryState, DemoMeta {
   showToast: (toast: ToastPayload, ms?: number) => void
   dismissToast: () => void
   setViewAs: (viewAs: ViewAs) => void
-  setEnding: (ending: Ending) => void
   setSpeed: (speed: 1 | 2 | 4) => void
   resetDemo: () => void
 }
@@ -234,6 +231,34 @@ export const useTripStore = create<TripStore>((set, get) => {
     })
   }
 
+  /**
+   * The active poll, materialised if it doesn't exist yet.
+   *
+   * `polls` starts empty: the dinner poll only becomes a real object when
+   * Ari sends it. Every other way into the poll screens — the demo panel's
+   * screen list, a `?screen=vote` link, Nic tapping the notification on a
+   * fresh load — arrives with nothing in `polls`, and every action that
+   * guarded on it silently did nothing. Nic could press "Vote for Time Out
+   * Market" and watch the count stay at zero.
+   *
+   * So a poll action on a poll that hasn't been sent creates it from the
+   * draft, live, and carries on. Deep links behave like the flow.
+   */
+  function ensureLivePoll(): Poll {
+    const state = get()
+    const id = state.activePollId
+    const existing = state.polls[id]
+    if (existing) return existing
+
+    const poll: Poll = { ...makePoll(state.draft, id), sent: true }
+    set({
+      polls: { ...state.polls, [id]: poll },
+      pollIds: state.pollIds.includes(id) ? state.pollIds : [...state.pollIds, id],
+    })
+    startCountdown(id)
+    return poll
+  }
+
   function closePoll(id: string) {
     const poll = get().polls[id]
     if (!poll || poll.closed) return
@@ -281,7 +306,6 @@ export const useTripStore = create<TripStore>((set, get) => {
   return {
     ...initialStory,
     viewAs: 'ari',
-    ending: 'A',
     speed: 1,
 
     seeNotifications: () => set({ notificationsSeen: true }),
@@ -339,9 +363,9 @@ export const useTripStore = create<TripStore>((set, get) => {
      *  30. Pushes a `lastEvent` so the ticker announces it the way a vote
      *  does. */
     extendDeadline: (minutes) => {
-      const id = get().activePollId
-      const poll = get().polls[id]
-      if (!poll || poll.closed || !poll.sent || minutes === poll.deadlineMinutes) return
+      const poll = ensureLivePoll()
+      const id = poll.id
+      if (poll.closed || minutes === poll.deadlineMinutes) return
       const elapsed = poll.deadlineMinutes * 60 - poll.closesInSeconds
       patchPoll(id, {
         deadlineMinutes: minutes,
@@ -394,9 +418,9 @@ export const useTripStore = create<TripStore>((set, get) => {
     },
 
     castVote: (personId, optionId, options) => {
-      const id = get().activePollId
-      const poll = get().polls[id]
-      if (!poll || poll.closed) return
+      const poll = ensureLivePoll()
+      const id = poll.id
+      if (poll.closed) return
       if (!rosterOf(get()).includes(personId)) return
       const existing = poll.votes.find((v) => v.personId === personId)
       if (existing && !options?.allowChange) return
@@ -419,7 +443,7 @@ export const useTripStore = create<TripStore>((set, get) => {
     },
 
     requestChangeVote: () => {
-      if (selectActivePoll(get()).closed) return
+      if (ensureLivePoll().closed) return
       set({ changingVote: true })
     },
 
@@ -430,7 +454,7 @@ export const useTripStore = create<TripStore>((set, get) => {
 
     nudgeSven: () => {
       const state = get()
-      const poll = selectActivePoll(state)
+      const poll = ensureLivePoll()
       if (poll.nudged || poll.closed) return
       patchPoll(poll.id, { nudged: true })
       get().showToast({ title: 'Sven was nudged', detail: 'He’ll get a reminder', icon: 'bell', iconSize: 13 })
@@ -438,7 +462,7 @@ export const useTripStore = create<TripStore>((set, get) => {
     },
 
     closePollNow: () => {
-      const poll = selectActivePoll(get())
+      const poll = ensureLivePoll()
       if (!canClosePoll(poll.votes)) return
       closePoll(poll.id)
     },
@@ -497,12 +521,11 @@ export const useTripStore = create<TripStore>((set, get) => {
     },
 
     setViewAs: (viewAs) => set({ viewAs }),
-    setEnding: (ending) => set({ ending }),
     setSpeed: (speed) => set({ speed }),
 
     resetDemo: () => {
       clearAllTimers()
-      set((state) => ({ ...initialStory, ending: state.ending, speed: state.speed, viewAs: 'ari' }))
+      set((state) => ({ ...initialStory, speed: state.speed, viewAs: 'ari' }))
     },
   }
 })
