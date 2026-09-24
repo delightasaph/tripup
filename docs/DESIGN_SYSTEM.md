@@ -154,11 +154,15 @@ velocity, not distance alone.
 something else — searching for a place to add, for instance — it swaps its own content and lets
 its height follow; two stacked scrims and two stacked cards read as a bug, not as a layer.
 
-**Continuity over replacement.** Where the same object appears on two screens, it moves — use
-Framer's `layoutId`. The one that survives is the winning poll option's photo travelling into the
-dinner slot on 06: a single element, moving because the poll resolved into the plan. The trip
-ticket used to do this between 01 and 02 and no longer does — a hero image sliding around on a
-plain navigation tap was read as a glitch, and it was the page moving, not an object persisting.
+**Continuity within a screen, not across one.** `layoutId` still earns its place where both
+elements live in the same persistently-mounted component: the tab bar's ink pill slides between
+Itinerary and Expenses because the bar never unmounts, and that reads as one control moving.
+
+Across a navigation it no longer applies. Screens cut, so two screens never coexist and there is
+nothing to animate between — the winning poll option's photo and the trip ticket both carried a
+`layoutId` and now simply appear in place. That is the intended result, not a regression: an
+element flying across an otherwise instant screen change reads as a glitch, which is exactly what
+the ticket was doing between 01 and 02.
 
 **Numbers and lists.** Amounts count up with spring/pop, never linearly. Lists stagger children
 40 ms on first mount only — never on re-render, or the screen twitches every state change.
