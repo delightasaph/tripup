@@ -110,5 +110,5 @@ row returns sparse because of the four stamp instances. So the row is the frame'
 Two consequences worth knowing:
 - Figma flattened it onto **white** (Frame 15 has no fill), so the field was keyed out with an
   edge flood fill. Interior highlights are untouched.
-- **It cannot gain a fifth stamp.** `PRODUCT_SPEC.md` says Home shows 5 countries after ending 11B;
+- **It cannot gain a fifth stamp.** `PRODUCT_SPEC.md` says Home shows 5 countries after the ending;
   that state needs its own render of the same frame.

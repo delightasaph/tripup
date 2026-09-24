@@ -4,7 +4,7 @@ Figma node `166:2578`. Built in `src/screens/PollNotification.tsx`.
 
 Not in the original wireflow. Nic's lock screen, right after Ari sends the poll from 04. Renders
 with `chrome: false` in the registry — this screen draws its own clock instead of the app's iOS
-status bar, so `DeviceFrame`'s `StatusBar` is skipped entirely for it.
+status bar, and the app draws none anywhere, so this screen owns everything above its wallpaper.
 
 ## Layout
 Flex column, centred, `padding-top: 70`, `padding-inline: 12` — matches the Figma frame's own
@@ -17,7 +17,7 @@ that's how this one frame is actually built.
 2. `--gradient-legibility-shade` over it, full bleed (already a token).
 3. Clock: "Wednesday 16 September" (15px medium, white) over "18:05" (92px medium, white,
    `line-height: 100px`, `letter-spacing: -1.84px`). This size/tracking is lock-screen chrome, not a
-   documented type style, so it's inline — same precedent as `StatusBar.tsx`'s hand-set clock.
+   documented type style, so it's inline: a lock screen's clock is its own thing, not a UI token.
 4. Flex-1 spacer, then the lime "On Nic's phone" pill (26 tall, `Pill` component).
 5. Two notification cards, gap 8.
 6. Quick actions row (torch left, camera right), `padding: 28px 34px 44px`.

@@ -83,6 +83,7 @@ src/components/  shared UI
 src/data/        the mock trip
 src/styles/      tokens.css (the design system as CSS variables) and the motion tokens
 public/assets/   avatars, place photos, stamps and icons
+design/screens/  reference renders from the design file, at 390 × 844
 ```
 
 ## Where the logic lives

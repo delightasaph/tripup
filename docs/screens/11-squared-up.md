@@ -1,11 +1,12 @@
-# 11B · Squared up + stamp collected (alternative ending)
+# 11 · Squared up — the ending
 
-Figma node `172:3255`. Built in `src/screens/SquaredUpStamp.tsx`.
+Design node `172:3255`. Built in `src/screens/SquaredUpStamp.tsx`, at `/squared-up`.
 
-The alternative ending (spec §4/§5): ships alongside 11, meant to sit behind a demo toggle the team
-can compare — the toggle itself isn't wired yet (demo controls are a later phase, per
-the build order), so this is the "B" state as its own reachable screen for now
-(`/?screen=squared-up-stamp`).
+**There is one ending.** A plainer version without the stamp shipped alongside this one for a
+while, behind a demo toggle so the two could be compared. Two endings made the finish ambiguous —
+a trip that gets squared up earns the stamp — so the toggle and the plain version are gone. Its
+receipt (the per-transfer list with checks and times) is now the detail behind this screen's
+**"5 transfers · 22:14 – 22:22"** row: tapping it opens the list as a sheet.
 
 ## Reused the existing `Stamp` component, not Figma's raw stamp tree
 The export of this node returns the entire Stamp component's internals exploded into ~40
@@ -16,14 +17,12 @@ its flat PNG (`stamps.portugal`, per `DESIGN_SYSTEM.md` §7) with the correct cr
 `portugal.png` carries the "x1" count badge Home's four stamps don't — correct here, since it's
 Ari's first Portugal visit (design system note, confirmed on screen).
 
-Left the drop-from-scale-1.3 entrance motion (`DESIGN_SYSTEM.md` §6) for the later motion pass
-— every screen at this stage is a static snapshot of its narrative moment, this one included.
+The stamp lands with the drop-from-scale-1.3 entrance in `DESIGN_SYSTEM.md` §6.
 
-## New shared component: `SquaredUpActions`
-11 and 11B end in the exact same "Share recap" / "Back to trip" button row. Pulled it into
-`src/components/SquaredUpActions.tsx` (using the existing `Button` component rather than the
-hand-rolled `<button>`s 11 had) and pointed both screens at it — this also simplified 11's own
-action row, which had duplicated `Button`'s styling by hand.
+## Shared components
+`SquaredUpActions` holds the "Share recap" / "Back to trip" row, and `TransferReceipts` holds the
+settled-transfer list — the body of the old plain ending, which survives as the sheet this
+screen's transfers row opens.
 
 ## Layout
 Centred column, `padding-top: 40`, gap 18.

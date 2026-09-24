@@ -3,7 +3,7 @@
 Figma node `4098:2440`; the sheet is `4098:2690`. Built in `src/screens/ExpenseDetail.tsx`.
 
 The Expenses tab under a scrim, with a read-only sheet on top. Which expense is in the URL —
-`?screen=expense-detail&entry=fado` — so it is deep-linkable like every other screen, and tapping
+`/expenses/fado` — so one expense is shareable like every other screen, and tapping
 any ledger row on 09 opens it.
 
 ## Sheet · Expense — 0, 259 · 390 × 585

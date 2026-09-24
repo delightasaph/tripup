@@ -184,7 +184,7 @@ and timers for the simulated real-time events are cleared on unmount.
 - Poll close → Plan updated: shared-element transition from the winning option card into the dinner slot; the dashed border resolves into the ink border; node fills violet.
 - Split by item: tapping an avatar fades it to 35% and swaps the label to "Skipped"; amounts roll to new values.
 - Balances: amounts count up on first view; rows paying you slide in slightly after others.
-- Squared up: each receipt row checks in sequence (120 ms stagger). 11B: stamp drops from scale 1.3 with −5° rotation, lands with a small bounce and the shadow tightens; optional gentle haptic on iOS (`navigator.vibrate` is not available on iOS; skip).
+- Squared up: each receipt row checks in sequence (120 ms stagger). The ending: the stamp drops from scale 1.3 with −5° rotation, lands with a small bounce and the shadow tightens; optional gentle haptic on iOS (`navigator.vibrate` is not available on iOS; skip).
 - Respect `prefers-reduced-motion`: replace springs with fades.
 
 ## 7. Assets
@@ -203,10 +203,10 @@ In `public/assets/`. Everything below is already exported and committed unless m
   - `england`, `spain`, `italy` and `france` — the four Home uses — are the re-exports:
     428 × 442, no "x1" count badge. The other eleven are the first exports at 1000 × 1032,
     about four times the bytes, and do carry the "x1" badge. Of those only `portugal` is used
-    (ending 11B), where "x1" reads correctly as Ari's first visit.
+    (the ending), where "x1" reads correctly as Ari's first visit.
   - `portugal-ticket.png` has **no country name**. This is the one on the Lisbon ticket, rotated
     ~20° and clipped by the ticket edge.
-  - `portugal.png` has the Anton "PORTUGAL" title. This is the one that stamps down on ending 11B.
+  - `portugal.png` has the Anton "PORTUGAL" title. This is the one that stamps down on the ending.
   - Home's "Your stamps" row uses `england`, `spain`, `italy` and `france` — in that order, and
     **not** Greece or Portugal. Verified against Figma `165:24924`. Arrangement in
     `src/data/assets.ts` (`homeStamps`).

@@ -58,5 +58,5 @@ sits **above** the heading, not beside it: "What are we deciding?" wraps to two 
 crowds it. The places step carries the same pill, so the two steps read as one poll being composed.
 
 Same draft object, same `sendPoll` action; the routes differ only in what `startBlankPoll` /
-`startPollForSlot` put in the draft first. A cold deep link to `?screen=poll-question` opens on the
+`startPollForSlot` put in the draft first. A cold deep link to `/poll/new` opens on the
 dinner draft, which is why it renders as 13 rather than 18.

@@ -140,8 +140,7 @@ Design file page "Hi-Fidelity Screens". Built in this order; each screen's build
 | 08 | Split by item | `169:2976` | Ari |
 | 09 | Balances (Expenses tab) | `4048:16899` | Ari |
 | 10 | Ren settles | `171:3175` | Ren |
-| 11 | Squared up | `172:3175` | Ari |
-| 11B | Squared up + stamp collected (alternative) | `172:3255` | Ari |
+| 11 | Squared up (the ending) | `172:3255` | Ari |
 | 12 | Quick add (FAB sheet) | `4093:2356` | Ari |
 | 13 | New poll · what are we deciding (filled) | `4094:2129` | Ari |
 | 13b | Time of the event (wheel picker) | `4095:2140` | Ari |
@@ -167,7 +166,7 @@ draws neither. Together they cost about 60 pt of a 844 pt screen without telling
 the real OS isn't already showing, so the space goes to the content — and a frame coordinate is a
 screen coordinate.
 
-Screens 02 and 05 are the two key high-fidelity screens from the brief and the visual reference for the rest. Screens 04b, 04c and 11B were not in the original wireflow.
+Screens 02 and 05 are the two key high-fidelity screens from the brief and the visual reference for the rest. Screens 04b and 04c were not in the original wireflow.
 
 ### 01 Home
 - Header: Ari avatar, "Hi Ari", **"Last night in Lisbon"**; notifications button (red unread dot) and "+" new trip.
@@ -361,9 +360,10 @@ Tapping any ledger row on 09 opens it, read-only.
 ## 5. Real-time simulation and demo controls
 - A small **demo panel** (collapsible, outside the phone frame on desktop) with: "View as: Ari /
   Nic / Ren", "Jump to screen", "Reset demo", speed.
-- **The link opens the app, on Home.** No `?screen=` means Home — a shared production link has to
-  behave like an app, not like a contents page. The screen index is still there for the team at
-  `?screen=index`, and the demo panel reaches every screen directly.
+- **Every screen has a real URL** — `/trip/expenses`, `/poll/live`, `/expenses/fado` — so any
+  point in the journey can be shared or reloaded, and `/` opens the app on Home the way an app
+  opens. The screen index stays internal at `/screens`, and the demo panel reaches every screen
+  directly. An unknown path lands on Home rather than a dead end.
 - Simulated events: after "Send to 6 buddies", votes from the other buddies arrive over ~6 s (Bea, Kofi, Mira, Ren, Nic), leaving Sven pending; the ticker and bars update on each. Nudge triggers Sven's vote.
 - When the demo switches phones, the state is shared: Nic's vote in 04c shows up on Ari's 05.
 
