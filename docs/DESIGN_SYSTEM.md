@@ -140,15 +140,25 @@ no animating `scrollTop` on a wheel event. Set `overscroll-behavior: contain` on
 at its end doesn't drag the page behind it, and `scroll-behavior: smooth` only for programmatic
 jumps. Sticky headers use `position: sticky`, not scroll listeners.
 
-**Screen transitions.** Forward: the new screen enters from `translateX(24px)` + `opacity 0` over
-`--dur-base` with `--ease-out`, the old one leaves to `-12px` and fades. Back is the mirror. Sheets
-come up from the bottom with spring/sheet, the scrim fades over `--dur-fast`, and the screen behind
-scales to `0.96` and stays there until the sheet leaves — that one detail is most of the iOS feel.
-Sheets are draggable down and dismiss on distance **or** velocity, not distance alone.
+**Screen transitions: there are none.** Moving between screens is a **cut**. Screens used to slide
+in and out, and it read as the page lurching on an ordinary tap — the thing a bug looks like.
+Motion belongs to the thing you touched, not to the page around it: a button presses, a sheet
+rises, a bar fills, a count ticks. Nothing animates the whole screen.
+
+Sheets are the exception, and only because a sheet is a *surface arriving*, not a page changing
+under you: up from the bottom with spring/sheet, scrim fading over `--dur-fast`, and the screen
+behind scaling to `0.96` until it leaves. Sheets are draggable down and dismiss on distance **or**
+velocity, not distance alone.
+
+**One sheet at a time.** A sheet never opens on top of another sheet. When a sheet needs to show
+something else — searching for a place to add, for instance — it swaps its own content and lets
+its height follow; two stacked scrims and two stacked cards read as a bug, not as a layer.
 
 **Continuity over replacement.** Where the same object appears on two screens, it moves — use
-Framer's `layoutId`. The one that matters is the winning poll option's photo travelling into the
-dinner slot on 06; the trip ticket between 01 and 02 is the second.
+Framer's `layoutId`. The one that survives is the winning poll option's photo travelling into the
+dinner slot on 06: a single element, moving because the poll resolved into the plan. The trip
+ticket used to do this between 01 and 02 and no longer does — a hero image sliding around on a
+plain navigation tap was read as a glitch, and it was the page moving, not an object persisting.
 
 **Numbers and lists.** Amounts count up with spring/pop, never linearly. Lists stagger children
 40 ms on first mount only — never on re-render, or the screen twitches every state change.

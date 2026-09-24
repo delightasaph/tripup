@@ -182,7 +182,7 @@ Screens 02 and 05 are the two key high-fidelity screens from the brief and the v
 - Day strip Sat 12 → Today 16 (Today selected, dark).
 - "TODAY'S PLAN · 2 of 4 done". Vertical timeline: time column, node, card. Done items faded. Sunset card is "Next" (warm gradient, "12 min walk", plus a 36 pt white round **directions** button at its bottom-right — only on the next item, never on done items). Dinner is the **dashed violet open slot** with "Ask the group" (violet primary).
 - Floating tab bar (Itinerary / Expenses) + dark "+" FAB, with a fade behind.
-- Buddy stack or lime "+" → 03a. "Ask the group" → 04.
+- Buddy stack or lime "+" → 03a. "Ask the group" → **13** (the question step), then 04.
 
 ### 03a Buddies (sheet over 02)
 The group view. The brief's wording is two beats — Ari "taps into the current trip to open up a
@@ -201,15 +201,25 @@ group view **and** adds Ren" — so seeing who is on the trip and adding someone
 - Info row: "Joins from tonight · Earlier expenses stay out of their share".
 - Buttons: **"Cancel"** (outline, returns to 03a) and "Add Ren" (dark). Cancel is the way back;
   dragging the sheet down does the same.
-- Add Ren → sheet closes, buddy stack becomes "+4", toast "Ren joined the trip · Everyone was told".
-  Continue to 04 if the user came from "Ask the group"; otherwise stay on 02.
+- Add Ren → sheet closes and you land **back on 02**, whichever way you came in. The buddy stack
+  becomes "+4", the dinner slot's head count becomes "all 7 of you are free", and the toast "Ren
+  joined the trip · Everyone was told" lands there. Adding someone is a complete act: it never
+  pushes on into the poll, which would answer a question nobody asked yet and leave the person
+  demoing two screens from where they started.
 
-### 04 New poll (sheet)
-- Toast from step 03 still visible at top. Sheet: "New poll" + violet pill "Dinner · 20:30" (the slot it fills).
-- Question: "Where are we eating tonight?" (editable, underlined).
-- "3 places near you" + "+ Add a place". Three option rows (photo with icon badge, name, line, remove ×).
-- Deadline row: "Closes in 20 min · or as soon as all 7 have voted" (tap to change).
-- "Send to 6 buddies" → 05 (Ari's view) and triggers 04b on the demo's "other phones".
+### 04 New poll · the places step (sheet)
+Step **2** of both routes into a poll — the question, the time and the deadline are settled on 13
+before this opens.
+- Toast from step 03 still visible at top. Sheet: "New poll" + violet pill naming what the poll is
+  for ("Dinner · 20:30" from the slot; the chosen time from the quick add).
+- Question (editable, underlined) — carried in from 13, still correctable here.
+- **A search field, in this sheet.** Type and the list below becomes results you can add; clear it
+  and you are back to the poll's own places. It used to be a second sheet stacked on this one,
+  which read as a bug. One surface, height following its content — see §6.0 "One sheet at a time".
+- Option rows (photo with icon badge, name, line, remove ×); the last two can't be removed.
+- Deadline row: "Closes in 20 min · or as soon as all N have voted" (tap to change).
+- **Every head count is derived** from who is on the trip: "Send to 5 buddies" before Ren joins,
+  "6 buddies" after. → 05 (Ari's view) and triggers 04b on the demo's "other phones".
 
 ### 04b Poll notification (Nic's lock screen)
 - Wallpaper: the photo `assets/lockscreen-wallpaper.jpg` (`object-fit: cover`, ~`52% center`) under the **Legibility shade** gradient (`--gradient-legibility-shade`, Figma node `166:2579`). It is a night-out street photo — not a stamp painting. Then the date and time, and the “On Nic’s phone” lime pill.
@@ -221,6 +231,9 @@ group view **and** adds Ren" — so seeing who is on the trip and adding someone
 - Same question header; ticker "Bea voted · 1 min ago".
 - Options as selectable cards (radio). Selected card has a 2 px ink border and filled check. **Results are hidden until you vote** (avoids herd voting); note "5 of 7 have voted · results show once you vote".
 - "Vote for Time Out Market" (label follows the selection). After voting, show the live results view (same layout as 05 without the asker controls).
+- **Closing (×) lands on the trip, never back on the lock screen.** The notification is how Nic got
+  here; it is an entry point, not somewhere to return to — you don't leave an app into your own
+  lock screen. The same rule sends Ren's settle sheet back to the trip's Expenses tab.
 
 ### 05 Live poll (Ari's view)
 - Back, Live pill "closes in mm:ss" (counts down every second).
@@ -292,11 +305,15 @@ disabled. **13** (`4094:2129`) is the same sheet filled in.
 - Cancel / Continue. Continue is disabled until there is a question **and** an event time.
 - Continue → the **existing places step (04)**. Do not build a second places step.
 
-**Two entry points, deliberately different lengths:**
-- **FAB → New poll** → 18 → 13 → 04 → send. Nothing is known, so the question and time are asked.
-- **Empty dinner slot → "Ask the group"** → straight to 04. The slot already knows the question and
-  the time, so step 1 is skipped.
-Same store action, same poll object, two routes in.
+**Two entry points, one shape.** Both routes go 18/13 → 04 → send:
+- **FAB → New poll** → the sheet opens empty (18): placeholder question, both rows "Not set".
+- **Dinner slot → "Ask the group"** → the same sheet opens **filled** (13) and carries the slot's
+  violet pill above the heading: the question, the time and the deadline are already in, and are
+  all still editable.
+
+An earlier draft sent the slot straight to 04 to save a step. It made the two ways of making a poll
+look like two different features; the saving wasn't worth the inconsistency. Same store action,
+same poll object, same two steps — the slot route just arrives with its answers already filled in.
 
 ### 13b / 13c Wheel picker (sheet over 13)
 One component, two titles. Three columns — day, hour, minute — five visible rows of 44. The selected

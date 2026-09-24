@@ -42,11 +42,20 @@ what the frame states, so the minimum is belt and braces rather than a change.
 differ, so both are kept.
 
 ## Flow
-This is step 1 of the **longer** route into a poll. Continue → the existing places step (04), which
-is not duplicated. Cancel, the scrim and dragging the sheet down all go back.
+Step 1 of **both** routes into a poll. Continue → the existing places step (04), which is not
+duplicated. Cancel, the scrim and dragging the sheet down all go back.
 
-- **FAB → New poll** → 18 → 13 → 04 → send. Nothing is known, so the question and time are asked.
-- **Dinner slot → "Ask the group"** → straight to 04. The slot knows both already.
+- **FAB → New poll** → opens empty (18) → fill it in → 04 → send.
+- **Dinner slot → "Ask the group"** → opens already filled (13), carrying the slot's violet pill.
+
+An earlier draft sent the slot route straight to 04, since the slot already knew the question and
+the time. It saved a tap and cost consistency: the two ways of making a poll looked like two
+different features. Now they are the same two steps, and the slot route simply arrives with its
+answers in — all still editable.
+
+**The slot pill** (`Accent/Violet Tint` + `Accent/Violet`, `clock-violet` 14, padding `6 12 6 10`)
+sits **above** the heading, not beside it: "What are we deciding?" wraps to two lines if the pill
+crowds it. The places step carries the same pill, so the two steps read as one poll being composed.
 
 Same draft object, same `sendPoll` action; the routes differ only in what `startBlankPoll` /
 `startPollForSlot` put in the draft first. A cold deep link to `?screen=poll-question` opens on the

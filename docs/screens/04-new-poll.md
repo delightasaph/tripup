@@ -5,6 +5,10 @@ Figma node `164:2379`; the sheet is `164:2513`, the toast `164:2506`. Reference 
 
 Screen 02 under a scrim, the "Ren joined" toast still up from 03, and the New poll sheet.
 
+**This is step 2 of both routes into a poll.** The question, the time and the deadline are settled
+on `PollQuestion` (13/18) before this opens; this step is the places. The head counts on it —
+"Send to N buddies", "all N have voted" — are derived from who is on the trip, not written down.
+
 **Resolved after the rework.** The only thing that changed on this frame was the trip screen behind
 it, which is composed from the current `TripLisbon` — so no re-pull was needed and none was spent.
 The sheet itself is unchanged and every row still lands: sheet 0, 235.5 · header 268.5 · question
@@ -36,8 +40,13 @@ Same shell as 03 but **gap 18**.
   Footnote/Medium, padding `6 12 6 10`, gap 5, and **`clock-violet` 14** (a clock, not cutlery).
 - **Question** — "Question" Caption/Regular label, the question in Heading 22, then a full-width
   1.5 ink underline. Gap 8.
-- **Options header** — "3 places near you" Footnote/Regular `Ink/Secondary`; "+ Add a place"
-  Footnote/Medium `Accent/Violet`.
+- **Options header** — "3 places near you" Footnote/Regular `Ink/Secondary`. The frame's
+  "+ Add a place" link (Footnote/Medium `Accent/Violet`) **is gone**: it opened a second sheet on
+  top of this one, with this one still visible behind its own scrim, which reads as a bug rather
+  than a layer. A search field sits in this sheet instead, above the list — adding a place is the
+  common thing you do on this step, so it is a field you type in, not a button that opens another
+  surface. Typing swaps the list to results you can add; clearing it brings the poll's own places
+  back. The sheet's height follows. See `DESIGN_SYSTEM.md` §6.0, "One sheet at a time".
 - **Options** — rows 350 × 72, gap 8, radius **20**, `Surface/Ground`, padding `10 14 10 10`,
   gap 12. A 52 photo box holds a 48 tile (radius 12) with a 22 white badge at 32, 32 carrying
   `drop-shadow(0 2px 2px rgb(31 30 36 / .12))`; name Headline 17, line Caption 12; `remove` 16 at
