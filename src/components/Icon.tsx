@@ -72,7 +72,10 @@ const exported: Record<IconName, string> = {
   'plus-white': '/assets/icons/plus-white.svg',
   'plus-small': '/assets/icons/plus-small.svg',
   'arrow-right': '/assets/icons/arrow-right.svg',
-  // The whole 44 button, shadow and unread dot included, on an 80 canvas.
+  // The 44 button and its unread dot, framed to the button's own box. The
+  // export arrived on an 80 canvas because Figma baked the elevation into an
+  // `feGaussianBlur`, which rasterises every glyph it wraps — soft on a 3×
+  // screen. The shadow is cast in CSS at the call site instead.
   notifications: '/assets/icons/notifications.svg',
   // The same export with its one `<circle id="Unread">` layer removed — the
   // bell once the notifications have been seen (15). Derived from the file

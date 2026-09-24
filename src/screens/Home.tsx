@@ -50,8 +50,10 @@ export function Home() {
             </div>
           </div>
           <div className="flex items-start" style={{ gap: 10 }}>
-            {/* One exported asset: the button, its shadow and the unread dot,
-                drawn on an 80 canvas around a 44 button. */}
+            {/* One exported asset: the 44 button and the unread dot. The
+                elevation is cast here rather than inside the SVG — an
+                `feGaussianBlur` rasterises the glyph it wraps, which is what
+                made the bell soft on a 3× screen. */}
             <motion.button
               type="button"
               aria-label={notificationsSeen ? 'Notifications' : `Notifications, ${unreadCount} unread`}
@@ -62,18 +64,10 @@ export function Home() {
               whileHover={HOVER_SMALL}
               whileTap={TAP_SMALL}
               transition={TAP_TRANSITION}
-              className="relative shrink-0"
-              style={{ width: 44, height: 44 }}
+              className="shrink-0"
+              style={{ width: 44, height: 44, filter: 'drop-shadow(var(--shadow-card))' }}
             >
-              <img
-                src={notificationsSeen ? '/assets/icons/notifications-read.svg' : '/assets/icons/notifications.svg'}
-                alt=""
-                aria-hidden="true"
-                width={80}
-                height={80}
-                className="absolute"
-                style={{ left: -18, top: -12, maxWidth: 'none' }}
-              />
+              <Icon name={notificationsSeen ? 'notifications-read' : 'notifications'} size={44} />
             </motion.button>
             <motion.button
               type="button"
