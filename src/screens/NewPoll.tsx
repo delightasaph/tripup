@@ -26,11 +26,11 @@ const SEARCH_DEBOUNCE_MS = 250
 export function NewPoll() {
   const { go, back } = useScreenNav()
   const sendPoll = useTripStore((s) => s.sendPoll)
-  const question = useTripStore((s) => s.pollQuestion)
+  const question = useTripStore((s) => s.draft.question)
   const setPollQuestion = useTripStore((s) => s.setPollQuestion)
-  const optionIds = useTripStore((s) => s.pollOptionIds)
+  const optionIds = useTripStore((s) => s.draft.optionIds)
   const togglePollOption = useTripStore((s) => s.togglePollOption)
-  const deadline = useTripStore((s) => s.pollDeadlineMinutes)
+  const deadline = useTripStore((s) => s.draft.deadlineMinutes ?? 20)
   const setPollDeadline = useTripStore((s) => s.setPollDeadline)
 
   const [addPlaceOpen, setAddPlaceOpen] = useState(false)

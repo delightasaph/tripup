@@ -13,6 +13,7 @@ import { useScreenNav } from '@/lib/useScreenNav'
 import { HOVER_LIFT, HOVER_SMALL, TAP_LARGE, TAP_SMALL, TAP_TRANSITION } from '@/styles/motion'
 import {
   formatCountdown,
+  selectActivePoll,
   selectPendingVoters,
   selectPollOptionsView,
   selectTickerEvent,
@@ -31,10 +32,8 @@ import {
 export function Vote() {
   const { back } = useScreenNav()
   const [selected, setSelected] = useState('timeout')
-  const question = useTripStore((s) => s.pollQuestion)
-  const votes = useTripStore((s) => s.votes)
-  const closesInSeconds = useTripStore((s) => s.closesInSeconds)
-  const nudged = useTripStore((s) => s.nudged)
+  const poll = useTripStore(selectActivePoll)
+  const { question, votes, closesInSeconds, nudged } = poll
   const optionsView = useTripStore(selectPollOptionsView)
   const pendingVoters = useTripStore(selectPendingVoters)
   const nicsVote = useTripStore((s) => selectYourVote(s, 'nic'))

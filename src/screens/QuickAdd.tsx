@@ -48,6 +48,7 @@ const categories: Category[] = [
 export function QuickAdd() {
   const { go, back } = useScreenNav()
   const showToast = useTripStore((s) => s.showToast)
+  const startBlankPoll = useTripStore((s) => s.startBlankPoll)
 
   const signpost = (c: Category) => {
     back()
@@ -64,7 +65,10 @@ export function QuickAdd() {
 
         {/* Primary — the two tiles that are real actions */}
         <div className="flex w-full shrink-0 items-center" style={{ gap: 10 }}>
-          <Tile label="New poll" gap={8} onClick={() => go('poll-question')}>
+          <Tile label="New poll" gap={8} onClick={() => {
+              startBlankPoll()
+              go('poll-question')
+            }}>
             {/* 17.19 × 14.84 in the frame — not a square glyph */}
             <Icon name="quick-add-poll" size={17.2} height={14.8} />
           </Tile>

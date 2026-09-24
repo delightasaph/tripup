@@ -11,6 +11,7 @@ import { dinnerPoll, people } from '@/data/trip'
 import { useScreenNav } from '@/lib/useScreenNav'
 import {
   formatCountdown,
+  selectActivePoll,
   selectPendingVoters,
   selectPollOptionsView,
   selectTickerEvent,
@@ -28,14 +29,11 @@ export function LivePoll() {
   const { askedLine } = dinnerPoll
   const { back, replace } = useScreenNav()
 
-  const question = useTripStore((s) => s.pollQuestion)
-  const closesInSeconds = useTripStore((s) => s.closesInSeconds)
-  const deadlineMinutes = useTripStore((s) => s.pollDeadlineMinutes)
-  const pollClosed = useTripStore((s) => s.pollClosed)
-  const winnerId = useTripStore((s) => s.winnerId)
-  const nudged = useTripStore((s) => s.nudged)
+  const poll = useTripStore(selectActivePoll)
+  const { question, closesInSeconds, votes, nudged, winnerId } = poll
+  const deadlineMinutes = poll.deadlineMinutes
+  const pollClosed = poll.closed
   const changingVote = useTripStore((s) => s.changingVote)
-  const votes = useTripStore((s) => s.votes)
   const optionsView = useTripStore(selectPollOptionsView)
   const pendingVoters = useTripStore(selectPendingVoters)
   const yourVote = useTripStore((s) => selectYourVote(s, 'ari'))

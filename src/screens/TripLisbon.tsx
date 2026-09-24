@@ -14,7 +14,7 @@ import { placePhotos } from '@/data/assets'
 import { placesCatalog, type PlaceCatalogEntry } from '@/data/places'
 import { dinnerPoll, lisbon } from '@/data/trip'
 import { useScreenNav } from '@/lib/useScreenNav'
-import { selectBuddyPeople, useTripStore } from '@/store/tripStore'
+import { selectBuddyPeople, selectDinnerPoll, useTripStore } from '@/store/tripStore'
 import { DUR_FAST, HOVER_SMALL, SPRING_SHEET, TAP_SMALL, TAP_TRANSITION } from '@/styles/motion'
 import { ExpensesBody } from './Balances'
 
@@ -56,10 +56,12 @@ export function TripLisbon({
 } = {}) {
   const { go, back } = useScreenNav()
   const navigate = useNavigate()
-  const pollClosed = useTripStore((s) => s.pollClosed)
-  const winnerId = useTripStore((s) => s.winnerId)
+  const dinnerPollState = useTripStore(selectDinnerPoll)
+  const pollClosed = dinnerPollState?.closed ?? false
+  const winnerId = dinnerPollState?.winnerId ?? null
   const liveCrew = useTripStore(selectBuddyPeople)
   const showToast = useTripStore((s) => s.showToast)
+  const startPollForSlot = useTripStore((s) => s.startPollForSlot)
   const reduceMotion = useReducedMotion()
 
   const [tab, setTab] = useState<Tab>(initialTab ?? 'itinerary')
@@ -242,7 +244,10 @@ export function TripLisbon({
                             variant="violet"
                             height={38}
                             icon={<Icon name="list" size={16} />}
-                            onClick={() => go('new-poll')}
+                            onClick={() => {
+                              startPollForSlot('dinner')
+                              go('new-poll')
+                            }}
                             style={{
                               width: 151,
                               paddingInline: 14,

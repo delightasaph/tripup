@@ -19,6 +19,8 @@ export const placePhotos = {
   ramiro: '/assets/places/ramiro.webp',
 } as const
 
+export type PlacePhotoName = keyof typeof placePhotos
+
 /**
  * Every stamp is exported flat at 0°, with transparent padding and **no
  * shadow** — tilt them with CSS `rotate` and give them `stampShadow()`.

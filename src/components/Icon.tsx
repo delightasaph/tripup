@@ -52,6 +52,7 @@ export type IconName =
   | 'apple-pay-mark'
   | 'paypal-mark'
   | 'check-lg'
+  | 'chevron-row'
   | 'quick-add-poll'
   | 'quick-add-expense'
   | 'quick-add-transport'
@@ -114,6 +115,9 @@ const exported: Record<IconName, string> = {
   'apple-pay-mark': '/assets/icons/apple-pay-mark.svg',
   'paypal-mark': '/assets/icons/paypal-mark.svg',
   'check-lg': '/assets/icons/check-lg.svg',
+  // The row chevron on 13/18 — 6.5 × 12.5, 1.5 stroke at 45% ink, and so
+  // not the same glyph as `chevron-right`.
+  'chevron-row': '/assets/icons/chevron-row.svg',
   // Quick add (12). `quick-add-poll` is 17.19 × 14.84 in the frame, not a
   // square — draw it at that ratio inside its 24 box rather than stretching.
   'quick-add-poll': '/assets/icons/quick-add-poll.svg',
