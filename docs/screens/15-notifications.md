@@ -1,7 +1,7 @@
 # 15 · Notifications
 
 Figma node `4098:2195`. Built in `src/screens/Notifications.tsx`, data in
-`src/data/notifications.ts`. **Do not re-fetch.**
+`src/data/notifications.ts`.
 
 A plain scrolling list on `Surface/Ground` — no tab bar, no FAB, no docked control, so nothing has
 to stay above the fold. The frame is taller than 844 and marks the fold.

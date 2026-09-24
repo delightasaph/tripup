@@ -1,6 +1,6 @@
 # 09 · Balances (Expenses tab)
 
-Figma node `4048:16899`. Built in `src/screens/Balances.tsx`. **Do not re-fetch.**
+Figma node `4048:16899`. Built in `src/screens/Balances.tsx`.
 
 Same trip-screen nav/chrome as 02 (back, buddy stack + add), but the content is the Expenses tab:
 "You're owed" card, netted settle-up list, full expense ledger. `BottomBar` with `activeId="expenses"`

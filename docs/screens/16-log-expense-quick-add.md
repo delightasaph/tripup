@@ -1,7 +1,7 @@
 # 16 · Log expense (from quick add)
 
 Figma node `4097:2350`; the sheet is `4097:2538`, the new field `4098:6343`. **Not a new screen** —
-it is `src/screens/LogExpense.tsx` with `linked={false}`. **Do not re-fetch.**
+it is `src/screens/LogExpense.tsx` with `linked={false}`.
 
 ## The one difference
 Screen 07's lime **linked-plan chip** is replaced by a "what for" field, because a quick-add

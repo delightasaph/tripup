@@ -1,7 +1,6 @@
 # 08 · Split by item
 
 Figma node `169:2976`, sheet `169:3180`. Built in `src/screens/SplitByItem.tsx`.
-**Do not re-fetch.**
 
 Same composition as 07 (trip screen with dinner resolved, under a scrim) — see the note in
 `docs/screens/07-log-the-dinner.md` about deliberately not using this frame's own stale background
@@ -54,7 +53,7 @@ same path as the existing 13px `check.svg`, just bigger — Figma's "Log expense
 is a checkmark, not the receipt glyph used on 07's button of the same name).
 
 ## Gotchas found while building
-- `get_design_context` hands out a fresh `imgIconN` for every image reference regardless of whether
+- The design export hands out a fresh `imgIconN` for every image reference regardless of whether
   the underlying asset is new — three of the five icons requested for this screen turned out to be
   bytewise-identical (up to scale) to icons already in `public/assets/icons/`. Always diff before
   downloading a "new" one.

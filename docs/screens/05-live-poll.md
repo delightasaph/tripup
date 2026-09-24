@@ -1,7 +1,7 @@
 # 05 · Live poll (Ari's view)
 
 Figma node `84:169`. Reference render: `design/screens/05-live-poll.png` (native 390 × 844).
-Built in `src/screens/LivePoll.tsx`. **Do not re-fetch this screen.**
+Built in `src/screens/LivePoll.tsx`.
 
 ## Frame skeleton
 | Part | Screen coords |
@@ -97,7 +97,7 @@ All exported into `public/assets/icons/`: `arrow-left`, `bowl` (13), `fork-knife
   displacing children; CSS border-box does not.
 
 ## Verified after the cast rename
-Re-measured with no Figma call — this record carries no STALE banner, so the frame is unchanged.
+Re-measured against the unchanged frame.
 Everything still lands: asked-by 50, 127.5 · question 20, 154 · ticker 20, 234 · cards 278 / 418 /
 546 at 132 / 120 / 120 · bars 36, 356 / 496 / 624 · "6 of 7 voted" 84, 699 · actions 20, 756 and
 167, 756. Copy reads "Nic voted Time Out Market" and "Waiting on Sven".

@@ -1,6 +1,6 @@
 # 01 · Home
 
-Figma node `162:429`. Built in `src/screens/Home.tsx`. **Do not re-fetch this screen** unless a
+Figma node `162:429`. Built in `src/screens/Home.tsx`. unless a
 STALE banner says otherwise.
 
 Reference render: `design/screens/01-home.png` is the **old** frame and is stale. `/compare` flags
@@ -104,7 +104,7 @@ cancel overhanging each stamp by a different amount once rotated, not from the a
 unknowns to two equations gave a self-consistent but false answer — the "all four solve to scale
 0.4275" result I treated as validation was an artefact of the fit, not evidence.
 
-The per-stamp transforms are not recoverable from sparse metadata, and a `get_design_context` on the
+The per-stamp transforms are not recoverable from sparse metadata, and an export of the
 row returns sparse because of the four stamp instances. So the row is the frame's render.
 
 Two consequences worth knowing:

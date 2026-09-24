@@ -115,11 +115,15 @@ Netting algorithm: minimise the number of transfers. Prefer exact debtor/credito
 
 Settlement times (screen 11): Ren→Nic 22:14 · Sven→You 22:16 · Bea→You 22:18 · Kofi→You 22:20 · Mira→Nic 22:22.
 
-### Clock (status bar) per screen
-18:05 Home → New poll and Live poll · 18:25 poll closes (06) · 22:10 logging the dinner (07/08) · 22:12 balances (09) · 22:14 Ren pays (10) · 22:25 squared up (11).
+### When each screen happens
+The evening runs 18:05 → 22:25: 18:05 Home, the new poll and the live poll · 18:25 the poll closes
+(06) · 22:10 logging the dinner (07/08) · 22:12 the expenses tab (09) · 22:14 Ren pays (10) ·
+22:25 squared up (11). The settlement times appear on screen; the rest is the story's clock, and
+is no longer drawn anywhere now that there is no status bar.
 
 ## 4. Screens
-Figma file `qITM47IS3nfWVV3KxyH3pv`, page "Hi-Fidelity Screens". Build in this order.
+Design file page "Hi-Fidelity Screens". Built in this order; each screen's build note is in
+`docs/screens/`.
 
 | # | Screen | Figma node | Whose phone |
 |---|---|---|---|
@@ -158,7 +162,10 @@ sheet (the vote button on 04c, the pay button on 10, the sheet buttons on 03b, 0
 screen must never be reachable in a state where its primary action is off-screen. If a frame is
 taller than 844 in Figma, that extra height is content, not chrome.
 
-No home indicator: the frames draw one, the build leaves it out.
+**No device chrome.** The frames draw an iOS status bar (y 0–50) and a home indicator; the build
+draws neither. Together they cost about 60 pt of a 844 pt screen without telling anyone anything
+the real OS isn't already showing, so the space goes to the content — and a frame coordinate is a
+screen coordinate.
 
 Screens 02 and 05 are the two key high-fidelity screens from the brief and the visual reference for the rest. Screens 04b, 04c and 11B were not in the original wireflow.
 
@@ -352,7 +359,8 @@ Tapping any ledger row on 09 opens it, read-only.
 - One dark **Done**. Per-person amounts come from the split logic in `src/domain/`, never hard-coded.
 
 ## 5. Real-time simulation and demo controls
-- A small **demo panel** (collapsible, outside the phone frame on desktop; long-press the status bar on mobile) with: "View as: Ari / Nic / Ren", "Jump to screen", "Reset demo", speed.
+- A small **demo panel** (collapsible, outside the phone frame on desktop) with: "View as: Ari /
+  Nic / Ren", "Jump to screen", "Reset demo", speed.
 - **The link opens the app, on Home.** No `?screen=` means Home — a shared production link has to
   behave like an app, not like a contents page. The screen index is still there for the team at
   `?screen=index`, and the demo panel reaches every screen directly.

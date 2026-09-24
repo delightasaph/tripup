@@ -1,7 +1,7 @@
 # 04 · New poll
 
 Figma node `164:2379`; the sheet is `164:2513`, the toast `164:2506`. Reference render:
-`design/screens/04-new-poll.png`. Built in `src/screens/NewPoll.tsx`. **Do not re-fetch.**
+`design/screens/04-new-poll.png`. Built in `src/screens/NewPoll.tsx`.
 
 Screen 02 under a scrim, the "Ren joined" toast still up from 03, and the New poll sheet.
 

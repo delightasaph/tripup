@@ -2,7 +2,7 @@
 
 Figma node `4101:2206`; the new row is `4101:2394`, its card `4101:2399`. This is a **state of
 screen 02**, not a screen of its own — it is what `src/screens/TripLisbon.tsx` renders once a poll
-exists that didn't come from a slot. **Do not re-fetch.**
+exists that didn't come from a slot.
 
 ## What the frame actually shows
 - Section header reads **"2 of 5 done"** — the count includes the new poll. It follows the rows.

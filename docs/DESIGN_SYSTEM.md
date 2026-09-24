@@ -1,6 +1,7 @@
 # TripUp — Design system for the prototype
 
-Values come from the Figma file's local styles (file `qITM47IS3nfWVV3KxyH3pv`, pages "Design System" and "Stamps"). If Figma and this file disagree, Figma wins; re-check with `get_variable_defs` / `get_design_context`.
+Values come from the design file's local styles (pages "Design System" and "Stamps"). Where the
+design file and this document disagree, the design file wins.
 
 ## 1. Canvas
 - Reference device: iPhone 14, **390 × 844 pt**. No scaling.
@@ -100,8 +101,8 @@ Uppercase section labels ("TODAY'S PLAN", "HAPPENING NOW") use Footnote/Medium i
   Selected text Subheading/SemiBold in `Ink/Primary`, the rest Subheading/Medium in `Ink/Secondary`.
   Actions: Clear (outline) and Done (ink). Native scroll-snap, never a `<select>`.
 - **Quick-add icons**: five 1.5 px stroke icons drawn for the FAB sheet — bars (New poll), receipt
-  (Log expense), paper plane (Transport), house (Stay), pin (Spot or event). Export them with
-  screen 12; do not substitute an icon library.
+  (Log expense), calendar (Event or activity), paper plane (Transport), house (Stay). Exported
+  with screen 12; never substituted from an icon library.
 - **Sheet**, **Scrim**, **Segmented control** (white track, ink selected segment), **Keypad** (Ground keys 48 high, radius 14, 8 gap), **Radio** (24 pt: empty 1.5 px ring at 25% ink; selected ink fill + white check).
 - **Tab bar**: white 60 high rounded 999; active tab is an ink pill 48 high with white icon + label; inactive grey.
 - **Icons**: 1.5 px stroke line icons, 13–20 pt, ink by default (from the Figma file; export as SVG).
@@ -218,7 +219,7 @@ In `public/assets/`. Everything below is already exported and committed unless m
 - `ticket.svg`: the ticket shape, pulled from Figma node `141:12831` ("Rectangle 2" inside the
   ticket on screen 02). 350 × 150, with the sky gradient baked into the file. Its two notches are
   **centred at x ≈ 175**, one on the top edge and one on the bottom — not at the right third.
-- `icons/`: line icons, pulled per screen from `get_design_context` as each screen is built.
+- `icons/`: line icons, exported per screen as each screen is built.
 - Fonts: Rubik and Anton from Google Fonts.
 
 Licensing: avatars are from the Material 3 3D avatar kit and restaurant photos are placeholders; credit them in the presentation.

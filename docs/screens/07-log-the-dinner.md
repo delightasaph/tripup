@@ -1,6 +1,6 @@
 # 07 · Log the dinner
 
-Figma node `168:2777`, sheet `168:2922`. Built in `src/screens/LogExpense.tsx`. **Do not re-fetch.**
+Figma node `168:2777`, sheet `168:2922`. Built in `src/screens/LogExpense.tsx`.
 
 ## Composition
 Screen 02 with the dinner slot already resolved, under a scrim, with the new-expense sheet on top —
@@ -50,7 +50,7 @@ New: `scan` (16, the receipt-scan glyph), `backspace` (20 × 14, exported as one
 `chevron-right` (re-tinted ink), `arrow-right`.
 
 ## Gotchas found while building
-- `get_design_context` returns `imgIcon11`/`imgIcon12` for the chevron and arrow, and both turned
+- The design export returns `imgIcon11`/`imgIcon12` for the chevron and arrow, and both turned
   out to be **pixel-identical paths** to already-exported icons, just different colours/sizes —
   diffed the raw SVGs before deciding, rather than assuming a new `imgIconN` means a new asset.
 - The background dinner card diverges from this frame's own Figma export (see Composition above) —

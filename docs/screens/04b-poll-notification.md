@@ -1,6 +1,6 @@
 # 04b · Poll notification (Nic's lock screen)
 
-Figma node `166:2578`. Built in `src/screens/PollNotification.tsx`. **Do not re-fetch.**
+Figma node `166:2578`. Built in `src/screens/PollNotification.tsx`.
 
 Not in the original wireflow. Nic's lock screen, right after Ari sends the poll from 04. Renders
 with `chrome: false` in the registry — this screen draws its own clock instead of the app's iOS
@@ -12,7 +12,7 @@ structure (a flex column with a flex-1 spacer) rather than the screen's usual ab
 that's how this one frame is actually built.
 
 1. Wallpaper `assets/lockscreen-wallpaper.jpg`, `object-fit: cover`, `object-position: 52% center`
-   — the existing asset from `docs/DESIGN_SYSTEM.md` §7, not the flattened PNG Figma returns for
+   — the existing asset from `DESIGN_SYSTEM.md` §7, not the flattened PNG Figma returns for
    this node (that PNG is the whole composed screen baked together, useless as a layer).
 2. `--gradient-legibility-shade` over it, full bleed (already a token).
 3. Clock: "Wednesday 16 September" (15px medium, white) over "18:05" (92px medium, white,

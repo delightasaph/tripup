@@ -1,7 +1,6 @@
 # 03b · Add a buddy
 
 Figma node `4058:3935`; the sheet is `4058:4109`. Built in `src/screens/AddABuddy.tsx`.
-**Do not re-fetch** unless a STALE banner says otherwise.
 
 Search, reached from 03a. **No back arrow** — Cancel is the way back, and so is dragging the sheet
 down. The frame confirms it: the actions are **Cancel / Add Ren**, and there is no invite-link

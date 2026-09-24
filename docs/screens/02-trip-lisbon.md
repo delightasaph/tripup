@@ -1,7 +1,6 @@
 # 02 · Trip · Lisbon (Itinerary)
 
-Figma node **`4064:17467`**. Built in `src/screens/TripLisbon.tsx`. **Do not re-fetch this screen**
-unless a STALE banner says otherwise.
+Figma node **`4064:17467`**. Built in `src/screens/TripLisbon.tsx`.
 
 Reference render: `design/screens/02-trip-lisbon.png` is the **old** frame and is stale. The build
 follows the current frame; `/compare` flags this.

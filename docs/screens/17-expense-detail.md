@@ -1,7 +1,6 @@
 # 17 · Expense detail (sheet over 09)
 
 Figma node `4098:2440`; the sheet is `4098:2690`. Built in `src/screens/ExpenseDetail.tsx`.
-**Do not re-fetch.**
 
 The Expenses tab under a scrim, with a read-only sheet on top. Which expense is in the URL —
 `?screen=expense-detail&entry=fado` — so it is deep-linkable like every other screen, and tapping

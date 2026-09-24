@@ -1,7 +1,7 @@
 # 18 / 13 · New poll · what are we deciding
 
 Figma `4097:2617` (**18**, empty) and `4094:2129` (**13**, filled); the sheet is `4097:2795` /
-`4094:2307`. Built in `src/screens/PollQuestion.tsx`. **Do not re-fetch.**
+`4094:2307`. Built in `src/screens/PollQuestion.tsx`.
 
 Two frames, one sheet, two states — so one screen and one record. Everything behind the scrim is
 the ordinary `TripLisbon` with the dinner slot still open.

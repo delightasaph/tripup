@@ -1,6 +1,6 @@
 # 04c · Vote (Nic's view)
 
-Figma node `166:2631`. Built in `src/screens/Vote.tsx`. **Do not re-fetch.**
+Figma node `166:2631`. Built in `src/screens/Vote.tsx`.
 
 Not in the original wireflow. Nic's own vote screen, reached by tapping 04b's notification.
 Standard chrome (unlike 04b) — normal status bar, `18:05`.
@@ -50,7 +50,7 @@ New: `close` (20, ink, 1.5px stroke — the only new export this screen needed).
 `fork-knife`, `fish` (place badges), `check-white` (selected radio).
 
 ## Gotchas found while building
-- `get_design_context` names option badge icons and the selected-radio check with adjacent
+- The design export names option badge icons and the selected-radio check with adjacent
   `imgIconN` variables in emission order, not by role — easy to grab the wrong one. Downloaded and
   diffed the actual SVG path before registering it: the "selected" icon turned out to be the exact
   same checkmark path as the existing `check-white.svg`, so nothing new was added for it.

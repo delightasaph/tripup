@@ -2,7 +2,7 @@
 
 Figma node `4064:18080`; the changed row is `167:2997`, the toast `167:3250`. Reference render:
 `design/screens/06-plan-updated.png`. Built as `TripLisbon dinner="decided"` plus a toast in
-`src/screens/PlanUpdated.tsx`. **Do not re-fetch.**
+`src/screens/PlanUpdated.tsx`.
 
 Screen 02 at **18:25** with the dinner slot resolved. No scrim — the toast sits over the live
 screen and covers the nav row entirely, which is what the frame does.

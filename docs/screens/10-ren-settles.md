@@ -1,6 +1,6 @@
 # 10 · Ren settles (Ren's phone)
 
-Figma node `171:3175`. Built in `src/screens/Settle.tsx`. **Do not re-fetch.**
+Figma node `171:3175`. Built in `src/screens/Settle.tsx`.
 
 Full-screen (not a sheet) on Ren's phone, standard status bar. The amount owed comes straight from
 `settleTransfers.find(t => t.fromId === 'ren')` in `src/data/expenses.ts` — the same netted list 09

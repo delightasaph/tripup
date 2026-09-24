@@ -1,7 +1,7 @@
 # 13b / 13c · Wheel picker
 
 Figma `4095:2140` ("Time of the event") and `4095:2389` ("Deadline"); the sheets are `4095:2346`
-and `4095:2595`. Built in `src/components/WheelPicker.tsx`. **Do not re-fetch.**
+and `4095:2595`. Built in `src/components/WheelPicker.tsx`.
 
 Both frames were pulled. They are the **same sheet with a different title and a different value** —
 nothing else differs, not one measurement. One component, used twice.

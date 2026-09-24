@@ -1,7 +1,6 @@
 # 03a · Buddies
 
 Figma node `4058:3678`; the sheet is `4058:3852`. Built in `src/screens/Buddies.tsx`.
-**Do not re-fetch** unless a STALE banner says otherwise.
 
 The group view: who is on the trip, and one way in to adding someone. The brief's wording is two
 beats — open a group view *and* add Ren — so this is deliberately not the search sheet.
