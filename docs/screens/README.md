@@ -29,14 +29,14 @@ Conventions in these files:
 | 05 Live poll | [05-live-poll.md](05-live-poll.md) | `84:169` | yes |
 | 06 Plan updated | [06-plan-updated.md](06-plan-updated.md) | `4064:18080` | yes |
 | 12 Quick add | [12-quick-add.md](12-quick-add.md) | `4093:2356` | yes |
-| 13 New poll (filled) | _to write_ | `4094:2129` | no — **new** |
-| 13b Time picker | _to write_ | `4095:2140` | no — **new** |
-| 13c Deadline picker | _to write_ | `4095:2389` | no — **new** |
+| 13 New poll (filled) | [13-18-poll-question.md](13-18-poll-question.md) | `4094:2129` | yes |
+| 13b Time picker | [13b-13c-wheel-picker.md](13b-13c-wheel-picker.md) | `4095:2140` | yes |
+| 13c Deadline picker | [13b-13c-wheel-picker.md](13b-13c-wheel-picker.md) | `4095:2389` | yes |
 | 14 Trip · extra poll | _to write_ | `4101:2206` | no — **new** |
 | 15 Notifications | _to write_ | `4098:2195` | no — **new** |
 | 16 Log expense (quick add) | _to write_ | `4097:2350` | no — **new** |
 | 17 Expense detail | _to write_ | `4098:2440` | no — **new** |
-| 18 New poll (empty) | _to write_ | `4097:2617` | no — **new** |
+| 18 New poll (empty) | [13-18-poll-question.md](13-18-poll-question.md) | `4097:2617` | yes |
 | 04b Poll notification | [04b-poll-notification.md](04b-poll-notification.md) | `166:2578` | yes |
 | 04c Vote | [04c-vote.md](04c-vote.md) | `166:2631` | yes |
 | 07 Log the dinner | [07-log-the-dinner.md](07-log-the-dinner.md) | `168:2777` | yes |
