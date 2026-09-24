@@ -125,31 +125,31 @@ is no longer drawn anywhere now that there is no status bar.
 Design file page "Hi-Fidelity Screens". Built in this order; each screen's build note is in
 `docs/screens/`.
 
-| # | Screen | Figma node | Whose phone |
-|---|---|---|---|
-| 01 | Home | `162:429` | Ari |
-| 02 | Trip · Lisbon (Itinerary tab) | `4064:17467` | Ari |
-| 03a | Buddies (group view sheet) | `4058:3678` | Ari |
-| 03b | Add a buddy (search sheet) | `4058:3935` | Ari |
-| 04 | New poll (sheet) | `164:2379` | Ari |
-| 04b | Poll notification (lock screen) | `166:2578` | Nic |
-| 04c | Vote (buddy view) | `166:2631` | Nic |
-| 05 | Live poll | `84:169` | Ari |
-| 06 | Plan updated | `4064:18080` | Ari |
-| 07 | Log the dinner (expense sheet) | `168:2777` | Ari |
-| 08 | Split by item | `169:2976` | Ari |
-| 09 | Balances (Expenses tab) | `4048:16899` | Ari |
-| 10 | Ren settles | `171:3175` | Ren |
-| 11 | Squared up (the ending) | `172:3255` | Ari |
-| 12 | Quick add (FAB sheet) | `4093:2356` | Ari |
-| 13 | New poll · what are we deciding (filled) | `4094:2129` | Ari |
-| 13b | Time of the event (wheel picker) | `4095:2140` | Ari |
-| 13c | Deadline (wheel picker) | `4095:2389` | Ari |
-| 14 | Trip · an extra poll on the plan | `4101:2206` | Ari |
-| 15 | Notifications | `4098:2195` | Ari |
-| 16 | Log expense (from quick add) | `4097:2350` | Ari |
-| 17 | Expense detail (sheet over 09) | `4098:2440` | Ari |
-| 18 | New poll · empty state | `4097:2617` | Ari |
+| # | Screen | Design node | Whose phone | Route |
+|---|---|---|---|---|
+| 01 | Home | `162:429` | Ari | `/` |
+| 02 | Trip · Lisbon (Itinerary tab) | `4064:17467` | Ari | `/trip` |
+| 03a | Buddies (group view sheet) | `4058:3678` | Ari | `/trip/buddies` |
+| 03b | Add a buddy (search sheet) | `4058:3935` | Ari | `/trip/buddies/add` |
+| 04 | New poll (sheet) | `164:2379` | Ari | `/poll/places` |
+| 04b | Poll notification (lock screen) | `166:2578` | Nic | `/poll/alert` |
+| 04c | Vote (buddy view) | `166:2631` | Nic | `/poll/vote` |
+| 05 | Live poll | `84:169` | Ari | `/poll/live` |
+| 06 | Plan updated | `4064:18080` | Ari | `/trip/plan-updated` |
+| 07 | Log the dinner (expense sheet) | `168:2777` | Ari | `/expenses/new` |
+| 08 | Split by item | `169:2976` | Ari | `/expenses/new/items` |
+| 09 | Balances (Expenses tab) | `4048:16899` | Ari | `/trip/expenses` |
+| 10 | Ren settles | `171:3175` | Ren | `/settle` |
+| 11 | Squared up (the ending) | `172:3255` | Ari | `/squared-up` |
+| 12 | Quick add (FAB sheet) | `4093:2356` | Ari | `/trip/add` |
+| 13 | New poll · what are we deciding (filled) | `4094:2129` | Ari | `/poll/new` |
+| 13b | Time of the event (wheel picker) | `4095:2140` | Ari | — inside `/poll/new` |
+| 13c | Deadline (wheel picker) | `4095:2389` | Ari | — inside `/poll/new` |
+| 14 | Trip · an extra poll on the plan | `4101:2206` | Ari | `/trip` |
+| 15 | Notifications | `4098:2195` | Ari | `/notifications` |
+| 16 | Log expense (from quick add) | `4097:2350` | Ari | `/expenses/add` |
+| 17 | Expense detail (sheet over 09) | `4098:2440` | Ari | `/expenses/:id` |
+| 18 | New poll · empty state | `4097:2617` | Ari | `/poll/new` |
 
 ### Scroll and breathing room
 Long screens scroll; the **scrolling column** gets 110 pt of empty ground below its last item so
