@@ -8,7 +8,7 @@ import { clockOf, todaysPlan } from '@/data/itinerary'
 import { placesCatalog, searchPlaces } from '@/data/places'
 import { useScreenNav } from '@/lib/useScreenNav'
 import { HOVER_SMALL, TAP_SMALL, TAP_TRANSITION } from '@/styles/motion'
-import { useTripStore } from '@/store/tripStore'
+import { selectTotalVoters, useTripStore } from '@/store/tripStore'
 import { TripLisbon } from './TripLisbon'
 
 const SEARCH_DEBOUNCE_MS = 250
@@ -40,6 +40,10 @@ export function NewPoll() {
   const slotId = useTripStore((s) => s.draft.slotId)
   const eventMinutes = useTripStore((s) => s.draft.eventMinutes ?? 0)
   const setPollDeadline = useTripStore((s) => s.setPollDeadline)
+  // Who this actually goes to follows the trip: before Ren joins it is five
+  // buddies, after he does it is six. A fixed number here would contradict
+  // the buddy stack one row above.
+  const totalVoters = useTripStore(selectTotalVoters)
 
   const [deadlineOpen, setDeadlineOpen] = useState(false)
   const [query, setQuery] = useState('')
@@ -285,7 +289,7 @@ export function NewPoll() {
           <div className="min-w-0 flex-1">
             <p className="text-body font-semibold">Closes in {deadline} min</p>
             <p className="text-caption" style={{ marginTop: 2, color: 'var(--color-ink-secondary)' }}>
-              or as soon as all 7 have voted
+              or as soon as all {totalVoters} have voted
             </p>
           </div>
           <Icon name="chevron-right-16" size={16} className="shrink-0" />
@@ -311,14 +315,14 @@ export function NewPoll() {
           }}
         >
           <Icon name="send" size={18} />
-          Send to 6 buddies
+          Send to {totalVoters - 1} {totalVoters - 1 === 1 ? 'buddy' : 'buddies'}
         </motion.button>
       </Sheet>
 
       <DeadlineSheet
         open={deadlineOpen}
         value={deadline}
-        footnote="Or as soon as all 7 of you have voted, whichever comes first."
+        footnote={`Or as soon as all ${totalVoters} of you have voted, whichever comes first.`}
         onSelect={setPollDeadline}
         onClose={() => setDeadlineOpen(false)}
       />

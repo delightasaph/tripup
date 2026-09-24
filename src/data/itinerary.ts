@@ -67,6 +67,8 @@ export const todaysPlan: PlanItem[] = [
     minutes: minutesOf('20:30'),
     kind: 'slot',
     title: 'Dinner',
-    line: 'Nothing booked yet · all 6 of you are free',
+    // The head count follows the trip — Ren joining has to change it, or the
+    // slot contradicts the buddy stack right above it.
+    line: 'Nothing booked yet · all {n} of you are free',
   },
 ]

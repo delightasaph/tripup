@@ -219,7 +219,11 @@ export function TripLisbon({
                           ) : (
                             <OpenSlotCard
                               title={row.kind === 'slot' ? row.item.title : 'Not decided yet'}
-                              line={row.kind === 'slot' ? row.item.line : 'Nothing booked yet'}
+                              line={
+                                row.kind === 'slot'
+                                  ? row.item.line.replace('{n}', String(shownCrew.length))
+                                  : 'Nothing booked yet'
+                              }
                               action="Ask the group"
                               onAction={() => {
                                 startPollForSlot(row.id)
