@@ -3,23 +3,17 @@ import { useEffect, useRef } from 'react'
 import { Avatar } from '@/components/Avatar'
 import { Icon } from '@/components/Icon'
 import { Pill } from '@/components/Pill'
-import {
-  dinnerBill,
-  expenseLedger,
-  openingBalanceCents,
-  shareOf,
-  tripSpend,
-  type LedgerEntry,
-} from '@/data/expenses'
+import { openingBalanceCents, shareOf, tripSpend } from '@/data/expenses'
 import { people } from '@/data/trip'
+import { useNavigate } from 'react-router-dom'
 import { useScreenNav } from '@/lib/useScreenNav'
 import { formatEuros, formatEurosAuto } from '@/domain/money'
 import type { Transfer } from '@/domain/netting'
-import { SPRING_POP } from '@/styles/motion'
+import { SPRING_POP, TAP_LARGE, TAP_TRANSITION } from '@/styles/motion'
 import {
   selectAllSettled,
   selectBalancesAfterDinner,
-  selectDinnerShares,
+  selectFullLedger,
   selectSettleTransfers,
   useTripStore,
 } from '@/store/tripStore'
@@ -63,32 +57,18 @@ export function ExpensesBody({
   onShown?: () => void
 }) {
   const { replace } = useScreenNav()
+  const navigate = useNavigate()
   const ending = useTripStore((s) => s.ending)
   const settledIds = useTripStore((s) => s.settledIds)
   const allSettled = useTripStore(selectAllSettled)
   const balances = useTripStore(selectBalancesAfterDinner)
-  const shares = useTripStore(selectDinnerShares)
   const transfers = useTripStore(selectSettleTransfers)
   const shownOnce = useRef(false)
 
   const you = balances.find((b) => b.personId === 'ari')?.cents ?? 0
   const wasBefore = openingBalanceCents.ari
 
-  const dinnerEntry: LedgerEntry = {
-    id: 'dinner',
-    title: `Dinner · ${dinnerBill.restaurant}`,
-    sub: 'You paid',
-    amountCents: dinnerBill.totalCents,
-    youPaid: true,
-    payerId: 'ari',
-    sharedBy: Object.keys(shares),
-    time: '20:30',
-    day: 'Wed 16 Sep',
-    // The one expense that isn't an equal split — it's split by item, and
-    // the demo can change who shared the wine, so it comes from the store.
-    shares,
-  }
-  const ledger = [{ ...expenseLedger[0], entries: [dinnerEntry, ...expenseLedger[0].entries] }, ...expenseLedger.slice(1)]
+  const ledger = useTripStore(selectFullLedger)
 
   // Every transfer settles (via 10, then the auto-settle chain) → the trip
   // is squared up. Follow it there, ending A or B per the demo toggle.
@@ -216,7 +196,14 @@ export function ExpensesBody({
                   {i > 0 && (
                     <span aria-hidden="true" style={{ width: '100%', height: 1, background: 'var(--color-line-default)' }} />
                   )}
-                  <div className="flex w-full items-center justify-between" style={{ padding: '13px 16px' }}>
+                  <motion.button
+                    type="button"
+                    onClick={() => navigate(`/?screen=expense-detail&entry=${entry.id}`)}
+                    whileTap={TAP_LARGE}
+                    transition={TAP_TRANSITION}
+                    className="flex w-full items-center justify-between text-left"
+                    style={{ padding: '13px 16px' }}
+                  >
                     <div className="min-w-0 flex-1" style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                       <p className="text-body font-semibold whitespace-nowrap">{entry.title}</p>
                       <p className="text-caption whitespace-nowrap" style={{ color: 'var(--color-ink-secondary)' }}>
@@ -242,7 +229,7 @@ export function ExpensesBody({
                         {notIncluded ? 'you were not in this one' : `your share ${formatEurosAuto(yourShare)}`}
                       </p>
                     </div>
-                  </div>
+                  </motion.button>
                 </div>
                 )
               })}

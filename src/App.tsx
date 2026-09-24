@@ -20,6 +20,7 @@ import { Settle } from '@/screens/Settle'
 import { SquaredUp } from '@/screens/SquaredUp'
 import { SquaredUpStamp } from '@/screens/SquaredUpStamp'
 import { PlanUpdated } from '@/screens/PlanUpdated'
+import { ExpenseDetail } from '@/screens/ExpenseDetail'
 import { Notifications } from '@/screens/Notifications'
 import { PollQuestion } from '@/screens/PollQuestion'
 import { QuickAdd } from '@/screens/QuickAdd'
@@ -73,6 +74,8 @@ function screenFor(id: string | undefined, tab: 'itinerary' | 'expenses') {
       return <PollQuestion />
     case 'notifications':
       return <Notifications />
+    case 'expense-detail':
+      return <ExpenseDetail />
     default:
       return <Placeholder active={screenById(id ?? '')} />
   }

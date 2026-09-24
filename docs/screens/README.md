@@ -35,7 +35,7 @@ Conventions in these files:
 | 14 Trip · extra poll | [14-trip-extra-poll.md](14-trip-extra-poll.md) | `4101:2206` | yes |
 | 15 Notifications | [15-notifications.md](15-notifications.md) | `4098:2195` | yes |
 | 16 Log expense (quick add) | [16-log-expense-quick-add.md](16-log-expense-quick-add.md) | `4097:2350` | yes |
-| 17 Expense detail | _to write_ | `4098:2440` | no — **new** |
+| 17 Expense detail | [17-expense-detail.md](17-expense-detail.md) | `4098:2440` | yes |
 | 18 New poll (empty) | [13-18-poll-question.md](13-18-poll-question.md) | `4097:2617` | yes |
 | 04b Poll notification | [04b-poll-notification.md](04b-poll-notification.md) | `166:2578` | yes |
 | 04c Vote | [04c-vote.md](04c-vote.md) | `166:2631` | yes |

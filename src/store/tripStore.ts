@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import type { IconName } from '@/components/Icon'
-import { dinnerBillItems, dinnerBill, openingBalanceCents, settledAt } from '@/data/expenses'
+import { dinnerBillItems, dinnerBill, expenseLedger, openingBalanceCents, settledAt, type LedgerDay, type LedgerEntry } from '@/data/expenses'
 import { placesCatalog } from '@/data/places'
 import { NOW_MINUTES, clockOf, minutesOf, todaysPlan, type PlanItem } from '@/data/itinerary'
 import { dinnerPoll, people, placeShortNames } from '@/data/trip'
@@ -637,6 +637,40 @@ export function formatCountdown(totalSeconds: number): string {
   const m = Math.floor(s / 60)
   const sec = s % 60
   return `${m}:${String(sec).padStart(2, '0')}`
+}
+
+/**
+ * The whole expense history, with tonight's dinner at the top of today.
+ * The dinner is prepended live rather than written into `expenseLedger` so
+ * it can never drift from the split mode the demo is currently showing —
+ * and 09 and 17 read the same list, so a row and its detail always agree.
+ */
+export const selectFullLedger = memoize((state): LedgerDay[] => {
+  const shares = selectDinnerShares(state)
+  const dinner: LedgerEntry = {
+    id: 'dinner',
+    title: `Dinner · ${dinnerBill.restaurant}`,
+    sub: 'You paid',
+    amountCents: selectDinnerTotal(state),
+    youPaid: true,
+    payerId: 'ari',
+    sharedBy: Object.keys(shares),
+    time: '20:30',
+    day: 'Wed 16 Sep',
+    // The one expense that isn't an equal split.
+    shares,
+  }
+  return [
+    { ...expenseLedger[0], entries: [dinner, ...expenseLedger[0].entries] },
+    ...expenseLedger.slice(1),
+  ]
+})
+
+/** One expense by id, dinner included. */
+export function selectLedgerEntry(state: StoryState, id: string): LedgerEntry | undefined {
+  return selectFullLedger(state)
+    .flatMap((day) => day.entries)
+    .find((entry) => entry.id === id)
 }
 
 // ---- The day's plan ------------------------------------------------------
