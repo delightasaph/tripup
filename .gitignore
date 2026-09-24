@@ -23,9 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 
-# Local editor/tooling config
-.claude
-
 # FUSE artefacts from editing mounted files
 .fuse_hidden*
 **/.fuse_hidden*
