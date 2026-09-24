@@ -132,7 +132,7 @@ export function Home() {
             transition={TAP_TRANSITION}
             className="cursor-pointer"
           >
-          <Ticket destination={lisbon.destination} dates={lisbon.dates} variant="tall" shared>
+          <Ticket destination={lisbon.destination} dates={lisbon.dates} variant="tall">
             {/* Next up — a frosted panel inside the card */}
             <div
               className="absolute flex items-center"

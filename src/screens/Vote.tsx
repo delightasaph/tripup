@@ -31,7 +31,7 @@ import {
  * "same layout as 05 without the asker controls".
  */
 export function Vote() {
-  const { back } = useScreenNav()
+  const { replace } = useScreenNav()
   const [selected, setSelected] = useState('timeout')
   const poll = useTripStore(selectActivePoll)
   const { question, votes, closesInSeconds, nudged } = poll
@@ -44,6 +44,14 @@ export function Vote() {
 
   const option = optionsView.find((p) => p.id === selected) ?? optionsView[0]
 
+  /**
+   * Closing this lands on the trip, not back on the lock screen. The
+   * notification is how Nic *got* here; it isn't somewhere to return to —
+   * you don't leave an app into your own lock screen. `replace` so the lock
+   * screen doesn't sit in the back stack either.
+   */
+  const leave = () => replace('trip')
+
   if (nicsVote) {
     const waitingOnId = pendingVoters.length === 1 ? pendingVoters[0] : null
     const waitingOn = waitingOnId ? people[waitingOnId] : null
@@ -53,7 +61,7 @@ export function Vote() {
         <div className="absolute" style={{ left: 'var(--screen-padding)', top: 14, width: 350 }}>
           <div className="flex h-[40px] items-center justify-between">
             <div className="flex items-center" style={{ gap: 10 }}>
-              <IconButton label="Close" onClick={back}>
+              <IconButton label="Close" onClick={leave}>
                 <Icon name="close" size={20} />
               </IconButton>
               <Pill variant="lime" height={27} className="font-medium">
@@ -104,7 +112,7 @@ export function Vote() {
         {/* Nav */}
         <div className="flex h-[40px] items-center justify-between">
           <div className="flex items-center" style={{ gap: 10 }}>
-            <IconButton label="Close" onClick={back}>
+            <IconButton label="Close" onClick={leave}>
               <Icon name="close" size={20} />
             </IconButton>
             <Pill variant="lime" height={27} className="font-medium">

@@ -4,7 +4,7 @@ import { Button } from '@/components/Button'
 import { Icon } from '@/components/Icon'
 import { Scrim, Sheet } from '@/components/Sheet'
 import { WheelPicker } from '@/components/WheelPicker'
-import { NOW_MINUTES, clockOf } from '@/data/itinerary'
+import { NOW_MINUTES, clockOf, todaysPlan } from '@/data/itinerary'
 import { useScreenNav } from '@/lib/useScreenNav'
 import { useTripStore } from '@/store/tripStore'
 import { HOVER_SMALL, TAP_SMALL, TAP_TRANSITION } from '@/styles/motion'
@@ -27,6 +27,9 @@ export function PollQuestion() {
   const setDraftEventMinutes = useTripStore((s) => s.setDraftEventMinutes)
   const setPollDeadline = useTripStore((s) => s.setPollDeadline)
 
+  // The open slot this poll was started from, if any.
+  const slot = todaysPlan.find((i) => i.id === draft.slotId)
+
   /** Which wheel is open over the sheet — 13b or 13c. */
   const [picking, setPicking] = useState<'event' | 'deadline' | null>(null)
 
@@ -40,11 +43,32 @@ export function PollQuestion() {
       <Scrim onClick={back} />
 
       <Sheet gap={16} onDismiss={back}>
-        <div className="flex w-full shrink-0 flex-col items-start" style={{ gap: 4 }}>
-          <h2 className="text-heading font-semibold">What are we deciding?</h2>
-          <p className="text-caption" style={{ color: 'var(--color-ink-secondary)' }}>
-            This is the question your buddies will see.
-          </p>
+        <div className="flex w-full shrink-0 flex-col items-start" style={{ gap: 8 }}>
+          {/* Started from a slot on the plan, so name it — the same violet
+              pill the places step carries, so the two steps read as one poll
+              being composed rather than two unrelated sheets. It sits above
+              the heading rather than beside it: "What are we deciding?" is
+              long enough to wrap if the pill crowds it. */}
+          {slot && (
+            <span
+              className="inline-flex shrink-0 items-center rounded-pill text-footnote font-medium"
+              style={{
+                gap: 5,
+                padding: '6px 12px 6px 10px',
+                background: 'var(--color-accent-violet-tint)',
+                color: 'var(--color-accent-violet)',
+              }}
+            >
+              <Icon name="clock-violet" size={14} />
+              {slot.title} · {clockOf(slot.minutes)}
+            </span>
+          )}
+          <div className="flex w-full flex-col items-start" style={{ gap: 4 }}>
+            <h2 className="w-full text-heading font-semibold">What are we deciding?</h2>
+            <p className="text-caption" style={{ color: 'var(--color-ink-secondary)' }}>
+              {slot ? 'Your buddies will see this question.' : 'This is the question your buddies will see.'}
+            </p>
+          </div>
         </div>
 
         {/* Question — Ground field with a violet caret */}

@@ -1,6 +1,6 @@
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
+import { AnimatePresence } from 'framer-motion'
 import { useEffect } from 'react'
-import { BrowserRouter, Route, Routes, useNavigationType, useSearchParams } from 'react-router-dom'
+import { BrowserRouter, Route, Routes, useSearchParams } from 'react-router-dom'
 import { DemoPanel } from '@/components/DemoPanel'
 import { DeviceFrame } from '@/components/DeviceFrame'
 import { Toast } from '@/components/Toast'
@@ -27,7 +27,6 @@ import { QuickAdd } from '@/screens/QuickAdd'
 import { Styleguide } from '@/screens/Styleguide'
 import { Compare } from '@/screens/Compare'
 import { screenById } from '@/screens/registry'
-import { DUR_BASE, DUR_FAST, EASE_OUT } from '@/styles/motion'
 
 /** `balances` (09) isn't a mounted screen any more — it's the trip shell's
  *  Expenses tab (docs/INTERACTION_EXECUTION_BRIEF.md §0). A raw `?screen=
@@ -40,7 +39,7 @@ function screenFor(id: string | undefined, tab: 'itinerary' | 'expenses') {
       return <Home />
     case 'trip':
     case 'balances':
-      return <TripLisbon ticketShared initialTab={tab} syncTabToUrl />
+      return <TripLisbon initialTab={tab} syncTabToUrl />
     case 'buddies':
       return <Buddies />
     case 'add-a-buddy':
@@ -94,8 +93,6 @@ function Prototype() {
   const active = screenById(id)
   const tab: 'itinerary' | 'expenses' = rawId === 'balances' || params.get('tab') === 'expenses' ? 'expenses' : 'itinerary'
   const toast = useTripStore((s) => s.toast)
-  const navigationType = useNavigationType()
-  const reduceMotion = useReducedMotion()
 
   // Balances (09) keeps its own clock (22:12) even though it now renders
   // through the `trip` screen id — the registry's static per-screen time
@@ -108,35 +105,20 @@ function Prototype() {
   // draws its own notifications and never the app's toast.
   const showToast = toast && active?.id !== 'poll-notification'
 
-  // Forward pushes a history entry, back pops one — react-router's own POP
-  // classification, so the slide direction always matches which way the
-  // user actually moved (docs/DESIGN_SYSTEM.md §6.0 "Screen transitions").
-  const isBack = navigationType === 'POP'
-  const offset = reduceMotion ? 0 : isBack ? -12 : 24
-  const exitOffset = reduceMotion ? 0 : isBack ? 24 : -12
-
-  const variant = active?.sheet
-    ? { initial: { opacity: 0 }, animate: { opacity: 1 }, exit: { opacity: 1 } }
-    : {
-        initial: { x: offset, opacity: 0 },
-        animate: { x: 0, opacity: 1 },
-        exit: { x: exitOffset, opacity: 0 },
-      }
-
+  // No screen-level motion. Screens used to slide in and out and the trip
+  // ticket used to travel between 01 and 02 as a shared element; both read as
+  // the page itself lurching on an ordinary tap, which is exactly what a bug
+  // looks like. Navigation is now a cut, and every bit of feedback comes from
+  // the thing you actually touched — a button's press, a sheet rising, a bar
+  // filling. Sheets still animate: a sheet is a surface arriving, not a page
+  // changing under you.
   return (
     <DeviceFrame time={time ?? '18:05'} chrome={active?.chrome ?? true}>
-      <AnimatePresence mode="popLayout" initial={false}>
-        <motion.div
-          key={id || 'placeholder'}
-          className="absolute inset-0"
-          initial={variant.initial}
-          animate={variant.animate}
-          exit={variant.exit}
-          transition={{ duration: reduceMotion ? DUR_FAST : DUR_BASE, ease: EASE_OUT }}
-        >
+      <>
+        <div key={id || 'placeholder'} className="absolute inset-0">
           {screenFor(id, tab)}
-        </motion.div>
-      </AnimatePresence>
+        </div>
+      </>
       <AnimatePresence>
         {showToast && (
           <Toast key="toast" title={toast.title} detail={toast.detail} icon={toast.icon} iconSize={toast.iconSize} />

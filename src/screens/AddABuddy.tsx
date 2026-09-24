@@ -18,14 +18,24 @@ import { TripLisbon } from './TripLisbon'
  * The root must not clip: the scrim reaches up over the status bar.
  */
 export function AddABuddy() {
-  const { go, back } = useScreenNav()
+  const { replace, back } = useScreenNav()
   const buddies = useTripStore(selectBuddyPeople)
   const addRen = useTripStore((s) => s.addRen)
   const showToast = useTripStore((s) => s.showToast)
 
+  /**
+   * Adding someone is a complete act on its own: the sheet closes, you land
+   * back on the trip you were looking at, the buddy stack ticks to +4 and
+   * the toast lands there. It used to push straight on into the new-poll
+   * sheet, which answered a question nobody had asked yet and left the
+   * person demoing this two screens from where they started.
+   *
+   * `replace`, not `go`: the sheet shouldn't sit in the back stack waiting
+   * to reopen.
+   */
   const confirm = () => {
     addRen()
-    go('new-poll')
+    replace('trip')
   }
 
   const tapResult = (name: string, selected: boolean) => {

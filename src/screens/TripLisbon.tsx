@@ -45,15 +45,12 @@ export function TripLisbon({
   dinner,
   crew,
   scaleForSheet,
-  ticketShared,
   initialTab,
   syncTabToUrl,
 }: {
   dinner?: 'open' | 'decided'
   crew?: Person[]
   scaleForSheet?: boolean
-  /** True only for screen 02 itself — see `Ticket`'s `shared` prop. */
-  ticketShared?: boolean
   /** Which body to open on. Re-syncs the tab if this changes later (e.g. the
    *  browser back button lands on a different `?tab=`). */
   initialTab?: Tab
@@ -160,7 +157,7 @@ export function TripLisbon({
                 exit={{ opacity: 0 }}
                 transition={{ duration: DUR_FAST }}
               >
-                <Ticket destination={lisbon.destination} dates={lisbon.dates} shared={ticketShared} />
+                <Ticket destination={lisbon.destination} dates={lisbon.dates} />
                 <DayStrip days={lisbon.days} />
                 <div className="flex w-full shrink-0 flex-col items-start" style={{ paddingTop: 8, gap: 12 }}>
                   <SectionHeader label="Today’s plan" meta={`${progress.done} of ${progress.total} done`} />
@@ -226,7 +223,7 @@ export function TripLisbon({
                               action="Ask the group"
                               onAction={() => {
                                 startPollForSlot(row.id)
-                                go('new-poll')
+                                go('poll-question')
                               }}
                             />
                           )}

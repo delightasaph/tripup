@@ -1,4 +1,3 @@
-import { motion } from 'framer-motion'
 import type { ReactNode } from 'react'
 import { ticketShape } from '@/data/assets'
 
@@ -53,11 +52,6 @@ type TicketProps = {
   variant?: keyof typeof VARIANTS
   /** The "Next up" panel, on Home only. */
   children?: ReactNode
-  /** Carries `layoutId="trip-ticket"` — the second named shared element
-   *  (docs/DESIGN_SYSTEM.md §6.0): the ticket travels between 01 and 02
-   *  instead of being swapped. Only those two screens' own tickets opt in —
-   *  the sheet-backdrop and 06-11 reuses render a plain one. */
-  shared?: boolean
 }
 
 /**
@@ -69,15 +63,14 @@ type TicketProps = {
  * "TripUp 2026" postmark, the cancel waves, and the VISITED cancel — each with
  * its own rotation, all clipped by the ticket edge.
  */
-export function Ticket({ destination, dates, variant = 'compact', children, shared }: TicketProps) {
+export function Ticket({ destination, dates, variant = 'compact', children }: TicketProps) {
   const v = VARIANTS[variant]
   const maskImage = v.masks.map((m) => `url(${m.url})`).join(', ')
   const maskPosition = v.masks.map((m) => m.position).join(', ')
   const maskSize = v.masks.map((m) => m.size).join(', ')
 
   return (
-    <motion.div
-      layoutId={shared ? 'trip-ticket' : undefined}
+    <div
       className="relative shrink-0 overflow-hidden"
       style={{ width: 350, height: v.height, borderRadius: v.radius }}
     >
@@ -228,6 +221,6 @@ export function Ticket({ destination, dates, variant = 'compact', children, shar
       </div>
 
       {children}
-    </motion.div>
+    </div>
   )
 }

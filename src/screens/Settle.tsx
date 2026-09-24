@@ -20,7 +20,7 @@ import { selectSettleTransfers, useTripStore } from '@/store/tripStore'
  * the store so it's visible back on Ari's Balances the moment it lands.
  */
 export function Settle() {
-  const { back, replace } = useScreenNav()
+  const { replace } = useScreenNav()
   const [methodId, setMethodId] = useState('apple-pay')
   const transfers = useTripStore(selectSettleTransfers)
   const renPaying = useTripStore((s) => s.renPaying)
@@ -41,7 +41,10 @@ export function Settle() {
       <div className="flex h-full flex-col items-start" style={{ paddingTop: 14, paddingInline: 'var(--screen-padding)', gap: 20 }}>
         {/* Nav */}
         <div className="flex h-[40px] w-full shrink-0 items-center justify-between">
-          <IconButton label="Close" onClick={back}>
+          {/* Ren's phone is a detour in the demo, so closing it lands on the
+              trip's Expenses tab rather than unwinding history — same rule
+              as Nic's vote leaving to the trip instead of his lock screen. */}
+          <IconButton label="Close" onClick={() => replace('balances')}>
             <Icon name="close" size={20} />
           </IconButton>
           <Pill variant="lime" height={27} className="font-medium">
