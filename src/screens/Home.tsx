@@ -7,6 +7,7 @@ import { homeStampsRow } from '@/data/assets'
 import { lisbon, people, upcomingTrips } from '@/data/trip'
 import { useScreenNav } from '@/lib/useScreenNav'
 import { HOVER_LIFT, HOVER_SMALL, TAP_LARGE, TAP_SMALL, TAP_TRANSITION } from '@/styles/motion'
+import { unreadCount } from '@/data/notifications'
 import { selectBuddyPeople, useTripStore } from '@/store/tripStore'
 
 /**
@@ -20,6 +21,8 @@ export function Home() {
   const { go } = useScreenNav()
   const crew = useTripStore(selectBuddyPeople)
   const showToast = useTripStore((s) => s.showToast)
+  const notificationsSeen = useTripStore((s) => s.notificationsSeen)
+  const seeNotifications = useTripStore((s) => s.seeNotifications)
 
   const comingSoon = () => showToast({ title: 'Coming soon', detail: 'Porto and Berlin aren’t open yet' })
 
@@ -50,8 +53,11 @@ export function Home() {
                 drawn on an 80 canvas around a 44 button. */}
             <motion.button
               type="button"
-              aria-label="Notifications, 1 unread"
-              onClick={() => showToast({ title: 'Notifications', detail: 'You’re all caught up' })}
+              aria-label={notificationsSeen ? 'Notifications' : `Notifications, ${unreadCount} unread`}
+              onClick={() => {
+                seeNotifications()
+                go('notifications')
+              }}
               whileHover={HOVER_SMALL}
               whileTap={TAP_SMALL}
               transition={TAP_TRANSITION}
@@ -59,7 +65,7 @@ export function Home() {
               style={{ width: 44, height: 44 }}
             >
               <img
-                src="/assets/icons/notifications.svg"
+                src={notificationsSeen ? '/assets/icons/notifications-read.svg' : '/assets/icons/notifications.svg'}
                 alt=""
                 aria-hidden="true"
                 width={80}

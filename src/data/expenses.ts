@@ -1,7 +1,10 @@
-import { billTotal, type BillItem } from '@/domain/split'
+import { billTotal, splitEqually, type BillItem } from '@/domain/split'
 import { people } from './trip'
 
 const allBuddies = ['ari', 'nic', 'bea', 'kofi', 'sven', 'mira', 'ren']
+/** The six who were on the trip for everything before tonight — Ren joins
+ *  in the evening and earlier expenses stay out of his share (03b). */
+const sixBeforeRen = ['ari', 'nic', 'bea', 'kofi', 'sven', 'mira']
 
 /** The Taberna bill, itemised — docs/PRODUCT_SPEC.md §3 "Dinner bill". Shares,
  *  balances and the netted transfers are all derived reactively from this in
@@ -85,9 +88,44 @@ export type LedgerEntry = {
   amountCents: number
   /** Green "+ €N", and it counts toward what's owed to Ari. */
   youPaid?: boolean
-  shareCents?: number
-  /** Ari wasn't part of this one — no share, amount shown muted. */
-  notIncluded?: boolean
+  /** Who paid. */
+  payerId: string
+  /**
+   * Who actually shared it — **never assumed to be everyone**. Most of the
+   * trip's expenses are the six who were there before Ren joined (his share
+   * starts tonight, per 03b), but the surf lesson was four of them and the
+   * Uber over the bridge was three, with Ari not among them. 17 reads its
+   * header, its list and every amount off this, so the exceptions need no
+   * special case anywhere.
+   */
+  sharedBy: string[]
+  /** Clock time, for 15 and 17. */
+  time: string
+  /** The day it happened, spelled as 17's header wants it. */
+  day: string
+  /**
+   * An explicit per-person breakdown, for the one expense that isn't an
+   * equal split: tonight's dinner, which is split by item. Everything else
+   * leaves this off and is divided evenly across `sharedBy`.
+   */
+  shares?: Record<string, number>
+}
+
+/**
+ * What each person owes on one expense. The arithmetic is the domain's
+ * (`splitEqually` / the by-item split behind `shares`) — nothing here
+ * hard-codes an amount, and nothing assumes the sharers are everyone.
+ */
+export function entrySplit(entry: LedgerEntry): Record<string, number> {
+  return entry.shares ?? splitEqually(entry.amountCents, entry.sharedBy)
+}
+
+/** One person's share, or `null` when they simply weren't in this one —
+ *  which is a real case (the Uber over the bridge was Nic, Sven and Mira),
+ *  not an error, and every screen reads it the same way. */
+export function shareOf(entry: LedgerEntry, personId: string): number | null {
+  if (!entry.sharedBy.includes(personId)) return null
+  return entrySplit(entry)[personId] ?? null
 }
 
 export type LedgerDay = { label: string; entries: LedgerEntry[] }
@@ -109,7 +147,10 @@ export const expenseLedger: LedgerDay[] = [
         title: 'Bikes along the river',
         sub: 'Paid by Sven',
         amountCents: 9900,
-        shareCents: 1650,
+        payerId: 'sven',
+        sharedBy: sixBeforeRen,
+        time: '16:42',
+        day: 'Wed 16 Sep',
       },
       {
         id: 'pasteis',
@@ -117,7 +158,10 @@ export const expenseLedger: LedgerDay[] = [
         sub: 'You paid',
         amountCents: 2800,
         youPaid: true,
-        shareCents: 467,
+        payerId: 'ari',
+        sharedBy: sixBeforeRen,
+        time: '09:20',
+        day: 'Wed 16 Sep',
       },
     ],
   },
@@ -129,7 +173,10 @@ export const expenseLedger: LedgerDay[] = [
         title: 'Live music at Damas',
         sub: 'Paid by Kofi',
         amountCents: 15000,
-        shareCents: 2500,
+        payerId: 'kofi',
+        sharedBy: sixBeforeRen,
+        time: '21:30',
+        day: 'Tue 15 Sep',
       },
       {
         id: 'lunch-campo',
@@ -137,14 +184,20 @@ export const expenseLedger: LedgerDay[] = [
         sub: 'You paid',
         amountCents: 9600,
         youPaid: true,
-        shareCents: 1600,
+        payerId: 'ari',
+        sharedBy: sixBeforeRen,
+        time: '14:10',
+        day: 'Tue 15 Sep',
       },
       {
         id: 'surf',
         title: 'Surf lesson, Caparica',
         sub: 'Paid by Mira · 4 of you',
         amountCents: 8000,
-        shareCents: 2000,
+        payerId: 'mira',
+        sharedBy: ['ari', 'bea', 'kofi', 'mira'],
+        time: '11:00',
+        day: 'Tue 15 Sep',
       },
     ],
   },
@@ -156,21 +209,30 @@ export const expenseLedger: LedgerDay[] = [
         title: 'Lunch at Ponto Final',
         sub: 'Paid by Mira',
         amountCents: 10800,
-        shareCents: 1800,
+        payerId: 'mira',
+        sharedBy: sixBeforeRen,
+        time: '13:20',
+        day: 'Mon 14 Sep',
       },
       {
         id: 'uber-bridge',
         title: 'Uber back over the bridge',
         sub: 'Paid by Sven · Nic, Sven, Mira',
         amountCents: 4800,
-        notIncluded: true,
+        payerId: 'sven',
+        sharedBy: ['nic', 'sven', 'mira'],
+        time: '23:40',
+        day: 'Mon 14 Sep',
       },
       {
         id: 'ferry',
         title: 'Ferry to Cacilhas',
         sub: 'Paid by Nic',
         amountCents: 1100,
-        shareCents: 183,
+        payerId: 'nic',
+        sharedBy: sixBeforeRen,
+        time: '10:40',
+        day: 'Mon 14 Sep',
       },
     ],
   },
@@ -182,7 +244,10 @@ export const expenseLedger: LedgerDay[] = [
         title: 'Boat trip on the Tejo',
         sub: 'Paid by Bea',
         amountCents: 9900,
-        shareCents: 1650,
+        payerId: 'bea',
+        sharedBy: sixBeforeRen,
+        time: '12:15',
+        day: 'Sun 13 Sep',
       },
       {
         id: 'elevador',
@@ -190,14 +255,20 @@ export const expenseLedger: LedgerDay[] = [
         sub: 'You paid',
         amountCents: 2700,
         youPaid: true,
-        shareCents: 450,
+        payerId: 'ari',
+        sharedBy: sixBeforeRen,
+        time: '17:05',
+        day: 'Sun 13 Sep',
       },
       {
         id: 'rooftop',
         title: 'Drinks at Park rooftop',
         sub: 'Paid by Mira',
         amountCents: 2900,
-        shareCents: 483,
+        payerId: 'mira',
+        sharedBy: sixBeforeRen,
+        time: '19:40',
+        day: 'Sun 13 Sep',
       },
     ],
   },
@@ -209,21 +280,30 @@ export const expenseLedger: LedgerDay[] = [
         title: 'Flat on Rua da Bica · 4 nights',
         sub: 'Paid by Nic',
         amountCents: 21600,
-        shareCents: 3600,
+        payerId: 'nic',
+        sharedBy: sixBeforeRen,
+        time: '15:30',
+        day: 'Sat 12 Sep',
       },
       {
         id: 'groceries',
         title: 'Groceries at Pingo Doce',
         sub: 'Paid by Bea',
         amountCents: 5700,
-        shareCents: 950,
+        payerId: 'bea',
+        sharedBy: sixBeforeRen,
+        time: '18:10',
+        day: 'Sat 12 Sep',
       },
       {
         id: 'taxis',
         title: 'Two taxis from the airport',
         sub: 'Paid by Kofi',
         amountCents: 4600,
-        shareCents: 767,
+        payerId: 'kofi',
+        sharedBy: sixBeforeRen,
+        time: '14:45',
+        day: 'Sat 12 Sep',
       },
     ],
   },

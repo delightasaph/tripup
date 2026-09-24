@@ -10,6 +10,7 @@ export type IconName =
   | 'plus-small'
   | 'arrow-right'
   | 'notifications'
+  | 'notifications-read'
   | 'fork-knife-lg'
   | 'walk'
   | 'list'
@@ -73,6 +74,10 @@ const exported: Record<IconName, string> = {
   'arrow-right': '/assets/icons/arrow-right.svg',
   // The whole 44 button, shadow and unread dot included, on an 80 canvas.
   notifications: '/assets/icons/notifications.svg',
+  // The same export with its one `<circle id="Unread">` layer removed — the
+  // bell once the notifications have been seen (15). Derived from the file
+  // Figma gave us, not redrawn.
+  'notifications-read': '/assets/icons/notifications-read.svg',
   'fork-knife-lg': '/assets/icons/fork-knife-lg.svg',
   walk: '/assets/icons/walk.svg',
   list: '/assets/icons/list.svg',

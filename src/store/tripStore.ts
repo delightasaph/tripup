@@ -100,6 +100,8 @@ interface StoryState {
   activePollId: string
   draft: PollDraft
   changingVote: boolean
+  /** The bell on 01 loses its unread dot once the list has been opened. */
+  notificationsSeen: boolean
 
   billLogged: boolean
   splitMode: SplitMode
@@ -119,6 +121,7 @@ interface DemoMeta {
 
 interface TripStore extends StoryState, DemoMeta {
   addRen: () => void
+  seeNotifications: () => void
   /** Route 1 — the empty dinner slot on 02. The slot already knows the
    *  question and the time, so this fills them in and 04 comes next. */
   startPollForSlot: (slotId: string) => void
@@ -190,6 +193,7 @@ const initialStory: StoryState = {
   activePollId: 'dinner',
   draft: dinnerDraft,
   changingVote: false,
+  notificationsSeen: false,
   billLogged: false,
   splitMode: 'by-item',
   wineSharedBy: initialWineSharedBy,
@@ -279,6 +283,8 @@ export const useTripStore = create<TripStore>((set, get) => {
     viewAs: 'ari',
     ending: 'A',
     speed: 1,
+
+    seeNotifications: () => set({ notificationsSeen: true }),
 
     addRen: () => {
       if (get().renJoined) return

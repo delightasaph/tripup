@@ -3,7 +3,14 @@ import { useEffect, useRef } from 'react'
 import { Avatar } from '@/components/Avatar'
 import { Icon } from '@/components/Icon'
 import { Pill } from '@/components/Pill'
-import { dinnerBill, expenseLedger, openingBalanceCents, tripSpend, type LedgerEntry } from '@/data/expenses'
+import {
+  dinnerBill,
+  expenseLedger,
+  openingBalanceCents,
+  shareOf,
+  tripSpend,
+  type LedgerEntry,
+} from '@/data/expenses'
 import { people } from '@/data/trip'
 import { useScreenNav } from '@/lib/useScreenNav'
 import { formatEuros, formatEurosAuto } from '@/domain/money'
@@ -73,7 +80,13 @@ export function ExpensesBody({
     sub: 'You paid',
     amountCents: dinnerBill.totalCents,
     youPaid: true,
-    shareCents: shares.ari ?? 0,
+    payerId: 'ari',
+    sharedBy: Object.keys(shares),
+    time: '20:30',
+    day: 'Wed 16 Sep',
+    // The one expense that isn't an equal split — it's split by item, and
+    // the demo can change who shared the wine, so it comes from the store.
+    shares,
   }
   const ledger = [{ ...expenseLedger[0], entries: [dinnerEntry, ...expenseLedger[0].entries] }, ...expenseLedger.slice(1)]
 
@@ -192,7 +205,13 @@ export function ExpensesBody({
               className="flex w-full flex-col items-start overflow-hidden"
               style={{ borderRadius: 'var(--radius-row-lg)', background: 'var(--color-surface-white)', boxShadow: 'var(--shadow-list)' }}
             >
-              {day.entries.map((entry, i) => (
+              {day.entries.map((entry, i) => {
+                // Not everyone is in every expense — the Uber over the
+                // bridge was three of them, Ari not among them. A null share
+                // *is* the answer, not a missing one.
+                const yourShare = shareOf(entry, 'ari')
+                const notIncluded = yourShare === null
+                return (
                 <div key={entry.id} className="flex w-full flex-col items-start">
                   {i > 0 && (
                     <span aria-hidden="true" style={{ width: '100%', height: 1, background: 'var(--color-line-default)' }} />
@@ -210,24 +229,23 @@ export function ExpensesBody({
                         style={{
                           color: entry.youPaid
                             ? 'var(--color-status-positive)'
-                            : entry.notIncluded
+                            : notIncluded
                               ? 'var(--color-ink-secondary)'
                               : 'var(--color-ink-primary)',
-                          opacity: entry.notIncluded ? 0.65 : 1,
+                          opacity: notIncluded ? 0.65 : 1,
                         }}
                       >
                         {entry.youPaid ? '+ ' : ''}
                         {formatEuros(entry.amountCents)}
                       </p>
                       <p className="text-caption2 whitespace-nowrap" style={{ color: 'var(--color-ink-secondary)' }}>
-                        {entry.notIncluded
-                          ? 'you were not in this one'
-                          : `your share ${formatEurosAuto(entry.shareCents!)}`}
+                        {notIncluded ? 'you were not in this one' : `your share ${formatEurosAuto(yourShare)}`}
                       </p>
                     </div>
                   </div>
                 </div>
-              ))}
+                )
+              })}
             </div>
           </div>
         ))}
