@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { screens, type ScreenId } from '@/screens/registry'
+import { pathFor, screens, type ScreenId } from '@/screens/registry'
 import { HOVER_SMALL, SPRING_SHEET, TAP_SMALL, TAP_TRANSITION } from '@/styles/motion'
 import { type ViewAs, useTripStore } from '@/store/tripStore'
 
@@ -21,7 +21,7 @@ export function DemoPanel() {
   const setSpeed = useTripStore((s) => s.setSpeed)
   const resetDemo = useTripStore((s) => s.resetDemo)
 
-  const go = (id: ScreenId) => navigate(`/?screen=${id}`)
+  const go = (id: ScreenId) => navigate(pathFor(id, { entryId: 'fado' }))
 
   const viewAsHome: Record<ViewAs, ScreenId> = {
     ari: 'trip',

@@ -1,36 +1,24 @@
 import type { ReactNode } from 'react'
 import { useFitsDeviceFrame } from '@/lib/useFitsDeviceFrame'
-import { StatusBar } from './StatusBar'
 
 type ScreenProps = {
   children: ReactNode
-  /** Clock shown in the status bar — each screen in the spec has its own. */
-  time?: string
-  /** Light glyphs for the lock-screen frame (04b). */
-  tone?: 'dark' | 'light'
   /** Background behind the screen content. Defaults to Surface/Ground. */
   background?: string
-  /** Hide the status bar when a screen draws its own. */
-  chrome?: boolean
 }
 
 /**
- * The screen surface: status bar, then content.
+ * The screen surface — the content, edge to edge.
  *
- * No home indicator. The Figma frames draw one at 128, 830, but it is inert
- * chrome that adds weight without telling anyone anything, so the build leaves
- * it out — on /compare it is the one difference you should expect to see.
+ * No device chrome. The Figma frames draw an iOS status bar and a home
+ * indicator; neither tells anyone anything the real OS wouldn't already be
+ * drawing, and together they cost about 60 pt of a 844 pt screen. The build
+ * leaves both out and gives the space to the content, so `--status-bar-height`
+ * is 0 and a Figma frame coordinate is a screen coordinate.
  */
-function Screen({
-  children,
-  time = '18:05',
-  tone = 'dark',
-  background = 'var(--color-surface-ground)',
-  chrome = true,
-}: ScreenProps) {
+function Screen({ children, background = 'var(--color-surface-ground)' }: ScreenProps) {
   return (
     <div className="relative flex h-full w-full flex-col overflow-hidden" style={{ background }}>
-      {chrome && <StatusBar time={time} tone={tone} />}
       <div className="relative min-h-0 flex-1">{children}</div>
     </div>
   )

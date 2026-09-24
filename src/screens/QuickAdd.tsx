@@ -16,15 +16,38 @@ import { TripLisbon } from './TripLisbon'
  * dead tap.
  */
 
-type Category = { id: string; title: string; sub: string; icon: IconName; fill: string; toast: string }
+type Category = {
+  id: string
+  title: string
+  sub: string
+  icon: IconName
+  fill: string
+  toast: string
+  /** Set only where the exported glyph isn't square. */
+  iconWidth?: number
+  iconHeight?: number
+}
 
+/** Order, wording and icons follow the frame: the thing you are most likely
+ *  to add to a trip that's already running comes first. */
 const categories: Category[] = [
+  {
+    id: 'event',
+    title: 'Event or activity',
+    sub: 'Restaurant, museum, beach…',
+    icon: 'quick-add-event',
+    fill: 'var(--color-accent-sky)',
+    toast: 'Adding an event isn’t in this prototype yet',
+  },
   {
     id: 'transport',
     title: 'Transport',
     sub: 'Flight, train, bus…',
     icon: 'quick-add-transport',
     fill: 'var(--color-accent-blush)',
+    // The plane is 19.71 × 15.13, not square — drawn at its own ratio.
+    iconHeight: 15.1,
+    iconWidth: 19.7,
     toast: 'Adding transport isn’t in this prototype yet',
   },
   {
@@ -34,14 +57,6 @@ const categories: Category[] = [
     icon: 'quick-add-stay',
     fill: 'var(--color-accent-lilac)',
     toast: 'Adding a stay isn’t in this prototype yet',
-  },
-  {
-    id: 'spot',
-    title: 'Spot or event',
-    sub: 'Restaurant, museum, beach…',
-    icon: 'quick-add-spot',
-    fill: 'var(--color-accent-sky)',
-    toast: 'Adding a spot isn’t in this prototype yet',
   },
 ]
 
@@ -94,7 +109,7 @@ export function QuickAdd() {
                 className="flex shrink-0 items-center justify-center"
                 style={{ width: 40, height: 40, borderRadius: 'var(--radius-tile)', background: c.fill }}
               >
-                <Icon name={c.icon} size={22} />
+                <Icon name={c.icon} size={c.iconWidth ?? 22} height={c.iconHeight ?? 22} />
               </span>
               <span className="flex min-w-0 flex-1 flex-col items-start" style={{ gap: 1 }}>
                 <span className="text-body font-semibold">{c.title}</span>
@@ -137,7 +152,7 @@ function Tile({
       <span className="flex items-center justify-center" style={{ width: 24, height: 24 }}>
         {children}
       </span>
-      <span className="text-caption font-medium">{label}</span>
+      <span className="text-footnote font-medium">{label}</span>
     </motion.button>
   )
 }

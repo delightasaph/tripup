@@ -5,7 +5,6 @@ import { Icon } from '@/components/Icon'
 import { Pill } from '@/components/Pill'
 import { openingBalanceCents, shareOf, tripSpend } from '@/data/expenses'
 import { people } from '@/data/trip'
-import { useNavigate } from 'react-router-dom'
 import { useScreenNav } from '@/lib/useScreenNav'
 import { formatEuros, formatEurosAuto } from '@/domain/money'
 import type { Transfer } from '@/domain/netting'
@@ -56,8 +55,7 @@ export function ExpensesBody({
   animateEntrance?: boolean
   onShown?: () => void
 }) {
-  const { replace } = useScreenNav()
-  const navigate = useNavigate()
+  const { go, replace } = useScreenNav()
   const settledIds = useTripStore((s) => s.settledIds)
   const allSettled = useTripStore(selectAllSettled)
   const balances = useTripStore(selectBalancesAfterDinner)
@@ -75,7 +73,7 @@ export function ExpensesBody({
   // ambiguous. 11's receipt list is still there, as the detail behind 11B's
   // transfers row.
   useEffect(() => {
-    if (allSettled) replace('squared-up-stamp')
+    if (allSettled) replace('squared-up')
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allSettled])
 
@@ -200,7 +198,7 @@ export function ExpensesBody({
                   )}
                   <motion.button
                     type="button"
-                    onClick={() => navigate(`/?screen=expense-detail&entry=${entry.id}`)}
+                    onClick={() => go('expense-detail', { entryId: entry.id })}
                     whileTap={TAP_LARGE}
                     transition={TAP_TRANSITION}
                     className="flex w-full items-center justify-between text-left"

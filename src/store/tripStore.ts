@@ -236,7 +236,7 @@ export const useTripStore = create<TripStore>((set, get) => {
    *
    * `polls` starts empty: the dinner poll only becomes a real object when
    * Ari sends it. Every other way into the poll screens — the demo panel's
-   * screen list, a `?screen=vote` link, Nic tapping the notification on a
+   * screen list, a `/poll/vote` link, Nic tapping the notification on a
    * fresh load — arrives with nothing in `polls`, and every action that
    * guarded on it silently did nothing. Nic could press "Vote for Time Out
    * Market" and watch the count stay at zero.

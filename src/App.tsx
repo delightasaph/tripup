@@ -1,6 +1,14 @@
 import { AnimatePresence } from 'framer-motion'
-import { useEffect } from 'react'
-import { BrowserRouter, Route, Routes, useSearchParams } from 'react-router-dom'
+import { useEffect, type ReactNode } from 'react'
+import {
+  BrowserRouter,
+  Navigate,
+  Outlet,
+  Route,
+  Routes,
+  useLocation,
+  useParams,
+} from 'react-router-dom'
 import { DemoPanel } from '@/components/DemoPanel'
 import { DeviceFrame } from '@/components/DeviceFrame'
 import { Toast } from '@/components/Toast'
@@ -24,108 +32,23 @@ import { Notifications } from '@/screens/Notifications'
 import { PollQuestion } from '@/screens/PollQuestion'
 import { QuickAdd } from '@/screens/QuickAdd'
 import { Styleguide } from '@/screens/Styleguide'
-import { Compare } from '@/screens/Compare'
-import { screenById } from '@/screens/registry'
 
-/** `balances` (09) isn't a mounted screen any more — it's the trip shell's
- *  Expenses tab (docs/INTERACTION_EXECUTION_BRIEF.md §0). A raw `?screen=
- *  balances` deep link (an old bookmark, or the demo panel's screen list)
- *  still has to land somewhere: resolve it to the trip screen, opened on
- *  that tab, rather than giving it its own mounted component. */
-function screenFor(id: string | undefined, tab: 'itinerary' | 'expenses') {
-  switch (id) {
-    case 'home':
-      return <Home />
-    case 'trip':
-    case 'balances':
-      return <TripLisbon initialTab={tab} syncTabToUrl />
-    case 'buddies':
-      return <Buddies />
-    case 'add-a-buddy':
-      return <AddABuddy />
-    case 'new-poll':
-      return <NewPoll />
-    case 'poll-notification':
-      return <PollNotification />
-    case 'vote':
-      return <Vote />
-    case 'plan-updated':
-      return <PlanUpdated />
-    case 'log-expense':
-      return <LogExpense />
-    case 'log-expense-new':
-      // 16 — the same sheet with nothing on the plan to link to.
-      return <LogExpense linked={false} />
-    case 'split-by-item':
-      return <SplitByItem />
-    case 'settle':
-      return <Settle />
-    case 'squared-up':
-      // 11 is no longer an ending — anything still pointing here (an old
-      // bookmark, the demo panel's list) lands on the one ending there is.
-      return <SquaredUpStamp />
-    case 'squared-up-stamp':
-      return <SquaredUpStamp />
-    case 'live-poll':
-      return <LivePoll />
-    case 'quick-add':
-      return <QuickAdd />
-    case 'poll-question':
-      return <PollQuestion />
-    case 'notifications':
-      return <Notifications />
-    case 'expense-detail':
-      return <ExpenseDetail />
-    case 'index':
-      return <Placeholder />
-    default:
-      return <Placeholder active={screenById(id ?? '')} />
-  }
-}
-
-/** Every screen is deep-linkable for demos: /?screen=live-poll */
-function Prototype() {
-  const [params] = useSearchParams()
-  // No `?screen=` means someone just opened the link — so open the app, on
-  // its home screen, the way an app opens. The scaffold's screen list is an
-  // internal tool and lives at `?screen=index`; the demo panel still reaches
-  // every screen directly.
-  const rawId = params.get('screen') || 'home'
-  // `balances` collapses onto the same mounted screen as `trip` — see
-  // `screenFor` above — so the two share one AnimatePresence key and one
-  // React instance. Tapping the tab bar (TripLisbon's `changeTab`) only ever
-  // touches `?tab=`, never `?screen=`, so this id is stable across every tab
-  // toggle: nothing here unmounts when Itinerary/Expenses switches.
-  const id = rawId === 'balances' ? 'trip' : rawId
-  const active = screenById(id)
-  const tab: 'itinerary' | 'expenses' = rawId === 'balances' || params.get('tab') === 'expenses' ? 'expenses' : 'itinerary'
+/**
+ * The app's chrome: the device frame, the global toast and the demo panel,
+ * with whatever screen the route resolves to inside it.
+ *
+ * Screens cut rather than animate — motion belongs to the control you
+ * touched, not to the page around it — so this is a plain container.
+ */
+function Shell({ children }: { children: ReactNode }) {
   const toast = useTripStore((s) => s.toast)
+  const { pathname } = useLocation()
+  // The lock screen draws its own notifications and never the app's toast.
+  const showToast = toast && pathname !== '/poll/alert'
 
-  // Balances (09) keeps its own clock (22:12) even though it now renders
-  // through the `trip` screen id — the registry's static per-screen time
-  // can't express "same screen, different tab", so pick it by hand.
-  const time = id === 'trip' && tab === 'expenses' ? (screenById('balances')?.time ?? active?.time) : active?.time
-
-  // Toasts are demo-global, not per-screen state, so they render once here —
-  // every screen's content sits in the same status-bar-relative container,
-  // which is what Toast positions itself against. The lock screen (04b)
-  // draws its own notifications and never the app's toast.
-  const showToast = toast && active?.id !== 'poll-notification'
-
-  // No screen-level motion. Screens used to slide in and out and the trip
-  // ticket used to travel between 01 and 02 as a shared element; both read as
-  // the page itself lurching on an ordinary tap, which is exactly what a bug
-  // looks like. Navigation is now a cut, and every bit of feedback comes from
-  // the thing you actually touched — a button's press, a sheet rising, a bar
-  // filling. Sheets still animate: a sheet is a surface arriving, not a page
-  // changing under you.
   return (
-    <DeviceFrame time={time ?? '18:05'} chrome={active?.chrome ?? true}>
-      <>
-        <div key={id || 'placeholder'} className="absolute inset-0">
-          {screenFor(id, tab)}
-        </div>
-      </>
+    <DeviceFrame>
+      <div className="absolute inset-0">{children}</div>
       <AnimatePresence>
         {showToast && (
           <Toast key="toast" title={toast.title} detail={toast.detail} icon={toast.icon} iconSize={toast.iconSize} />
@@ -133,6 +56,21 @@ function Prototype() {
       </AnimatePresence>
       <DemoPanel />
     </DeviceFrame>
+  )
+}
+
+/** 17 reads which expense to show straight off the path. */
+function ExpenseDetailRoute() {
+  const { entryId } = useParams()
+  return <ExpenseDetail entryId={entryId ?? 'fado'} />
+}
+
+/** Wraps every screen route in the shell. */
+function ShellLayout() {
+  return (
+    <Shell>
+      <Outlet />
+    </Shell>
   )
 }
 
@@ -145,9 +83,41 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Internal tools, not part of the app */}
         <Route path="/styleguide" element={<Styleguide />} />
-        <Route path="/compare" element={<Compare />} />
-        <Route path="*" element={<Prototype />} />
+
+        <Route element={<ShellLayout />}>
+          <Route path="/" element={<Home />} />
+
+          <Route path="/trip" element={<TripLisbon initialTab="itinerary" syncTabToUrl />} />
+          <Route path="/trip/expenses" element={<TripLisbon initialTab="expenses" syncTabToUrl />} />
+          <Route path="/trip/buddies" element={<Buddies />} />
+          <Route path="/trip/buddies/add" element={<AddABuddy />} />
+          <Route path="/trip/add" element={<QuickAdd />} />
+          <Route path="/trip/plan-updated" element={<PlanUpdated />} />
+
+          <Route path="/poll/new" element={<PollQuestion />} />
+          <Route path="/poll/places" element={<NewPoll />} />
+          <Route path="/poll/alert" element={<PollNotification />} />
+          <Route path="/poll/vote" element={<Vote />} />
+          <Route path="/poll/live" element={<LivePoll />} />
+
+          <Route path="/expenses/new" element={<LogExpense />} />
+          <Route path="/expenses/new/items" element={<SplitByItem />} />
+          {/* 16 — the same sheet with nothing on the plan to link to */}
+          <Route path="/expenses/add" element={<LogExpense linked={false} />} />
+          <Route path="/expenses/:entryId" element={<ExpenseDetailRoute />} />
+
+          <Route path="/notifications" element={<Notifications />} />
+          <Route path="/settle" element={<Settle />} />
+          <Route path="/squared-up" element={<SquaredUpStamp />} />
+
+          {/* The screen index — internal, for jumping around while building */}
+          <Route path="/screens" element={<Placeholder />} />
+          {/* Anything else is not a screen: send it home rather than showing
+              a dead end to whoever opened the link. */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   )

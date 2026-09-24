@@ -146,5 +146,8 @@
   --device-height: 844px;
   --screen-padding: 20px;
   --content-top: 64px;
-  --status-bar-height: 50px;
+  /* The status bar is not drawn (see DeviceFrame): a Figma frame coordinate
+     is a screen coordinate, and the calcs that convert between them resolve
+     to a no-op rather than being hunted down one by one. */
+  --status-bar-height: 0px;
 }

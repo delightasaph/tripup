@@ -58,7 +58,7 @@ export type IconName =
   | 'quick-add-expense'
   | 'quick-add-transport'
   | 'quick-add-stay'
-  | 'quick-add-spot'
+  | 'quick-add-event'
 
 /**
  * Each file is the exact vector from Figma. Some carry a baked stroke colour
@@ -129,7 +129,8 @@ const exported: Record<IconName, string> = {
   'quick-add-expense': '/assets/icons/quick-add-expense.svg',
   'quick-add-transport': '/assets/icons/quick-add-transport.svg',
   'quick-add-stay': '/assets/icons/quick-add-stay.svg',
-  'quick-add-spot': '/assets/icons/quick-add-spot.svg',
+  // 19.71 × 15.13 in the frame — a plane, not a square glyph.
+  'quick-add-event': '/assets/icons/quick-add-event.svg',
 }
 
 type IconProps = {

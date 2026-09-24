@@ -1,4 +1,3 @@
-import { useSearchParams } from 'react-router-dom'
 import { Avatar } from '@/components/Avatar'
 import { Button } from '@/components/Button'
 import { Scrim, Sheet } from '@/components/Sheet'
@@ -12,9 +11,9 @@ import { TripLisbon } from './TripLisbon'
 /**
  * 17 · Expense detail — Figma `4098:2440`, sheet `4098:2690`.
  *
- * Read-only: tapping any row on 09 opens the expense behind it. Which one is
- * in the URL (`?screen=expense-detail&entry=fado`) so it stays deep-linkable
- * like every other screen.
+ * Read-only: tapping any row on the Expenses tab opens the expense behind
+ * it. Which one is in the path — `/expenses/fado` — so a single expense is
+ * shareable the way any other screen is.
  *
  * **Every amount here is computed, never written down.** The header's count,
  * the list of people and each person's share all come from the expense's own
@@ -23,10 +22,8 @@ import { TripLisbon } from './TripLisbon'
  * bridge was three, without Ari) need no special case: they are simply
  * expenses with a different `sharedBy`, and the same code reads them.
  */
-export function ExpenseDetail() {
+export function ExpenseDetail({ entryId }: { entryId: string }) {
   const { back } = useScreenNav()
-  const [params] = useSearchParams()
-  const entryId = params.get('entry') ?? 'fado'
   const entry = useTripStore((s) => selectLedgerEntry(s, entryId))
 
   if (!entry) return null

@@ -353,7 +353,7 @@ export function Styleguide() {
           title="Device frame"
           subtitle="iPhone 14 · 390 × 844 pt · 1:1, never scaled. On a phone-sized viewport the app fills the screen instead."
         >
-          <PhoneShell time="18:05">
+          <PhoneShell>
             <div
               className="flex h-full flex-col"
               style={{ paddingInline: 'var(--screen-padding)' }}

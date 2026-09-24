@@ -28,24 +28,24 @@ export function Placeholder({ active }: { active?: ScreenEntry }) {
         {screens.map((s) => {
           const isActive = active?.id === s.id
           return (
-            <li
-              key={s.id}
-              className="flex items-center gap-3 rounded-row-lg px-4 py-3"
-              style={{
-                background: isActive ? 'var(--color-accent-lime)' : 'var(--color-surface-white)',
-                boxShadow: 'var(--shadow-card)',
-              }}
-            >
-              <span className="w-[26px] shrink-0 text-caption font-medium text-ink-secondary">
-                {s.no}
-              </span>
-              <span className="min-w-0 flex-1">
-                <span className="block truncate text-headline font-semibold">{s.title}</span>
-                <span className="block text-caption text-ink-secondary">
-                  {s.phone}’s phone · {s.time}
+            <li key={s.id}>
+              <a
+                href={s.path.replace(':entryId', 'fado')}
+                className="flex items-center gap-3 rounded-row-lg px-4 py-3"
+                style={{
+                  background: isActive ? 'var(--color-accent-lime)' : 'var(--color-surface-white)',
+                  boxShadow: 'var(--shadow-card)',
+                }}
+              >
+                <span className="w-[26px] shrink-0 text-caption font-medium text-ink-secondary">
+                  {s.no}
                 </span>
-              </span>
-              <code className="shrink-0 text-caption2 text-ink-secondary">?screen={s.id}</code>
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate text-headline font-semibold">{s.title}</span>
+                  <span className="block text-caption text-ink-secondary">{s.phone}’s phone</span>
+                </span>
+                <code className="shrink-0 text-caption2 text-ink-secondary">{s.path}</code>
+              </a>
             </li>
           )
         })}

@@ -54,10 +54,10 @@ export function TripLisbon({
   /** Which body to open on. Re-syncs the tab if this changes later (e.g. the
    *  browser back button lands on a different `?tab=`). */
   initialTab?: Tab
-  /** True only for the canonical `/?screen=trip` mount in App.tsx — pushes
-   *  tab changes into the URL (`?tab=expenses`) so it stays a real deep
-   *  link. Backdrop reuses (a sheet's dimmed trip screen, 06 Plan updated)
-   *  leave this off: their tab state is purely local. */
+  /** True only for the `/trip` and `/trip/expenses` routes — pushes tab
+   *  changes into the path so the tab stays a real link. Backdrop reuses (a
+   *  sheet's dimmed trip screen, Plan updated) leave this off: their tab
+   *  state is purely local. */
   syncTabToUrl?: boolean
 } = {}) {
   const { go, back } = useScreenNav()
@@ -94,7 +94,8 @@ export function TripLisbon({
   const changeTab = (next: Tab) => {
     setTab(next)
     if (syncTabToUrl) {
-      navigate(next === 'expenses' ? '/?screen=trip&tab=expenses' : '/?screen=trip', { replace: true })
+      // `replace`, not push: flipping a tab isn't a place you go back to.
+      navigate(next === 'expenses' ? '/trip/expenses' : '/trip', { replace: true })
     }
   }
 
