@@ -12,9 +12,18 @@ import { Timeline, TimelineRow } from '@/components/Timeline'
 import { Ticket } from '@/components/Ticket'
 import { placePhotos } from '@/data/assets'
 import { placesCatalog, type PlaceCatalogEntry } from '@/data/places'
+import { clockOf, type PlanItem } from '@/data/itinerary'
 import { dinnerPoll, lisbon } from '@/data/trip'
 import { useScreenNav } from '@/lib/useScreenNav'
-import { selectBuddyPeople, selectDinnerPoll, useTripStore } from '@/store/tripStore'
+import {
+  formatCountdown,
+  selectBuddyPeople,
+  selectDinnerPoll,
+  selectPlanProgress,
+  selectPlanRows,
+  selectTotalVoters,
+  useTripStore,
+} from '@/store/tripStore'
 import { DUR_FAST, HOVER_SMALL, SPRING_SHEET, TAP_SMALL, TAP_TRANSITION } from '@/styles/motion'
 import { ExpensesBody } from './Balances'
 
@@ -62,6 +71,9 @@ export function TripLisbon({
   const liveCrew = useTripStore(selectBuddyPeople)
   const showToast = useTripStore((s) => s.showToast)
   const startPollForSlot = useTripStore((s) => s.startPollForSlot)
+  const rows = useTripStore(selectPlanRows)
+  const progress = useTripStore(selectPlanProgress)
+  const totalVoters = useTripStore(selectTotalVoters)
   const reduceMotion = useReducedMotion()
 
   const [tab, setTab] = useState<Tab>(initialTab ?? 'itinerary')
@@ -151,116 +163,76 @@ export function TripLisbon({
                 <Ticket destination={lisbon.destination} dates={lisbon.dates} shared={ticketShared} />
                 <DayStrip days={lisbon.days} />
                 <div className="flex w-full shrink-0 flex-col items-start" style={{ paddingTop: 8, gap: 12 }}>
-                  <SectionHeader label="Today’s plan" meta="2 of 4 done" />
+                  <SectionHeader label="Today’s plan" meta={`${progress.done} of ${progress.total} done`} />
                   <Timeline>
-                    <TimelineRow time="10:00" node="done" timeOpacity={0.6}>
-                      <DoneCard title="Pastéis de Belém" line="Breakfast · Belém · €18" photo="pasteis" />
-                    </TimelineRow>
+                    {rows.map((row) => {
+                      if (row.kind === 'done') {
+                        return (
+                          <TimelineRow key={row.id} time={clockOf(row.minutes)} node="done" timeOpacity={0.6}>
+                            <DoneCard title={row.item.title} line={row.item.line} photo={row.item.photo} />
+                          </TimelineRow>
+                        )
+                      }
 
-                    <TimelineRow time="15:00" node="done" timeOpacity={0.6}>
-                      <DoneCard title="Tram 28 to Graça" line="Praça Martim Moniz" />
-                    </TimelineRow>
-
-                    <TimelineRow time="18:30" timeTone="ink" timeOffset={16} node="next">
-                      <div
-                        className="relative flex shrink-0 flex-col items-start justify-center overflow-hidden"
-                        style={{
-                          width: 280,
-                          height: 84,
-                          gap: 10,
-                          padding: '14px 14px 12px 16px',
-                          borderRadius: 'var(--radius-card)',
-                          background:
-                            'linear-gradient(158.199deg, rgb(247 221 211) 7.1429%, rgb(245 231 196) 78.571%)',
-                        }}
-                      >
-                        <div className="flex w-full flex-col items-start" style={{ gap: 4 }}>
-                          <p className="text-headline font-semibold">Sunset at Miradouro</p>
-                          <p className="text-caption" style={{ color: 'var(--color-ink-secondary)' }}>
-                            Viewpoint · free
-                          </p>
-                          <Pill
-                            variant="white70"
-                            height={24}
-                            radius={12}
-                            className="text-caption font-medium"
-                            style={{ width: 106, paddingInline: 10, gap: 5 }}
+                      if (row.kind === 'next') {
+                        return (
+                          <TimelineRow
+                            key={row.id}
+                            time={clockOf(row.minutes)}
+                            timeTone="ink"
+                            timeOffset={16}
+                            node="next"
                           >
-                            <Icon name="walk" size={14} />
-                            12 min walk
-                          </Pill>
-                        </div>
-                        {/* Directions — only on the next item, never on done ones */}
-                        <motion.button
-                          type="button"
-                          aria-label="Directions to Miradouro da Graça"
-                          onClick={comingSoon}
-                          whileHover={HOVER_SMALL}
-                          whileTap={TAP_SMALL}
-                          transition={TAP_TRANSITION}
-                          className="absolute flex items-center justify-center rounded-pill"
-                          style={{
-                            bottom: 12,
-                            right: 12,
-                            width: 36,
-                            height: 36,
-                            filter: 'drop-shadow(0 4px 5px rgb(31 30 36 / 0.1))',
-                          }}
-                        >
-                          <Icon name="direction-right" size={24} />
-                        </motion.button>
-                      </div>
-                    </TimelineRow>
+                            <NextCard item={row.item} onDirections={comingSoon} />
+                          </TimelineRow>
+                        )
+                      }
 
-                    <TimelineRow
-                      time="20:30"
-                      timeTone="violet"
-                      timeOffset={16}
-                      rowOffset={4}
-                      node={decided ? 'filled' : 'open'}
-                    >
-                      {decided ? (
-                        <DinnerDecided place={winningPlace} onLogExpense={() => go('log-expense')} onMap={comingSoon} />
-                      ) : (
-                        <div
-                          className="flex shrink-0 flex-col items-start overflow-hidden"
-                          style={{
-                            width: 280,
-                            gap: 12,
-                            padding: '14px 16px 16px',
-                            borderRadius: 'var(--radius-card)',
-                            background: 'var(--color-accent-violet-tint)',
-                            outline: '1.5px dashed rgb(91 79 232 / 0.55)',
-                            outlineOffset: '-1.5px',
-                          }}
+                      // A slot and a poll-of-its-own draw the same card: the
+                      // only difference is what fills it and where it goes.
+                      const poll = row.poll
+                      // `dinner` forces the slot's state for the screens that
+                      // compose this one as a backdrop (06, 07, 08).
+                      const resolved = row.kind === 'slot' ? decided : (poll?.closed ?? false)
+
+                      return (
+                        <TimelineRow
+                          key={row.id}
+                          time={clockOf(row.minutes)}
+                          timeTone="violet"
+                          timeOffset={16}
+                          rowOffset={4}
+                          node={resolved ? 'filled' : 'open'}
                         >
-                          <div className="flex flex-col items-start whitespace-nowrap" style={{ gap: 2 }}>
-                            <p className="text-headline font-semibold">Dinner</p>
-                            <p className="text-caption" style={{ color: 'var(--color-ink-secondary)' }}>
-                              Nothing booked yet · all 6 of you are free
-                            </p>
-                          </div>
-                          <Button
-                            variant="violet"
-                            height={38}
-                            icon={<Icon name="list" size={16} />}
-                            onClick={() => {
-                              startPollForSlot('dinner')
-                              go('new-poll')
-                            }}
-                            style={{
-                              width: 151,
-                              paddingInline: 14,
-                              justifyContent: 'flex-start',
-                              gap: 6,
-                              filter: 'drop-shadow(0 6px 7px rgb(91 79 232 / 0.35))',
-                            }}
-                          >
-                            Ask the group
-                          </Button>
-                        </div>
-                      )}
-                    </TimelineRow>
+                          {resolved ? (
+                            <DinnerDecided
+                              place={placesCatalog.find((p) => p.id === poll!.winnerId) ?? winningPlace}
+                              label={row.kind === 'slot' ? row.item.title : 'Decided'}
+                              shared={row.kind === 'slot'}
+                              onLogExpense={() => go('log-expense')}
+                              onMap={comingSoon}
+                            />
+                          ) : poll?.sent ? (
+                            <OpenSlotCard
+                              title={poll.question}
+                              line={`Live · closes in ${formatCountdown(poll.closesInSeconds)} · ${poll.votes.length} of ${totalVoters} voted`}
+                              action="See the poll"
+                              onAction={() => go('live-poll')}
+                            />
+                          ) : (
+                            <OpenSlotCard
+                              title={row.kind === 'slot' ? row.item.title : 'Not decided yet'}
+                              line={row.kind === 'slot' ? row.item.line : 'Nothing booked yet'}
+                              action="Ask the group"
+                              onAction={() => {
+                                startPollForSlot(row.id)
+                                go('new-poll')
+                              }}
+                            />
+                          )}
+                        </TimelineRow>
+                      )
+                    })}
                   </Timeline>
                 </div>
               </motion.div>
@@ -310,10 +282,19 @@ export function TripLisbon({
  */
 function DinnerDecided({
   place,
+  label = 'Dinner',
+  shared = true,
   onLogExpense,
   onMap,
 }: {
   place: PlaceCatalogEntry
+  /** The meta line's first word — "Dinner" on the slot, the poll's own word
+   *  on a row a poll created. */
+  label?: string
+  /** Only the dinner slot carries the shared `layoutId`: it is the one the
+   *  winning option's photo travels into from 05 (docs/DESIGN_SYSTEM.md
+   *  §6.0). Two elements sharing one layoutId would fight over it. */
+  shared?: boolean
   onLogExpense: () => void
   onMap: () => void
 }) {
@@ -339,7 +320,7 @@ function DinnerDecided({
         >
           {place.photo ? (
             <motion.img
-              layoutId="dinner-photo"
+              layoutId={shared ? 'dinner-photo' : undefined}
               src={placePhotos[place.photo]}
               alt=""
               aria-hidden="true"
@@ -347,7 +328,7 @@ function DinnerDecided({
             />
           ) : (
             <motion.div
-              layoutId="dinner-photo"
+              layoutId={shared ? 'dinner-photo' : undefined}
               className="flex h-full w-full items-center justify-center"
               style={{ background: 'var(--color-surface-white-70)' }}
             >
@@ -359,7 +340,7 @@ function DinnerDecided({
           <p className="w-full text-headline font-semibold">{place.name}</p>
           <div className="flex items-center" style={{ gap: 4 }}>
             <span className="text-caption" style={{ color: 'var(--color-ink-secondary)' }}>
-              Dinner ·
+              {label} ·
             </span>
             <span className="flex items-center" style={{ gap: 2 }}>
               <Icon name="walk-sm" size={14} />
@@ -472,6 +453,118 @@ function DoneCard({
           {line}
         </p>
       </div>
+    </div>
+  )
+}
+
+/**
+ * The dashed violet card — one component for both things that can be
+ * undecided at a time on the plan: an empty slot the day came with, and a
+ * poll someone added from the quick add (14, Figma `4101:2399`). The frames
+ * draw them identically; only the title, the line and the button's words
+ * change, so this is one card with three props rather than two cards that
+ * would drift apart.
+ */
+function OpenSlotCard({
+  title,
+  line,
+  action,
+  onAction,
+}: {
+  title: string
+  line: string
+  action: string
+  onAction: () => void
+}) {
+  return (
+    <div
+      className="flex shrink-0 flex-col items-start overflow-hidden"
+      style={{
+        width: 280,
+        gap: 12,
+        padding: '14px 16px 16px',
+        borderRadius: 'var(--radius-card)',
+        background: 'var(--color-accent-violet-tint)',
+        outline: '1.5px dashed rgb(91 79 232 / 0.55)',
+        outlineOffset: '-1.5px',
+      }}
+    >
+      <div className="flex w-full flex-col items-start" style={{ gap: 2 }}>
+        <p className="w-full text-headline font-semibold">{title}</p>
+        <p className="w-full text-caption" style={{ color: 'var(--color-ink-secondary)' }}>
+          {line}
+        </p>
+      </div>
+      <Button
+        variant="violet"
+        height={38}
+        icon={<Icon name="list" size={16} />}
+        onClick={onAction}
+        style={{
+          minWidth: 151,
+          paddingInline: 14,
+          justifyContent: 'flex-start',
+          gap: 6,
+          filter: 'drop-shadow(0 6px 7px rgb(91 79 232 / 0.35))',
+        }}
+      >
+        {action}
+      </Button>
+    </div>
+  )
+}
+
+/** The item happening next: the warm gradient card, and the only row that
+ *  carries a directions button. */
+function NextCard({ item, onDirections }: { item: PlanItem; onDirections: () => void }) {
+  return (
+    <div
+      className="relative flex shrink-0 flex-col items-start justify-center overflow-hidden"
+      style={{
+        width: 280,
+        height: 84,
+        gap: 10,
+        padding: '14px 14px 12px 16px',
+        borderRadius: 'var(--radius-card)',
+        background: 'linear-gradient(158.199deg, rgb(247 221 211) 7.1429%, rgb(245 231 196) 78.571%)',
+      }}
+    >
+      <div className="flex w-full flex-col items-start" style={{ gap: 4 }}>
+        <p className="text-headline font-semibold">{item.title}</p>
+        <p className="text-caption" style={{ color: 'var(--color-ink-secondary)' }}>
+          {item.line}
+        </p>
+        {item.chip && (
+          <Pill
+            variant="white70"
+            height={24}
+            radius={12}
+            className="text-caption font-medium"
+            style={{ width: 106, paddingInline: 10, gap: 5 }}
+          >
+            <Icon name="walk" size={14} />
+            {item.chip}
+          </Pill>
+        )}
+      </div>
+      <motion.button
+        type="button"
+        aria-label={`Directions to ${item.title}`}
+        onClick={onDirections}
+        whileHover={HOVER_SMALL}
+        whileTap={TAP_SMALL}
+        transition={TAP_TRANSITION}
+        className="absolute flex items-center justify-center rounded-pill"
+        style={{
+          bottom: 12,
+          right: 12,
+          width: 36,
+          height: 36,
+          filter: 'drop-shadow(0 4px 5px rgb(31 30 36 / 0.1))',
+        }}
+      >
+        <Icon name="direction-right" size={24} />
+      </motion.button>
     </div>
   )
 }

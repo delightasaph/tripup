@@ -12,6 +12,14 @@ import { billTotal, splitByItems, splitEqually, type BillItem } from '@/domain/s
 /** Everyone on the trip once Ren has joined, Ari included — the voting body
  *  and the settle-up roster. */
 const allSevenIds = ['ari', 'nic', 'bea', 'kofi', 'sven', 'mira', 'ren']
+/** Who can actually vote *right now*. Ren is on the trip from the moment he
+ *  is added and not before, so a poll started from the quick add before that
+ *  is a poll of six — otherwise the simulation casts a seventh vote for
+ *  someone the buddy stack doesn't yet show, and the count reads "6 of 6"
+ *  with seven votes in it. */
+function rosterOf(state: { renJoined: boolean }): string[] {
+  return state.renJoined ? allSevenIds : allSevenIds.filter((id) => id !== 'ren')
+}
 /** Every place Ari could put on the poll — "Add a place" searches the whole
  *  catalog, not just the three pre-loaded onto the poll. Used to keep
  *  `pollOptionIds` in a stable, catalog-wide order as places are toggled. */
@@ -246,7 +254,7 @@ export const useTripStore = create<TripStore>((set, get) => {
     const poll = get().polls[id]
     if (!poll || poll.closed || !poll.sent) return
     const voted = new Set(poll.votes.map((v) => v.personId))
-    const everyoneVoted = allSevenIds.every((pid) => voted.has(pid))
+    const everyoneVoted = rosterOf(get()).every((pid) => voted.has(pid))
     const timedOut = poll.closesInSeconds <= 0 && poll.votes.length > 0
     if (everyoneVoted || timedOut) closePoll(id)
   }
@@ -359,12 +367,23 @@ export const useTripStore = create<TripStore>((set, get) => {
         activePollId: id,
       })
 
+      // The other buddies answer over ~6 s, leaving Sven for the Nudge
+      // (docs/PRODUCT_SPEC.md §5). Anyone not yet on the trip is skipped
+      // rather than voting from nowhere.
       const speed = state.speed
-      schedule(() => get().castVote('bea', resolveOptionId('taberna', included)), 1200 / speed)
-      schedule(() => get().castVote('kofi', resolveOptionId('taberna', included)), 2400 / speed)
-      schedule(() => get().castVote('mira', resolveOptionId('ramiro', included)), 3600 / speed)
-      schedule(() => get().castVote('ren', resolveOptionId('timeout', included)), 4800 / speed)
-      schedule(() => get().castVote('nic', resolveOptionId('timeout', included)), 6000 / speed)
+      const roster = rosterOf(state)
+      const simulated: [string, string][] = [
+        ['bea', 'taberna'],
+        ['kofi', 'taberna'],
+        ['mira', 'ramiro'],
+        ['ren', 'timeout'],
+        ['nic', 'timeout'],
+      ]
+      simulated
+        .filter(([personId]) => roster.includes(personId))
+        .forEach(([personId, preferred], i) => {
+          schedule(() => get().castVote(personId, resolveOptionId(preferred, included)), (1200 * (i + 1)) / speed)
+        })
       startCountdown(id)
     },
 
@@ -372,6 +391,7 @@ export const useTripStore = create<TripStore>((set, get) => {
       const id = get().activePollId
       const poll = get().polls[id]
       if (!poll || poll.closed) return
+      if (!rosterOf(get()).includes(personId)) return
       const existing = poll.votes.find((v) => v.personId === personId)
       if (existing && !options?.allowChange) return
       const lastEvent: PollEvent = { kind: 'vote', personId, optionId }
@@ -536,7 +556,7 @@ export const selectPendingVoters = memoize((state) => {
   const poll = selectActivePoll(state)
   if (!poll.sent) return []
   const voted = new Set(poll.votes.map((v) => v.personId))
-  return allSevenIds.filter((id) => !voted.has(id))
+  return rosterOf(state).filter((id) => !voted.has(id))
 })
 
 export function selectYourVote(state: StoryState, personId: string): string | null {
@@ -622,7 +642,8 @@ export function formatCountdown(totalSeconds: number): string {
  * new poll never displaces something already on the plan.
  */
 export type PlanRow =
-  | { id: string; minutes: number; kind: 'done' | 'next'; item: PlanItem }
+  | { id: string; minutes: number; kind: 'done'; item: PlanItem }
+  | { id: string; minutes: number; kind: 'next'; item: PlanItem }
   | { id: string; minutes: number; kind: 'slot'; item: PlanItem; poll: Poll | null }
   | { id: string; minutes: number; kind: 'poll'; poll: Poll }
 
@@ -630,7 +651,9 @@ export const selectPlanRows = memoize((state): PlanRow[] => {
   const rows: PlanRow[] = todaysPlan.map((item) =>
     item.kind === 'slot'
       ? { id: item.id, minutes: item.minutes, kind: 'slot', item, poll: state.polls[item.id] ?? null }
-      : { id: item.id, minutes: item.minutes, kind: item.kind, item },
+      : item.kind === 'next'
+        ? { id: item.id, minutes: item.minutes, kind: 'next', item }
+        : { id: item.id, minutes: item.minutes, kind: 'done', item },
   )
 
   for (const id of state.pollIds) {

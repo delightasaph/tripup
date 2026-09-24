@@ -4,6 +4,7 @@ import { DeadlineSheet } from '@/components/DeadlineSheet'
 import { Icon } from '@/components/Icon'
 import { PlaceTile } from '@/components/PlaceTile'
 import { Scrim, Sheet } from '@/components/Sheet'
+import { clockOf, todaysPlan } from '@/data/itinerary'
 import { placesCatalog, searchPlaces } from '@/data/places'
 import { useScreenNav } from '@/lib/useScreenNav'
 import { HOVER_SMALL, TAP_SMALL, TAP_TRANSITION } from '@/styles/motion'
@@ -31,6 +32,8 @@ export function NewPoll() {
   const optionIds = useTripStore((s) => s.draft.optionIds)
   const togglePollOption = useTripStore((s) => s.togglePollOption)
   const deadline = useTripStore((s) => s.draft.deadlineMinutes ?? 20)
+  const slotId = useTripStore((s) => s.draft.slotId)
+  const eventMinutes = useTripStore((s) => s.draft.eventMinutes ?? 0)
   const setPollDeadline = useTripStore((s) => s.setPollDeadline)
 
   const [addPlaceOpen, setAddPlaceOpen] = useState(false)
@@ -38,6 +41,12 @@ export function NewPoll() {
   // fresh mount resets its search field for free, no reset effect needed.
   const [addPlaceOpenCount, setAddPlaceOpenCount] = useState(0)
   const [deadlineOpen, setDeadlineOpen] = useState(false)
+
+  // The pill names what this poll is for. From the dinner slot that's the
+  // slot itself; from the quick add there is no slot, so it names the time
+  // the poll was set for on 13 — a poll never borrows another item's slot.
+  const slot = todaysPlan.find((i) => i.id === slotId)
+  const slotLabel = `${slot?.title ?? 'Today'} · ${clockOf(eventMinutes)}`
 
   const options = placesCatalog.filter((p) => optionIds.includes(p.id))
   const canSend = options.length >= 2 // at least two places to vote between
@@ -67,7 +76,7 @@ export function NewPoll() {
             }}
           >
             <Icon name="clock-violet" size={14} />
-            Dinner · 20:30
+            {slotLabel}
           </span>
         </div>
 

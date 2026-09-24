@@ -15,6 +15,7 @@ import {
   formatCountdown,
   selectActivePoll,
   selectPendingVoters,
+  selectTotalVoters,
   selectPollOptionsView,
   selectTickerEvent,
   selectYourVote,
@@ -36,6 +37,7 @@ export function Vote() {
   const { question, votes, closesInSeconds, nudged } = poll
   const optionsView = useTripStore(selectPollOptionsView)
   const pendingVoters = useTripStore(selectPendingVoters)
+  const totalVoters = useTripStore(selectTotalVoters)
   const nicsVote = useTripStore((s) => selectYourVote(s, 'nic'))
   const ticker = useTripStore(selectTickerEvent)
   const castVote = useTripStore((s) => s.castVote)
@@ -88,7 +90,7 @@ export function Vote() {
               className="flex w-full items-center justify-center text-footnote"
               style={{ marginTop: 20, color: 'var(--color-ink-secondary)' }}
             >
-              {votes.length} of 7 voted · {nudged ? `${waitingOn.label} was nudged` : `waiting on ${waitingOn.label}`}
+              {votes.length} of {totalVoters} voted · {nudged ? `${waitingOn.label} was nudged` : `waiting on ${waitingOn.label}`}
             </div>
           )}
         </div>
@@ -208,7 +210,7 @@ export function Vote() {
           className="flex w-full items-center justify-center text-footnote"
           style={{ marginTop: 20, color: 'var(--color-ink-secondary)' }}
         >
-          {votes.length} of 7 have voted · results show once you vote
+          {votes.length} of {totalVoters} have voted · results show once you vote
         </div>
       </div>
 

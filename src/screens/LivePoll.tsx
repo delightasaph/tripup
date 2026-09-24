@@ -13,6 +13,7 @@ import {
   formatCountdown,
   selectActivePoll,
   selectPendingVoters,
+  selectTotalVoters,
   selectPollOptionsView,
   selectTickerEvent,
   selectYourVote,
@@ -36,6 +37,7 @@ export function LivePoll() {
   const changingVote = useTripStore((s) => s.changingVote)
   const optionsView = useTripStore(selectPollOptionsView)
   const pendingVoters = useTripStore(selectPendingVoters)
+  const totalVoters = useTripStore(selectTotalVoters)
   const yourVote = useTripStore((s) => selectYourVote(s, 'ari'))
   const ticker = useTripStore(selectTickerEvent)
   const nudgeSven = useTripStore((s) => s.nudgeSven)
@@ -141,7 +143,7 @@ export function LivePoll() {
               </span>
             </span>
             <div className="absolute" style={{ left: 64, top: 13 }}>
-              <p className="text-body font-semibold">{votes.length} of 7 voted</p>
+              <p className="text-body font-semibold">{votes.length} of {totalVoters} voted</p>
               <p className="text-caption" style={{ marginTop: 3, color: 'var(--color-ink-secondary)' }}>
                 {nudged ? `${waitingOn.label} was nudged` : `Waiting on ${waitingOn.label}`}
               </p>

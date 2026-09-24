@@ -32,7 +32,7 @@ Conventions in these files:
 | 13 New poll (filled) | [13-18-poll-question.md](13-18-poll-question.md) | `4094:2129` | yes |
 | 13b Time picker | [13b-13c-wheel-picker.md](13b-13c-wheel-picker.md) | `4095:2140` | yes |
 | 13c Deadline picker | [13b-13c-wheel-picker.md](13b-13c-wheel-picker.md) | `4095:2389` | yes |
-| 14 Trip · extra poll | _to write_ | `4101:2206` | no — **new** |
+| 14 Trip · extra poll | [14-trip-extra-poll.md](14-trip-extra-poll.md) | `4101:2206` | yes |
 | 15 Notifications | _to write_ | `4098:2195` | no — **new** |
 | 16 Log expense (quick add) | _to write_ | `4097:2350` | no — **new** |
 | 17 Expense detail | _to write_ | `4098:2440` | no — **new** |
