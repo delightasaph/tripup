@@ -1,5 +1,7 @@
 # TripUp
 
+**[Open the prototype →](https://tripup-delight.vercel.app)** · [Figma file](https://www.figma.com/design/qITM47IS3nfWVV3KxyH3pv/TripUp---Bending-Spoons---Delight-Asaph)
+
 A working, mobile-optimised prototype of one end-to-end journey in **TripUp** — an app for
 organising group trips: friends plan the itinerary together, decide with quick polls instead of
 long group chats, log shared expenses and settle up.
@@ -12,22 +14,12 @@ Real code, real state, real arithmetic — not a click-through. The poll counts 
 bill is split from actual line items, and the transfers are the result of actually netting seven
 people's balances.
 
-## Run it
+Start on Home and follow it through to "Lisbon is squared up" — about two minutes.
 
-```bash
-npm install
-npm run dev
-```
-
-Then open <http://localhost:5173>.
-
-| Script | What it does |
-| --- | --- |
-| `npm run dev` | Dev server |
-| `npm run build` | Typecheck + production build |
-| `npm run preview` | Serve the production build |
-| `npm run lint` | Lint |
-| `npm test` | Unit tests (netting, splitting, poll rules) |
+<p align="center">
+  <img src="design/readme/trip.png" width="300" alt="Trip itinerary with the open dinner slot">
+  <img src="design/readme/expenses.png" width="300" alt="Balances and the netted transfers">
+</p>
 
 ## The device
 
@@ -71,6 +63,23 @@ between people: a vote cast on one phone shows up on another.
 The simulated events are real timers, not scripted screens — send the poll and the other votes
 arrive over about six seconds, leaving one person to nudge.
 
+## Run it
+
+```bash
+npm install
+npm run dev
+```
+
+Then open <http://localhost:5173>.
+
+| Script | What it does |
+| --- | --- |
+| `npm run dev` | Dev server |
+| `npm run build` | Typecheck + production build |
+| `npm run preview` | Serve the production build |
+| `npm run lint` | Lint |
+| `npm test` | Unit tests (netting, splitting, poll rules) |
+
 ## Layout
 
 ```
@@ -84,6 +93,7 @@ src/data/        the mock trip
 src/styles/      tokens.css (the design system as CSS variables) and the motion tokens
 public/assets/   avatars, place photos, stamps and icons
 design/screens/  reference renders from the design file, at 390 × 844
+design/readme/   the screenshots above
 ```
 
 ## Where the logic lives
