@@ -6,11 +6,16 @@ type SheetProps = {
   children: ReactNode
   /**
    * The sheet's top edge **in Figma frame coordinates** (y from the top of the
-   * 844 frame). Screens render below the status bar, so this is converted
-   * internally — passing a screen-space value puts the sheet 50 px low.
+   * 844 frame). It is read as the sheet's designed *height* — `844 - frameTop`
+   * — and applied as a min-height on a bottom-anchored box.
    *
-   * Omit it when the frame's sheet hugs its content (bottom-anchored, no
-   * height set); the sheet then sizes to what it holds.
+   * It is deliberately not a `top` offset. Pinning `top` would tie the height
+   * to the viewport, and outside the 844-tall device frame (a real phone, where
+   * the screen is `100dvh`) every pt the viewport falls short of 844 would be
+   * cut off the bottom of the sheet.
+   *
+   * Omit it when the frame's sheet hugs its content; the sheet then sizes to
+   * what it holds.
    */
   frameTop?: number
   /** Vertical gap between the sheet's sections. */
@@ -40,10 +45,11 @@ export function Sheet({ children, frameTop, gap = 16, onDismiss }: SheetProps) {
     <motion.div
       className="absolute inset-x-0 bottom-0 flex flex-col items-start"
       style={{
-        top:
+        minHeight:
           frameTop === undefined
             ? undefined
-            : `calc(${frameTop}px - var(--status-bar-height))`,
+            : `calc(var(--device-height) - ${frameTop}px)`,
+        maxHeight: '100%',
         background: 'var(--color-surface-white)',
         borderTopLeftRadius: 'var(--radius-sheet)',
         borderTopRightRadius: 'var(--radius-sheet)',
