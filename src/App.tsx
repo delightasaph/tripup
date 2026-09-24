@@ -54,6 +54,9 @@ function screenFor(id: string | undefined, tab: 'itinerary' | 'expenses') {
       return <PlanUpdated />
     case 'log-expense':
       return <LogExpense />
+    case 'log-expense-new':
+      // 16 — the same sheet with nothing on the plan to link to.
+      return <LogExpense linked={false} />
     case 'split-by-item':
       return <SplitByItem />
     case 'settle':

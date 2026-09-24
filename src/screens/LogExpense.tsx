@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import { useEffect, useState } from 'react'
 import { Avatar } from '@/components/Avatar'
 import { Icon } from '@/components/Icon'
 import { Scrim, Sheet } from '@/components/Sheet'
@@ -11,6 +12,10 @@ import { HOVER_SMALL, TAP_SMALL, TAP_TRANSITION } from '@/styles/motion'
 import { useTripStore } from '@/store/tripStore'
 import { TripLisbon } from './TripLisbon'
 
+/** What the quick-add expense opens on — the frame's own content (16). */
+const QUICK_ADD_PLACEHOLDER = 'Taxi back to the flat'
+const QUICK_ADD_AMOUNT_CENTS = 2400
+
 /**
  * 07 · Log the dinner — Figma `168:2777`, sheet `168:2922`.
  *
@@ -21,16 +26,28 @@ import { TripLisbon } from './TripLisbon'
  * "By item" is selected by default, since that's the path the scenario takes
  * (→ 08).
  */
-export function LogExpense() {
+export function LogExpense({ linked = true }: { linked?: boolean } = {}) {
   const { go, back } = useScreenNav()
   const split = useTripStore((s) => s.splitMode)
   const setSplitMode = useTripStore((s) => s.setSplitMode)
   const logExpense = useTripStore((s) => s.logExpense)
   const showToast = useTripStore((s) => s.showToast)
-  const { euros, decimals } = splitEuroCents(dinnerBill.totalCents)
+  const [what, setWhat] = useState(QUICK_ADD_PLACEHOLDER)
+  const { euros, decimals } = splitEuroCents(linked ? dinnerBill.totalCents : QUICK_ADD_AMOUNT_CENTS)
+
+  // An expense from the quick add starts on "Equally": the by-item step (08)
+  // itemises *the dinner bill*, and there are no items for a taxi to split.
+  useEffect(() => {
+    if (!linked) setSplitMode('equally')
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [linked])
 
   const next = () => {
     if (split === 'by-item') {
+      if (!linked) {
+        showToast({ title: 'Itemising isn’t in this prototype yet', detail: 'Tonight’s dinner is the itemised one' })
+        return
+      }
       go('split-by-item')
     } else {
       logExpense()
@@ -40,7 +57,13 @@ export function LogExpense() {
 
   return (
     <div className="relative h-full">
-      <TripLisbon dinner="decided" crew={[...tripBuddies, people.ren]} scaleForSheet />
+      {linked ? (
+        <TripLisbon dinner="decided" crew={[...tripBuddies, people.ren]} scaleForSheet />
+      ) : (
+        // From the quick add the dinner may still be open — the backdrop
+        // shows whatever the trip actually is, not a fixed later state.
+        <TripLisbon scaleForSheet />
+      )}
       <Scrim onClick={back} />
 
       <Sheet gap={16} onDismiss={back}>
@@ -65,29 +88,50 @@ export function LogExpense() {
           </motion.button>
         </div>
 
-        {/* Linked plan */}
-        <div
-          className="flex w-full shrink-0 items-center"
-          style={{
-            gap: 10,
-            padding: '6px 14px 6px 6px',
-            borderRadius: 'var(--radius-row)',
-            background: 'var(--color-accent-lime)',
-          }}
-        >
-          <img
-            src={placePhotos[dinnerBill.place]}
-            alt=""
-            aria-hidden="true"
-            style={{ width: 32, height: 32, borderRadius: 10, objectFit: 'cover' }}
-          />
-          <span className="min-w-0 flex-1 text-footnote font-medium">
-            Dinner · {dinnerBill.restaurant}
-          </span>
-          <span className="text-caption shrink-0" style={{ color: 'var(--color-ink-secondary)' }}>
-            20:30
-          </span>
-        </div>
+        {linked ? (
+          /* Linked plan — the poll's winner, already on the timeline */
+          <div
+            className="flex w-full shrink-0 items-center"
+            style={{
+              gap: 10,
+              padding: '6px 14px 6px 6px',
+              borderRadius: 'var(--radius-row)',
+              background: 'var(--color-accent-lime)',
+            }}
+          >
+            <img
+              src={placePhotos[dinnerBill.place]}
+              alt=""
+              aria-hidden="true"
+              style={{ width: 32, height: 32, borderRadius: 10, objectFit: 'cover' }}
+            />
+            <span className="min-w-0 flex-1 text-footnote font-medium">
+              Dinner · {dinnerBill.restaurant}
+            </span>
+            <span className="text-caption shrink-0" style={{ color: 'var(--color-ink-secondary)' }}>
+              20:30
+            </span>
+          </div>
+        ) : (
+          /* Nothing on the plan to link to, so ask what it was for (16) */
+          <label
+            className="flex w-full shrink-0 items-center"
+            style={{
+              padding: '14px 16px',
+              borderRadius: 'var(--radius-row)',
+              background: 'var(--color-surface-ground)',
+            }}
+          >
+            <span className="sr-only">What was this for?</span>
+            <input
+              value={what}
+              onChange={(e) => setWhat(e.target.value)}
+              placeholder="What was this for?"
+              className="min-w-0 flex-1 bg-transparent text-body font-semibold outline-none placeholder:font-normal"
+              style={{ color: 'var(--color-ink-primary)', caretColor: 'var(--color-accent-violet)' }}
+            />
+          </label>
+        )}
 
         {/* Amount */}
         <div
